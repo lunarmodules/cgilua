@@ -28,7 +28,8 @@ ul { list-style-type: disc };
 <a href="#error_treatment">error treatment</a> &middot;
 <a href="#behavior">behavior</a> &middot;
 <a href="#auxiliar">auxiliar</a> &middot;
-<a href="#internals">internals</a>
+<a href="#internals">internals</a> &middot;
+<a href="#index">index</a>
 </small></center>
 
 <hr>
@@ -63,13 +64,24 @@ This function should <em>not</em> be used to generate a
 <a name="contents"></a>
 <h2>Content generation</h2>
 
+<a name="main"></a>
+<h3><code>cgilua.main ()</code></h3>
+Processes the incoming request.
+It is the main function,
+responsible for setting defaults,
+loading the configuration file,
+removing the disallowed globals,
+creating the <tt>cgi</tt> table (processing <i>POST data</i> if necessary),
+executing the script on its own directory
+and resetting everything for a new request.
+
 <a name="mkabsoluteurl"></a>
 <h3><code>cgilua.mkabsoluteurl (path)</code></h3>
-Create an absolute URL containing the given URL path.
+Creates an absolute URL containing the given URL path.
 
 <a name="mkurlpath"></a>
 <h3><code>cgilua.mkurlpath (script [, args])</code></h3>
-Create an URL path to be used as a link to a CGILua script.
+Creates an URL path to be used as a link to a CGILua script.
 
 <a name="put"></a>
 <h3><code>cgilua.put (string)</code></h3>
@@ -99,28 +111,28 @@ sends the HTML header before the pre-processed file.
 <h2>CGILua's variables</h2>
 
 <a name="script_path"></a>
-<h3><code>cgilua.script_path ()</code></h3>
+<h3><code>cgilua.script_path</code></h3>
 The complete path of the running script.
 This variable is usually the same as the CGI environment variable
 <code>PATH_TRANSLATED</code>.
 
 <a name="script_pdir"></a>
-<h3><code>cgilua.script_pdir ()</code></h3>
+<h3><code>cgilua.script_pdir</code></h3>
 The directory of the running script.
 Obtained from <a href="#script_path"><code>cgilua.script_path</code></a>.
 
 <a name="script_file"></a>
-<h3><code>cgilua.script_file ()</code></h3>
+<h3><code>cgilua.script_file</code></h3>
 The file name of the running script.
 Obtained from <a href="#script_path"><code>cgilua.script_path</code></a>.
 
 <a name="script_vpath"></a>
-<h3><code>cgilua.script_vpath ()</code></h3>
+<h3><code>cgilua.script_vpath</code></h3>
 The complete virtual path of the running script.
 Equivalent to CGI environment variable <code>PATH_INFO</code>.
 
 <a name="script_vdir"></a>
-<h3><code>cgilua.script_vdir ()</code></h3>
+<h3><code>cgilua.script_vdir</code></h3>
 The virtual directory of the running script.
 Obtained from <a href="#script_vpath"><code>cgilua.script_vpath</code></a>.
 
@@ -129,7 +141,7 @@ Obtained from <a href="#script_vpath"><code>cgilua.script_vpath</code></a>.
 Returns the value of a CGI environment variable.
 
 <a name="urlpath"></a>
-<h3><code>cgilua.urlpath ()</code></h3>
+<h3><code>cgilua.urlpath</code></h3>
 The name of the script.
 Equivalent to CGI environment variable <code>SCRIPT_NAME</code>.
 
@@ -169,7 +181,11 @@ The default configuration uses
 
 <a name="addclosefunction"></a>
 <h3><code>cgilua.addclosefunction (func)</code></h3>
-Defines a function to be executed after the script finishes.
+Defines a function to be executed after the script execution.
+
+<a name="addopenfunction"></a>
+<h3><code>cgilua.addopenfunction (func)</code></h3>
+Defines a function to be executed before the script execution.
 
 <a name="setlibdir"></a>
 <h3><code>cgilua.setlibdir (dir)</code></h3>
@@ -192,15 +208,40 @@ Sets the maximum "total" input size allowed (in bytes).
 <a name="auxiliar"></a>
 <h2>Auxiliar functions</h2>
 
+<a name="pack"></a>
+<h3><code>cgilua.pack (...)</code></h3>
+Stores all its arguments in a table and returns it to the caller.
+
 <a name="splitpath"></a>
 <h3><code>cgilua.splitpath (path)</code></h3>
 Extracts the "directory" and "file" parts of a given path.
 
+
+<hr>
+<a name="urlcode"></a>
+<h2>URL encoding functions</h2>
+
 <a name="encodetable"></a>
-<h3><code>cgilua.encodetable (table)</code></h3>
-URL-encode the elements of a table creating a string to be used in a
+<h3><code>cgilua.urlcode.encodetable (table)</code></h3>
+<i>URL-encode</i> the elements of a table creating a string to be used in a
 URL for passing data/parameters to another script.
 
+<a name="escape"></a>
+<h3><code>cgilua.urlcode.escape (string)</code></h3>
+<i>URL-encode</i> a string.
+
+<a name="parsequery"></a>
+<h3><code>cgilua.urlcode.parsequery (query, args)</code></h3>
+Parse URL-encoded request data.
+This could be the query part of the script URL or URL-encoded post data.
+Each decoded
+<em>name = value</em>
+pair is inserted into table
+<code>args</code>.
+
+<a name="unescape"></a>
+<h3><code>cgilua.urlcode.unescape (string)</code></h3>
+<i>URL-decode</i> a string.
 
 <hr>
 <a name="internals"></a>
@@ -254,9 +295,55 @@ Removes the variables listed in table <code>notallowed</code>.
 Resets CGILua's internal state.
 
 
+<a name="index"></a>
+<h2>Alphabetic Index</h2>
+<a href="#addclosefunction">addclosefunction</a><br>
+<a href="#addopenfunction">addopenfunction</a><br>
+<a href="#addscripthandler">addscripthandler</a><br>
+<a href="#close">close</a><br>
+<a href="#contentheader">contentheader</a><br>
+<a href="#doif">doif</a><br>
+<a href="#doscript">doscript</a><br>
+<a href="#encodetable">encodetable</a><br>
+<a href="#error_log">error_log</a><br>
+<a href="#escape">escape</a><br>
+<a href="#getscripthandler">getscripthandler</a><br>
+<a href="#handle">handle</a><br>
+<a href="#header">header</a><br>
+<a href="#htmlheader">htmlheader</a><br>
+<a href="#includehtml">includehtml</a><br>
+<a href="#main">main</a><br>
+<a href="#mkabsoluteurl">mkabsoluteurl</a><br>
+<a href="#mkurlpath">mkurlpath</a><br>
+<a href="#pack">pack</a><br>
+<a href="#parsequery">parsequery</a><br>
+<a href="#pcall">pcall</a><br>
+<a href="#preprocess">preprocess</a><br>
+<a href="#put">put</a><br>
+<a href="#redirect">redirect</a><br>
+<a href="#removeglobals">removeglobals</a><br>
+<a href="#script_file">script_file</a><br>
+<a href="#script_path">script_path</a><br>
+<a href="#script_pdir">script_pdir</a><br>
+<a href="#script_vdir">script_vdir</a><br>
+<a href="#script_vpath">script_vpath</a><br>
+<a href="#servervariable">servervariable</a><br>
+<a href="#seterrorhandler">seterrorhandler</a><br>
+<a href="#seterrorlog">seterrorlog</a><br>
+<a href="#seterroroutput">seterroroutput</a><br>
+<a href="#setlibdir">setlibdir</a><br>
+<a href="#setmaxfilesize">setmaxfilesize</a><br>
+<a href="#setmaxinput">setmaxinput</a><br>
+<a href="#splitpath">splitpath</a><br>
+<a href="#unescape">unescape</a><br>
+<a href="#urlpath">urlpath</a><br>
+<a href="#userscriptname">userscriptname</a><br>
+
+
+
 <hr>
 <small>
-$Id: reference.html,v 1.8 2004/06/22 10:30:52 tomas Exp $
+$Id: reference.html,v 1.9 2004/10/15 10:58:27 tomas Exp $
 </small>
 
 </body>
