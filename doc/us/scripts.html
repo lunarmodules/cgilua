@@ -52,7 +52,7 @@ This kind of
 usage adopts a "traditional" form of programming,
 in which a script is strictly limited to being a program.
 <p>
-As a script is used to generate a document (an HTML document, mostly)
+As a script is used to generate a document (a HTML document, mostly)
 it must follow an order to produce its output,
 first sending the correct header
 and next sending the actual document.
@@ -60,13 +60,13 @@ and next sending the actual document.
 CGILua offers some functions to do these tasks.
 The most common is
 <a href="reference.html#htmlheader"><code>cgilua.htmlheader</code></a>
-that produce the header for an HTML document
+that produce the header for a HTML document
 (see <a href="reference.html#headers">Headers</a> for a complete list).
 The function used to send the document's contents is
 <a href="reference.html#put"><code>cgilua.put</code></a>.
 
 <p>
-For example, an HTML document which displays the sentence "Hello World!" can 
+For example, a HTML document which displays the sentence "Hello World!" can 
 be generated with the following Lua script:
 
 <pre>
@@ -125,7 +125,7 @@ CGILua automatically decodes such variables.
 <a name="templates"></a>
 <h2>HTML Templates</h2>
 <p>
-An HTML Template is an HTML file which will be processed by
+A HTML Template is a HTML file which will be processed by
 CGILua before the HTTP server sends it to the client.
 CGILua does not process HTML but it searches some special
 marks that include Lua code into the file.
@@ -154,12 +154,12 @@ There are also some facilities accepted:
 </ul>
 Note that the ending mark
 could not appear inside a Lua chunk or Lua expression even inside quotes.
-The HTML pre-processor just make global substitutions searching for
+The HTML pre-processor just makes global substitutions searching for
 a pair of marks and building the corresponding Lua code to achieve
 the same result.
 <p>
 The example on the previous section could be written
-using an HTML template:
+using a HTML template:
 <code><pre>
 &lt;html&gt;
 &lt;?lua
@@ -218,7 +218,7 @@ are treated (the keys of the table will be numbers).
 <p>
 <hr>
 <small>
-$Id: scripts.html,v 1.9 2004/06/09 18:07:27 tomas Exp $
+$Id: scripts.html,v 1.10 2004/06/22 10:30:52 tomas Exp $
 </small>
 
 </body>

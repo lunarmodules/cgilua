@@ -90,7 +90,8 @@ as a server-side scripting language for creating dynamic Web pages. Both
 pure <a href="scripts.html#scripts">Lua scripts</a> and 
 <a href="scripts.html#templates">HTML templates</a> are supported by CGILua. 
 A Lua script is essentially a Lua program that creates the 
-contents of an HTML page and sends it to the HTTP server. An HTML template is 
+contents of a HTML page and sends it to the HTTP server.
+A HTML template is 
 a conventional HTML file that embeds Lua code by using some special marks.
 <p>
 Lua scripts and HTML templates are equally easy to use, 
@@ -98,7 +99,7 @@ and choosing one of them
 basically depends on the characteristics
 of a specific page. While HTML templates are convenient for 
 creating graphically sophisticated pages, probably with the help
-of an HTML editor, Lua scripts are more adequate for creating
+of a HTML editor, Lua scripts are more adequate for creating
 pages that are simple in terms of its HTML structure, but require a 
 significative amount of internal processing.
 By also allowing these two methods to be 
@@ -107,11 +108,11 @@ flexibility when both requirements are present. For a detailed description
 of both scripting methods and some examples of their use 
 see <a href="scripts.html">CGILua scripts</a>.
 <p>
-CGILua comes in three versions: Apache module, Fast-CGI and
+CGILua comes in three versions: Apache module, FastCGI and
 traditional CGI.
 CGILua's architecture is divided in two layers.
 The lowest one is represented by the three launchers:
-the Apache module, the Fast-CGI script and the CGI executable.
+the Apache module, the FastCGI script and the CGI executable.
 These three launchers implement a common set of functions also called
 <a href="sapi.html">the Server API</a>.
 The highest layer is implemented over it and is totally portable
@@ -215,7 +216,7 @@ Comments are welcome!
 <p>
 <hr>
 <small>
-$Id: index.html,v 1.16 2004/06/08 17:09:31 tomas Exp $
+$Id: index.html,v 1.17 2004/06/22 10:30:52 tomas Exp $
 </small>
 
 </body>
