@@ -14,18 +14,19 @@
 --		args = params,
 --	}
 ----------------------------------------------------------------------------
--- $Id: post.lua,v 1.3 2004/09/14 11:02:58 tomas Exp $
+-- $Id: post.lua,v 1.4 2004/10/13 09:34:07 tomas Exp $
 ----------------------------------------------------------------------------
 
-local readuntil = require"cgilua.readuntil"
-local urlcode = require"cgilua.urlcode"
+require"cgilua.readuntil"
+require"cgilua.urlcode"
 
 local assert, error, tonumber, tostring, type = assert, error, tonumber, tostring, type
 local tmpfile = io.tmpfile
 local getn, tinsert = table.getn, table.insert
 local format, gsub, strfind, strlower, strlen = string.format, string.gsub, string.find, string.lower, string.len
 local min = math.min
-local iterate = readuntil.iterate
+local iterate = cgilua.readuntil.iterate
+local urlcode = cgilua.urlcode
 
 -- environment for processing multipart/form-data input
 local boundary = nil      -- boundary string that separates each 'part' of input

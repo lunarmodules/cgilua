@@ -1,24 +1,28 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.4 2004/09/14 11:02:58 tomas Exp $
+-- $Id: cgilua.lua,v 1.5 2004/10/13 09:34:07 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
 
-local urlcode = require"cgilua.urlcode"
-local prep = require"cgilua.prep"
-local post = require"cgilua.post"
-local lfs = require"lfs"
+require"cgilua.urlcode"
+require"cgilua.prep"
+require"cgilua.post"
+require"lfs"
 
 local _require = require
 local _loadlib = loadlib
 
-local assert, error, _G, loadstring, loadfile, type, unpack, xpcall = assert, error, _G, loadstring, loadfile, type, unpack, xpcall
+local assert, error, _G, loadstring, loadfile, _pcall, type, unpack, xpcall = assert, error, _G, loadstring, loadfile, pcall, type, unpack, xpcall
 local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
 local _open = io.open
 local getn, tinsert, tremove = table.getn, table.insert, table.remove
 local ap = ap
-local translate = prep.translate
 local HTTP_Response, HTTP_Request = HTTP_Response, HTTP_Request
+local lfs = lfs
+local urlcode = cgilua.urlcode
+local post = cgilua.post
+local prep = cgilua.prep
+local translate = prep.translate
 
 prep.setoutfunc ("HTTP_Response.write")
 prep.setcompatmode (true)
@@ -126,8 +130,6 @@ _G.require = function (packagename)
 	-- packagename cannot contain some special punctuation characters
 	assert (not strfind (packagename, "%.%."),
 		"Package name cannot contain `..'")
-	--_G._PATH = lua_path
-	--_G._CPATH = lua_libpath
 	_G.loadlib = _loadlib
 	local ret = _pack (_require (packagename))
 	_G.loadlib = nil
@@ -473,8 +475,8 @@ function main (cgilua_conf)
 	-- Default values
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", preprocess)
-	-- Configuring CGILua
-	pcall (doif, cgilua_conf)
+	-- Configuring CGILua (trying to load cgilua/conf.lua)
+	_pcall (_G.require, "cgilua.conf")
 	-- Cleaning environment
 	removeglobals {
 		"os.execute",
