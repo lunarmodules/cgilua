@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.20 2004/10/29 15:36:30 tomas Exp $
+# $Id: Makefile,v 1.21 2004/11/05 15:05:59 tomas Exp $
 
 include ./config
 
 SRCS= Makefile config README
 
 
-dist: luafilesystem compat
+dist: luafilesystem $(COMPAT_DIR)
 	mkdir -p $(PKG)
 	cp $(SRCS) $(PKG)
 	cd luafilesystem; export DIST_DIR=../$(PKG)/luafilesystem; make -e dist_dir
@@ -36,8 +36,8 @@ clean:
 	cd clmain; make $@
 	cd doc; make $@
 
-luafilesystem: compat
+luafilesystem: $(COMPAT_DIR)
 	cvs checkout luafilesystem
 
-compat:
+$(COMPAT_DIR):
 	cvs checkout compat
