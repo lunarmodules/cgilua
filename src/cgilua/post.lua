@@ -14,11 +14,11 @@
 --		args = params,
 --	}
 ----------------------------------------------------------------------------
--- $Id: post.lua,v 1.1 2004/08/27 15:50:33 tomas Exp $
+-- $Id: post.lua,v 1.2 2004/08/30 11:00:15 tomas Exp $
 ----------------------------------------------------------------------------
 
-local readuntil = require"cgilua/readuntil"
-local urlcode = require"cgilua/urlcode"
+local readuntil = require"cgilua.readuntil"
+local urlcode = require"cgilua.urlcode"
 
 local assert, error, tonumber, tostring, type = assert, error, tonumber, tostring, type
 local tmpfile = io.tmpfile
@@ -26,7 +26,6 @@ local getn, tinsert = table.getn, table.insert
 local format, gsub, strfind, strlower, strlen = string.format, string.gsub, string.find, string.lower, string.len
 local min = math.min
 local iterate = readuntil.iterate
-local url_insertfield, url_parsequery, url_unescape = urlcode.insertfield, urlcode.parsequery, urlcode.unescape
 
 -- environment for processing multipart/form-data input
 local boundary = nil      -- boundary string that separates each 'part' of input
@@ -214,7 +213,7 @@ local function Main (inputsize, args)
 		end
 
 		-- insert the form field into table [[args]]
-		url_insertfield(args, name, value)
+		urlcode.insertfield(args, name, value)
 	end
 end
 
@@ -300,7 +299,7 @@ function parsedata (defs)
 		error("Undefined Media Type") 
 	end
 	if strfind(contenttype, "x%-www%-form%-urlencoded") then
-		url_parsequery (read (inputsize), defs.args)
+		urlcode.parsequery (read (inputsize), defs.args)
 	elseif strfind(contenttype, "multipart/form%-data") then
 		Main (inputsize, defs.args)
 	elseif strfind (contenttype, "text/xml") then

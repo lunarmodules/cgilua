@@ -1,12 +1,13 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.1 2004/08/27 15:50:33 tomas Exp $
+-- $Id: cgilua.lua,v 1.2 2004/08/30 11:00:15 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
 
-local urlcode = require"cgilua/urlcode"
-local prep = require"cgilua/prep"
-local post = require"cgilua/post"
+local urlcode = require"cgilua.urlcode"
+local prep = require"cgilua.prep"
+local post = require"cgilua.post"
+local lfs = require"lfs"
 
 local _require = require
 local _loadlib = loadlib
@@ -47,9 +48,6 @@ local lua_libpath = LUA_LIBPATH
 package ("cgilua", arg and arg[1])
 
 script_path = false
-escape = urlcode.escape
-unescape = urlcode.unescape
-userscriptname = false
 
 ----------------------------------------------------------------------------
 -- Header functions
@@ -73,7 +71,7 @@ function redirect (url, args)
 	if strfind(url,"^https?:") then
 		local params=""
 		if args then
-			params = "?"..encodetable(args)
+			params = "?"..urlcode.encodetable(args)
 		end
 		return locationheader(url..params)
 	else
@@ -212,27 +210,13 @@ function preprocess (filename)
 end
 
 ----------------------------------------------------------------------------
--- Parse url-encoded request data 
---   (the query part of the script URL or url-encoded post data)
---
---  Each decoded (name=value) pair is inserted into table [[args]]
-----------------------------------------------------------------------------
-parsequery = urlcode.parsequery
-
-----------------------------------------------------------------------------
--- URL-encode the elements of a table creating a string to be used in a
---   URL for passing data/parameters to another script
-----------------------------------------------------------------------------
-encodetable = urlcode.encodetable
-
-----------------------------------------------------------------------------
 -- Create an URL path to be used as a link to a CGILua script
 ----------------------------------------------------------------------------
 function mkurlpath (script, args)
 	-- URL-encode the parameters to be passed do the script
 	local params = ""
 	if args then
-		params = "?"..encodetable(args)
+		params = "?"..urlcode.encodetable(args)
 	end
 	if strsub(script,1,1) == "/" then
 		return urlpath .. script .. params
@@ -264,7 +248,7 @@ end
 ----------------------------------------------------------------------------
 -- Define variables and build `cgi' table.
 ----------------------------------------------------------------------------
-function getparams (args)
+local function getparams (args)
 	-- Define variables.
 	script_pdir, script_file = splitpath (script_path or servervariable"PATH_TRANSLATED")
 	local vpath = servervariable"PATH_INFO"
@@ -288,7 +272,7 @@ function getparams (args)
 			args = args,
 		}
 	end
-	parsequery (servervariable"QUERY_STRING", args)
+	urlcode.parsequery (servervariable"QUERY_STRING", args)
 end
 
 ----------------------------------------------------------------------------
@@ -399,8 +383,8 @@ end
 -- Executes a function with an error handler.
 ---------------------------------------------------------------------------
 function pcall (f, ...)
-	local result = { xpcall (function () return f(unpack(arg)) end,
-		errorhandler) }
+	local result = pack (xpcall (function () return f(unpack(arg)) end,
+		errorhandler))
 	if not result[1] then
 		erroroutput (result[2])
 		errorlog (result[2])
@@ -430,7 +414,7 @@ end
 ---------------------------------------------------------------------------
 -- Close function.
 ---------------------------------------------------------------------------
-function close()
+local function close()
 	for i = getn(close_functions), 1, -1 do
 		close_functions[i]()
 	end
@@ -501,7 +485,7 @@ function main (cgilua_conf)
 	_G.cgi = {}
 	pcall (getparams, _G.cgi)
 	-- Changing curent directory to the script's "physical" dir
-	require"lfs"
+	--_G.require"lfs"
 	local curr_dir = lfs.currentdir ()
 	pcall (lfs.chdir, script_pdir)
 	-- Opening function

@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cookies.lua,v 1.1 2004/08/27 16:02:17 tomas Exp $
+-- $Id: cookies.lua,v 1.2 2004/08/30 11:00:15 tomas Exp $
 --
 -- Cookies Library
 ----------------------------------------------------------------------------
@@ -7,7 +7,7 @@
 local error = error
 local format, gsub, strfind = string.format, string.gsub, string.find
 local date = os.date
-local escape, unescape = cgilua.escape, cgilua.unescape
+local escape, unescape = cgilua.urlcode.escape, cgilua.urlcode.unescape
 local header, write = HTTP_Response.header, HTTP_Response.write
 local servervariable = HTTP_Request.servervariable
 
