@@ -1,0 +1,36 @@
+
+<h2>Compilation</h2>
+
+<p>Requirements:
+<ul>
+<li><a href="http://www.lua.org">Lua 5.0</a></li>
+<li>Any server that supports ISAPI. IIS 5.1 will be used in the guide.</li>
+</ul>
+</p>
+
+<p>
+Compile <code>isapi_lib.c</code> to produce <code>cgilua_isapi.dll</code>.
+</p>
+
+<h2>Installation and Configuration</h2>
+
+<p>
+Copy <code>cgilua_isapi.dll</code> and all dependent libraries to IIS working directory.<br>
+This directory is usually <code>"$(WINDOWS)\system32\inetsrv\"</code>.
+</p>
+
+<p>
+Configure <code>".lua"</code> and <code>".lp"</code> to execute cgilua_isapi.dll.<br>
+In order to configure this in IIS go to the Web Site property page, Home Directory, Configuration.<br>
+In the Mappings tab add each extension, pointing to <code>cgilua_isapi.dll</code>.
+</p>
+
+<p>
+Edit the provided <code>isapi.reg</code> file to point to installation directory of CGILua.<br>
+Run it. This will create a key in the registry at the location 
+<code>"HKLM\Software\CGILua\5.0\MainScriptPath"</code>, pointing to <code>isapi.lua</code>.
+</p>
+
+<p>
+Restart IIS and try to run a <code>lua</code> or <code>lp</code> file.
+</p>
