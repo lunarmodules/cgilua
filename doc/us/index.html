@@ -108,12 +108,11 @@ flexibility when both requirements are present. For a detailed description
 of both scripting methods and some examples of their use 
 see <a href="scripts.html">CGILua scripts</a>.
 <p>
-CGILua comes in three versions: Apache module, FastCGI and
-traditional CGI.
+CGILua comes in five versions: Java Servlet, ISAPI module, Apache module,
+FastCGI and traditional CGI.
 CGILua's architecture is divided in two layers.
-The lowest one is represented by the three launchers:
-the Apache module, the FastCGI script and the CGI executable.
-These three launchers implement a common set of functions also called
+The lowest one is represented by the launchers:
+The launchers implement a common set of functions also called
 <a href="sapi.html">the Server API</a>.
 The highest layer is implemented over it and is totally portable
 between the launchers.
@@ -127,7 +126,7 @@ as Lua 5.0.
 <a name="version"></a>
 <h2>Current version</h2>
 <p>
-Current version is 5.0 alpha 3.
+Current version is 5.0 alpha 4.
 
 
 <a name="download"></a>
@@ -135,14 +134,15 @@ Current version is 5.0 alpha 3.
 <p>
 CGILua can be downloaded in source code from the following links: <p>
 <ul>
-<li><a href="cgilua-5.0a3.tar.gz">cgilua-5.0a3.tar.gz</a><br>
-<li><a href="cgilua-5.0a3.zip">cgilua-5.0a3.zip</a><br>
+<li><a href="cgilua-5.0a4.tar.gz">cgilua-5.0a4.tar.gz</a><br>
+<li><a href="cgilua-5.0a4.zip">cgilua-5.0a4.zip</a><br>
 </ul>
 
 <a name="new"></a>
 <h2>What's new</h2>
 <p>
 <ul>
+  <li>[?/?/2004] Version 5.0 alpha 4 released
   <li>[8/Jun/2004] Version 5.0 alpha 3 released
   <li>[21/Apr/2004] Version 5.0 alpha released
 </ul>
@@ -216,7 +216,7 @@ Comments are welcome!
 <p>
 <hr>
 <small>
-$Id: index.html,v 1.18 2004/11/11 13:31:04 tomas Exp $
+$Id: index.html,v 1.19 2004/11/17 14:14:16 tomas Exp $
 </small>
 
 </body>

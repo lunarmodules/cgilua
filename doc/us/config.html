@@ -209,9 +209,9 @@ the other does not depend even on the launcher.
 <h3>Launcher installation</h3>
 <p>
 Each launcher is composed by a C file (compiled to an executable) and
-a Lua file, which should live on the very same directory of the executable.
-The only situation where this not occurs is when the <tt>mod2.lua</tt> file
-is pre-compiled and included inside the C file.
+a Lua file.
+This Lua file should live on the very same directory of the executable or
+could be pre-compiled and included inside the corresponding C file.
 The following table shows where these files should be installed.
 <p>
 <table border="0" cellspacing="1" cellpadding="0">
@@ -242,6 +242,9 @@ The following table shows where these files should be installed.
   </tr>
 </table>
 <p>
+Lua Apache Module offers a directive
+<a href="#apache_handler">LuaMain</a>
+which should be used to indicate where the file is installed.
 
 <h3>CGILua main installation</h3>
 <p>
@@ -260,7 +263,7 @@ to the user's script.
     <td><code>cgilua.lua</code></td>
   </tr>
   <tr><td></td><td></td><td><code>cl_ses.lua</code></td></tr>
-  <tr><td></td><td></td><td><code>conf.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>config.lua</code></td></tr>
   <tr><td></td><td></td><td><code>cookies.lua</code></td></tr>
   <tr><td></td><td></td><td><code>post.lua</code></td></tr>
   <tr><td></td><td></td><td><code>prep.lua</code></td></tr>
@@ -274,24 +277,18 @@ to the user's script.
 <p>
 To provide protection over the whole environment,
 CGILua redefines the function <code>require</code> in order to maintain
-the original values for <code>_PATH</code> and <code>_CPATH</code>
+the original values for <code>package.path</code> and <code>package.cpath</code>
 variables.
 Furthermore, the function <code>loadlib</code> is allowed only for scripts
-loaded by <code>require</code>.
+loaded by <code>require</code> (in fact, this function will be of less use
+with Lua 5.1).
 
 
 <a name="config"></a>
 <h2>Configuration</h2>
 <p>
-CGILua provides two levels of configuration:
-system and directory.
-The system configuration is for the system's administrator
-while the directory configuration applies to just one directory and
-is restricted by the system configuration;
-it is the user's level configuration.
-<!--
-The application level is optional and lies between the two of them.
--->
+CGILua 5.0 offers a single configuration file, called <code>config.lua</code>
+and a set of functions to alter the default configuration.
 
 <a name="sys_config"></a>
 <h3>System configuration</h3>
@@ -366,6 +363,8 @@ Lua Apache module has some configuration directives that must be used:
        with a file type).  Only the file types specified by the handler
        defined with <code>LuaHandler</code> will be processed by the module.
 
+  <li> <b><code>LuaMain <i>path</i></code></b><br>
+       Indicates where the launcher's Lua file is intalled.
 
 </ul>
 
@@ -373,7 +372,7 @@ Lua Apache module has some configuration directives that must be used:
 
 <hr>
 <small>
-$Id: config.html,v 1.18 2004/10/23 22:30:30 tomas Exp $
+$Id: config.html,v 1.19 2004/11/17 14:14:16 tomas Exp $
 </small>
 
 </body>
