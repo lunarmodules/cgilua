@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: mainscript.lua,v 1.3 2003/04/14 16:39:40 tomas Exp $
+-- $Id: mainscript.lua,v 1.4 2003/04/28 10:49:48 tomas Exp $
 --
 -- CGILua "main" script
 ----------------------------------------------------------------------------
@@ -16,7 +16,6 @@ local nova_loadlib = function (packagename, funcname)
 	return original_loadlib (original_lib_dir..packagename, funcname)
 end
 local original_require = require
-setfenv (1, _G)
 _G.require = function (packagename)
 	-- packagename cannot contain some special punctuation characters.
 	assert (not (string.find (packagename, "[^%P%.%-]") or
@@ -32,88 +31,12 @@ end
 ----------------------------------------------------------------------------
 -- Load auxiliar functions defined in CGILua namespace (cgilua)
 ----------------------------------------------------------------------------
-require"prep"
-local aux = main_dir.."auxiliar.lua"
-local f_aux, err = loadfile (aux)
+local f_aux, err = loadfile (main_dir.."prep.lua")
 assert (f_aux, err)
-f_aux()
-
-
-----------------------------------------------------------------------------
---
--- Set CGILua's default libraries directory
---
-cgilua.setlibdir(main_dir)
-
---
--- Authorized libraries
---
---  The following table describes the authorized libraries in the CGILua 
---  environment.
---  Each entry in this table provides the information used by the auxiliar 
---  function 'CL_loadlibrary' for loading and initializing the corresponding 
---  library. 
---   
---  An authorized library can be implemented as a dynamic library (described 
---  by field "dyn"), as a lua file (described by field "lua"), or both.
---
---  The description of a dynamic library (field "dyn") *must* contain the 
---  following information:
---
---     libname: the 'basename' of the file that stores the library. 
---              On Unix systems the prefix 'lib' and the suffix '.so' will 
---              be automatically added to this basename. On Windows systems, 
---              the suffix '.dll' will be automatically added.
---     init:    the name of the function that initializes (opens) the 
---              library.
---              This function will be called when the corresponding library 
---              is loaded.
---
---  The description of lua file *must* contain the file name (libname).
---
---  Both dynamic libraries and lua files are loaded, by default, from 
---  CGILua's 'libraries directory'. However, if a  "libdir" field is present 
---  in a library description, its contents override CGILua's default libraries
---  directory for the corresponding library.
---
-local authorizedLibs = {
-          preprocess = {
-            lua = { libname = "prep.lua" } },
-          upload = {
-            lua = { libname = "upload.lua" } },
-          auxiliar = {
-            loaded = "yes" },			-- library is already loaded
-          cookies = { 
-            lua = { libname = "cookies.lua" } },
-          htk = { lua = { libname = "htk.lua" } },
-          libconcat = {
-            dyn = { libname = "concat",
-                    libdir = nil,
-                    init = "lua_concatlibopen" } },
-          poslib = {
-            dyn = { libname = "poslib",
-                    libdir = nil,
-                    init = "lua_poslibopen" } },
-          md5 = {
-            dyn = { libname = "md5",
-                    libdir = nil,
-                    init = "md5lib_open" } },
-          luasql = {
-            dyn = { libname = "luasql",
-                    libdir = nil,
-                    init = "lua_sqllibopen" } },
-          luasocket = {
-            dyn = { libname = "luasocket",
-                    libdir = nil,
-                    init = "lua_socketlibopen" } },
-          ftp = { lua = { libname = "ftp.lua" } },
-          http = { lua = { libname = "http.lua" } },
-          smtp = { lua = { libname = "smtp.lua" } },
-          concat = { lua = { libname = "concat.lua" } },
-          url = { lua = { libname = "url.lua" } },
-          code = { lua = { libname = "code.lua" } },
-}
-cgilua.setauthlibs(authorizedLibs)
+f_aux ()
+local f_aux, err = loadfile (main_dir.."auxiliar.lua")
+assert (f_aux, err)
+f_aux ()
 
 ----------------------------------------------------------------------------
 -- CGILua "security" configuration
@@ -127,12 +50,8 @@ cgilua.script_path = script_path
 -- remove globals not to be accessed by CGILua scripts
 -- 
 cgilua.removeglobals{
-
-  -- functions to be removed from the environment
-  --"loadlib","unloadlib","callfromlib", "execute",
-
-  -- other data to be removed
-  "CL_map",
+	-- functions to be removed from the environment
+	"execute",
 }
 
 --
@@ -157,42 +76,38 @@ cgilua.setmaxfilesize(500 * 1024) -- 500 KB
 cgilua.script_pdir = cgilua.splitpath(cgilua.script_path)
 
 -- check if CGILua handles this script type
-local type = cgilua.getscripttype(cgilua.script_path)
-if type ~= "lua" and type ~= "html" then
-  cgilua.redirect(cgilua.mkabsoluteurl(os.getenv("PATH_INFO")))
+local handler = cgilua.getscripthandler (cgilua.script_path)
+if not handler then
+	local path_info = os.getenv("PATH_INFO")
+	if not path_info then
+		error ("No script")
+	end
+	cgilua.redirect(cgilua.mkabsoluteurl(path_info))
 else
-  -- get the 'virtual' path of the script (PATH_INFO)
-  cgilua.script_vpath = os.getenv("PATH_INFO")
+	-- get the 'virtual' path of the script (PATH_INFO)
+	cgilua.script_vpath = os.getenv("PATH_INFO")
 
-  -- get the 'virtual' directory of the script
-  --  (used to create URLs to scripts in the same 'virtual' directory)
-  cgilua.script_vdir = cgilua.splitpath(os.getenv("PATH_INFO"))
+	-- get the 'virtual' directory of the script
+	--  (used to create URLs to scripts in the same 'virtual' directory)
+	cgilua.script_vdir = cgilua.splitpath(os.getenv("PATH_INFO"))
 
-  -- save the URL path to cgilua
-  cgilua.urlpath = os.getenv("SCRIPT_NAME")
+	-- save the URL path to cgilua
+	cgilua.urlpath = os.getenv("SCRIPT_NAME")
 
-  -- change current directory to the script's "physical" dir
-  dir.chdir(cgilua.script_pdir)
+	-- change current directory to the script's "physical" dir
+	dir.chdir(cgilua.script_pdir)
 
-  -- set the script environment
-  cgilua.doenv(cgilua.script_pdir.."env.lua")
+	-- set the script environment
+	cgilua.doenv(cgilua.script_pdir.."env.lua")
 
-  -- parse the incoming request data
-  cgi = {}
-  if os.getenv("REQUEST_METHOD") == "POST" then
-    cgilua.parsepostdata(cgi)
-  end
-  cgilua.parsequery(os.getenv("QUERY_STRING"),cgi)
+	-- parse the incoming request data
+	cgi = {}
+	if os.getenv("REQUEST_METHOD") == "POST" then
+		cgilua.parsepostdata(cgi)
+	end
+	cgilua.parsequery(os.getenv("QUERY_STRING"),cgi)
 
-  --
-  -- execute/preprocess the script
-  --
-  if type == "lua" then
-    cgilua.doscript(cgilua.script_path)
-  elseif type == "html" then
-    cgilua.contentheader("text","html")
-    cgilua.includehtml(cgilua.script_path)
-  end
-  cgilua.close()				-- "close" function
+	handler (cgilua.script_path)
+	cgilua.close()				-- "close" function
 end
 

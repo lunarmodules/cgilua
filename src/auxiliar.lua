@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: auxiliar.lua,v 1.3 2003/04/14 16:39:40 tomas Exp $
+-- $Id: auxiliar.lua,v 1.4 2003/04/28 10:49:48 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -12,10 +12,12 @@ local error = error
 local _G = _G
 local io = io
 local loadfile = loadfile
+local loadstring = loadstring
 local os = os
+local pcall = pcall
 local require = require
 local table = table
-local translate = translate
+local translate = HTMLPreProcessor.translate
 local type = type
 local string = string
 setfenv (1, { __fenv = 1 })
@@ -23,20 +25,14 @@ setfenv (1, { __fenv = 1 })
 ----------------------------------------------------------------------------
 -- Auxiliar functions defined in C
 ----------------------------------------------------------------------------
---Public.httpheader = CL_httpheader
---CL_httpheader = nil
 function Public.httpheader (header)
 	io.write (header)
 end
 
---Public.contentheader = CL_contentheader
---CL_contentheader = nil
 function Public.contentheader (type, subtype)
 	io.write (string.format ("Content-type: %s/%s\n\n", type, subtype))
 end
 
---Public.locationheader = CL_locationheader
---CL_locationheader = nil
 function Public.locationheader (url)
 	io.write (string.format ("Location: %s\n\n", url))
 end
@@ -76,21 +72,14 @@ end
 --  a string describing this error is also returned.
 ----------------------------------------------------------------------------
 function Public.loadfile (filename)
-  --local res,err = dofile(filename)
-  --if not res and err == "file error" then
-      --local res, strerr = io.readfrom(filename)
-      --return nil, err, strerr
-  --else
-    --return res, err
-  --end
 	local f, err = io.open(filename)
 	if not f then	-- no file (or unreadable file)
 		return nil, err
 	end
 	f:close()
-	local res = loadfile(filename)
+	local res, err = loadfile(filename)
 	if not res then
-		error(string.format("Cannot execute '%s'. Exiting.",filename))
+		error(string.format("Cannot execute '%s': %s. Exiting.",filename, err))
 	end
 	return res() or true  -- run file
 end
@@ -113,14 +102,6 @@ end
 --  is called and this function does not return
 ----------------------------------------------------------------------------
 function Public.doenv (filename)
-	--local res,err = dofile (filename)
-	--if not res and err ~= "file error" then
-		--error(string.format("Cannot execute '%s'. Exiting.",filename))
-	--end
-	--local f = loadfile (filename)
-	--if f then
-		--f()
-	--end
 	local f = io.open(filename)
 	if not f then return end    -- no file (or unreadable file)
 	f:close()
@@ -216,17 +197,19 @@ end
 --  currently 'open' HTML document. 
 ----------------------------------------------------------------------------
 function Public.includehtml (filename)
-  --Public.loadlibrary("preprocess")
-  if not io.input(filename) then
-    _ALERT("Error opening file '"..filename.."', preprocessing aborted")
-    return
-  end
-  local prog = io.read("*a")
-  io.input()
-  prog = translate(prog, "file "..filename)
-  if prog then
-    return dostring(prog, "@"..filename)
-  end
+	if not io.input(filename) then
+		error("Error opening file '"..filename.."', preprocessing aborted")
+		return
+	end
+	local prog = io.read("*a")
+	io.input()
+	prog = translate(prog, "file "..filename)
+	if prog then
+		local f, err = loadstring (prog, "@"..filename)
+		if f then
+			return pcall (f)
+		end
+	end
 end
 
 ----------------------------------------------------------------------------
@@ -329,7 +312,7 @@ end
 -- Create an absolute URL containing the given URL path
 ----------------------------------------------------------------------------
 function Public.mkabsoluteurl (path)
-  return string.format("http://%s:%s%s",
+	return string.format("http://%s:%s%s",
 		os.getenv("SERVER_NAME"),
 		os.getenv("SERVER_PORT"),
 		path)
@@ -381,6 +364,37 @@ function Public.getscripttype (path)
   else
     return "other"
   end
+end
+
+----------------------------------------------------------------------------
+-- Stores all script handlers and the file extensions used to identificate
+-- them.
+Private.script_handlers = {
+	htm = Public.preprocess,
+	html = Public.preprocess,
+	lua = Public.doscript,
+}
+
+----------------------------------------------------------------------------
+-- Add a script handler.
+-- @param file_extension String with the lower-case extension of the script.
+-- @param func Function to handle this kind of scripts.
+----------------------------------------------------------------------------
+function Public.addscripthandler (file_extension, func)
+	assert (type(file_extension) == "string", "File extension must be a string")
+	assert (type(func) == "function", "Handler must be a function")
+	Private.script_handlers[file_extension] = func
+end
+
+----------------------------------------------------------------------------
+-- Obtains the handler corresponding to the given script path.
+-- @param path String with a script path.
+-- @return Function that handles it or nil.
+----------------------------------------------------------------------------
+function Public.getscripthandler (path)
+	local _, file = Public.splitpath (path)
+	local i,f, ext = string.find (file, "%.([^.]+)$")
+	return Private.script_handlers[string.lower(ext or '')]
 end
 
 ----------------------------------------------------------------------------
