@@ -1,0 +1,62 @@
+
+<h2>Compilation</h2>
+
+<p>Pre-requisites:
+<li><a href="http://www.keplerproject.org/luajava">LuaJava 1.0b4</a>: download the <code>jar</code> and put in <code>"WEB-INF/lib"</code></li>
+<li><a href="http://logging.apache.org/log4j/docs/">Log4J</a>: download the <code>jar</code> and put in <code>"WEB-INF/lib"</code></li>
+<li>Any servlet container. Tomcat will be used in the 
+<a href="#installation">installation</a> and 
+<a href="#configuration">configuration</a> sections as an example. TODO: instrucoes de onde configurar o jar do servlet-api</li>
+</p>
+
+<p>
+You have two options to compile cgilua servlet launcher, use the provided 
+<a href="http://ant.apache.org/">Ant</a> build file or use the provided Makefile.
+</p>
+
+<h3>Ant</h3>
+
+<p>
+If you don't know how to use Ant I suggest you read the manual at 
+<a href="http://ant.apache.org/manual/index.html">http://ant.apache.org/manual/index.html</a>.<br>
+
+Edit the <code>build.xml</code> to modify the properties <code>cgilua.dir</code> and <code>libext</code>.<br>
+</p>
+
+<p>
+The <code>cgilua.dir</code> property must define the installation directory for cgilua.
+This directory is used as the base for lua modules loading.
+</p>
+
+<p>
+The <code>libext</code> property must contain the shared library extension 
+used by your OS. Example:
+<li>Windows: ".dll"</li>
+<li>MacOS: ".dylib"</li>
+<li>Unix: ".so"</li>
+</p>
+
+<p>
+After editing the <code>build.xml</code> file, run the default target.
+</p>
+
+<h3>Makefile</h3>
+
+<h2>Installation</h2>
+
+<p>
+Whatever compilation method you choose, Ant or Makefile, four files are generated:
+<li><code>cgilua-5.0a4.jar</code></li>
+<li><code>WEB-INF/web.xml</code></li>
+<li><code>servlet.conf</code></li>
+<li><code>servlet.lua</code></li>
+</p>
+
+<h2>Configuration</h2>
+
+<p>
+Any servlet container can be used to run cgilua applications through the
+servlet launcher.<br>
+Tomcat will be used in this configuration manual.
+</p>
+
