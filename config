@@ -37,7 +37,7 @@ CFLAGS= $(WARN) $(INCS) $(MOD2_LUA)
 CC= gcc
 
 #########################################################
-VERSION= 5.0a3
+VERSION= 5.0a4
 PKG= cgilua-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
@@ -49,4 +49,4 @@ CGILUA_TMPDIR= $(CGILUA_DIR)/tmp
 CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
 CGILUA_DOC= $(CGILUA_DIR)/doc
 
-# $Id: config,v 1.12 2004/06/30 22:05:01 tomas Exp $
+# $Id: config,v 1.13 2004/07/13 06:20:02 tomas Exp $

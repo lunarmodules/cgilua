@@ -1,2 +1,4 @@
 cgilua.htmlheader()
-io.write"something\n"
+cgilua.put"Oi!"
+--io.write"something\n"
+cgilua.error_log ("eca", "emerg")
