@@ -1,10 +1,8 @@
-# $Id: Makefile,v 1.10 2004/07/13 14:26:46 tomas Exp $
+# $Id: Makefile,v 1.11 2004/07/20 12:02:09 tomas Exp $
 
 T= clmain
 
 include ../config
-
-#DIST_DIR=../$(PKG)/$T
 
 LUA_LIBS= cgilua.lua post.lua prep.lua readuntil.lua urlcode.lua venv.lua
 USR_LIBS= cookies.lua session.lua cl_ses.lua

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 2004/07/19 19:30:20 tomas Exp $
+# $Id: Makefile,v 1.11 2004/07/20 12:02:09 tomas Exp $
 
 include ./config
 
@@ -8,7 +8,7 @@ SRCS= Makefile config README
 dist:
 	mkdir -p $(PKG)
 	cp $(SRCS) $(PKG)
-	cd luafilesystem; make -e $@
+	cd luafilesystem; export DIST_DIR=../$(PKG)/luafilesystem; make -e $@
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
@@ -18,19 +18,19 @@ dist:
 	rm -rf $(PKG)
 
 cgi fcgi mod:
-	cd luafilesystem; make -e lib
+	cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; export LIB_OPTION="$(LIB_OPTION)"; export CFLAGS="$(CFLAGS)"; export LIBS="$(LIBS)"; make -e lib
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
 
 cgiinstall fcgiinstall modinstall:
-	cd luafilesystem; export LUA_DIR=$(CGILUA_LIBDIR); make -e install
+	cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; export LUA_DIR=$(CGILUA_LIBDIR); make -e install
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
 
 clean:
-	cd luafilesystem; make -e $@
+	cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; make -e $@
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
