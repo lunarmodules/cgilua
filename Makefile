@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 2004/08/18 18:12:34 tomas Exp $
+# $Id: Makefile,v 1.15 2004/08/26 09:20:57 tomas Exp $
 
 include ./config
 
@@ -24,7 +24,8 @@ cgi fcgi mod:
 	cd doc; make $@
 
 cgiinstall fcgiinstall modinstall:
-	cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; export LIB_DIR=$(CGILUA_LIBDIR); export LUA_DIR=/dev/null; make -e install
+	#cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; export LIB_DIR=$(CGILUA_LIBDIR); export LUA_DIR=/dev/null; make -e install
+	cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; export LIB_DIR="$(LUA_LIBDIR)"; export LUA_DIR=/dev/null; make -e install
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@

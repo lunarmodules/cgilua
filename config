@@ -1,4 +1,6 @@
 # Installation directories
+LUA_DIR= /usr/local/share/lua/5.0
+LUA_LIBDIR= /usr/local/lib/lua/5.0
 # CGILua root directory
 CGILUA_DIR= /usr/local/cgilua
 # Apache root directory
@@ -38,14 +40,16 @@ PKG= cgilua-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 DIST_DIR= ../$(PKG)/$T
-CGILUA_LIBDIR=     $(CGILUA_DIR)/lib
-CGILUA_CGILUADIR=  $(CGILUA_DIR)/lib/cgilua
-CGILUA_CONFDIR=    $(CGILUA_DIR)/conf
-CGILUA_USRLIBDIR=  $(CGILUA_DIR)/usr/lib
+#CGILUA_LIBDIR=     $(CGILUA_DIR)/lib
+#CGILUA_LUADIR=     $(CGILUA_DIR)/lua
+#CGILUA_CGILUADIR=  $(CGILUA_DIR)/lib/cgilua
+#CGILUA_USRLIBDIR=  $(CGILUA_DIR)/usr/lib
+#CGILUA_CONFDIR=    $(CGILUA_DIR)/conf
+CGILUA_DIR=        $(LUA_DIR)/cgilua
 CGILUA_TMPDIR=     $(CGILUA_DIR)/tmp
 CGILUA_DOC=        $(CGILUA_DIR)/doc
 
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.18 2004/08/18 18:12:34 tomas Exp $
+# $Id: config,v 1.19 2004/08/26 09:20:57 tomas Exp $

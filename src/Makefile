@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 2004/08/18 18:12:34 tomas Exp $
+# $Id: Makefile,v 1.15 2004/08/26 09:20:57 tomas Exp $
 
 T= clmain
 
@@ -14,16 +14,23 @@ LUAS= $(MAIN) $(CONF_LUAS) $(LIB_LUAS) $(CGILUA_LUAS) $(USR_LIB_LUAS)
 cgi fcgi mod: $(LUAS)
 
 cgiinstall fcgiinstall modinstall: $(LUAS)
+	#mkdir -p $(CGILUA_DIR)
+	#cp $(MAIN) $(CGILUA_DIR)
+	#mkdir -p $(CGILUA_CONFDIR)
+	#cp $(CONF_LUAS) $(CGILUA_CONFDIR)
+	#mkdir -p $(CGILUA_LUADIR)
+	#cp $(LIB_LUAS) $(CGILUA_LUADIR)
+	mkdir -p $(LUA_DIR)
+	cp $(LIB_LUAS) $(LUA_DIR)
+	#mkdir -p $(CGILUA_CGILUADIR)
+	#cp $(CGILUA_LUAS) $(CGILUA_CGILUADIR)
+	#cp $(CGILUA_LUAS) $(CGILUA_LUADIR)
 	mkdir -p $(CGILUA_DIR)
-	cp $(MAIN) $(CGILUA_DIR)
-	mkdir -p $(CGILUA_CONFDIR)
-	cp $(CONF_LUAS) $(CGILUA_CONFDIR)
-	mkdir -p $(CGILUA_LIBDIR)
-	cp $(LIB_LUAS) $(CGILUA_LIBDIR)
-	mkdir -p $(CGILUA_CGILUADIR)
-	cp $(CGILUA_LUAS) $(CGILUA_CGILUADIR)
-	mkdir -p $(CGILUA_USRLIBDIR)
-	cp $(USR_LIB_LUAS) $(CGILUA_USRLIBDIR)
+	cp $(CGILUA_LUAS) $(CGILUA_DIR)
+	#mkdir -p $(CGILUA_USRLIBDIR)
+	#cp $(USR_LIB_LUAS) $(CGILUA_USRLIBDIR)
+	#cp $(USR_LIB_LUAS) $(CGILUA_LUADIR)
+	cp $(USR_LIB_LUAS) $(CGILUA_DIR)
 	mkdir -p $(CGILUA_TMPDIR)
 	chmod a+w $(CGILUA_TMPDIR)
 
