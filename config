@@ -1,12 +1,40 @@
-# $Id: config,v 1.1 2003/09/28 23:38:44 tomas Exp $
-
-VERSION= 5.0a
-PKG= cgilua-$(VERSION)
-
 # Installation directories
-CGI_DIR= /usr/local/apache2/cgi-bin
-CGILUA_DIR= /usr/local/apache2/$(PKG)
+# CGILua root directory
+CGILUA_DIR= /usr/local/cgilua
+# System's libraries directory
+LIB_DIR= /usr/local/lib
+# Apache root directory
+APACHE2_DIR= /usr/local/apache2
+CGI_DIR= $(APACHE2_DIR)/cgi-bin
+# Lua FastCGI directory
+FCGI_DIR= $(APACHE2_DIR)/fcgilua
+# Lua Apache module directory
+MOD_DIR= $(CGILUA_DIR)
+# CGILua's main script
+MAINSCRIPT= $(CGILUA_DIR)/main.lua
+# CGILua's internal libraries directory
 CGILUA_LIBDIR= $(CGILUA_DIR)/lib
+# CGILua's user-libraries directory
+CGILUA_USRLIBDIR= $(CGILUA_DIR)/usr/lib
+# CGILua's configuration directory
+CGILUA_CONFDIR= $(CGILUA_DIR)/conf
+# CGILua's configuration file
+CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
+# CGILua's documentation directory
+CGILUA_DOC= $(CGILUA_DIR)/doc
 
 # Compilation directives
-LIBS= -llua.5.0 -llualib.5.0 -lm -ldl
+WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings
+INCS= -I/usr/local/include/lua5
+CFLAGS= $(WARN) $(INCS)
+LIBS= -llua -llualib -lm -ldl
+CC= gcc
+
+#########################################################
+VERSION= 5.0a
+PKG= cgilua-$(VERSION)
+TAR_FILE= $(PKG).tar.gz
+ZIP_FILE= $(PKG).zip
+DIST_DIR= ../$(PKG)/$T
+
+# $Id: config,v 1.2 2004/03/25 18:58:07 tomas Exp $
