@@ -2,7 +2,7 @@
 -- Main Lua script.
 -- This script does not depend on the launcher, only on the
 -- basic API.
--- $Id: t_main.lua,v 1.2 2004/04/06 17:31:49 tomas Exp $
+-- $Id: t_main.lua,v 1.3 2004/04/16 10:17:36 tomas Exp $
 ---------------------------------------------------------------------
 
 local cgilua_root = "CGILUA_DIR"
@@ -14,6 +14,7 @@ local cgilua_libdir = cgilua_root.."/lib"
 ---------------------------------------------------------------------
 LUA_PATH = cgilua_libdir.."/?.lua;"..cgilua_libdir.."/?"
 require"dir"
+require"cookies"
 require"cgilua"
 
 ---------------------------------------------------------------------

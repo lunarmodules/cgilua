@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.5 2004/04/08 15:36:12 tomas Exp $
+-- $Id: cgilua.lua,v 1.6 2004/04/16 10:17:36 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -223,8 +223,8 @@ function mkabsoluteurl (path, protocol)
 	if not protocol then protocol = "http" end
 	return format("%s://%s:%s%s",
 		protocol,
-		HTTP_Request.servervariable"SERVER_NAME",
-		HTTP_Request.servervariable"SERVER_PORT",
+		servervariable"SERVER_NAME",
+		servervariable"SERVER_PORT",
 		path)
 end
 
@@ -242,22 +242,22 @@ end
 function getparams (args)
 	-- Define variables.
 	script_pdir, script_file = splitpath (script_path)
-	script_vpath = HTTP_Request.servervariable"PATH_INFO"
-	script_vdir = splitpath (HTTP_Request.servervariable"PATH_INFO")
-	urlpath = HTTP_Request.servervariable"SCRIPT_NAME"
+	script_vpath = servervariable"PATH_INFO"
+	script_vdir = splitpath (servervariable"PATH_INFO")
+	urlpath = servervariable"SCRIPT_NAME"
 	-- Fill in args table.
-	if HTTP_Request.servervariable"REQUEST_METHOD" == "POST" then
+	if servervariable"REQUEST_METHOD" == "POST" then
 		post.parsedata {
 			read = HTTP_Request.getpostdata,
 			discardinput = ap and ap.discard_request_body,
-			content_type = HTTP_Request.servervariable"CONTENT_TYPE",
-			content_length = HTTP_Request.servervariable"CONTENT_LENGTH",
+			content_type = servervariable"CONTENT_TYPE",
+			content_length = servervariable"CONTENT_LENGTH",
 			maxinput = maxinput,
 			maxfilesize = maxfilesize,
 			args = args,
 		}
 	end
-	parsequery (HTTP_Request.servervariable"QUERY_STRING", args)
+	parsequery (servervariable"QUERY_STRING", args)
 end
 
 ----------------------------------------------------------------------------
