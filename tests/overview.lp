@@ -47,5 +47,6 @@ for p in pairs (pack) do bg = color() ?>
     <td bgcolor = "<%= bg %>"><%= idx(p,"_DESCRIPTION") %>
   </tr>
 <?lua end ?>
+</table>
 </body>
 </html>
