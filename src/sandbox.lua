@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: sandbox.lua,v 1.1 2004/04/06 17:25:38 tomas Exp $
+-- $Id: sandbox.lua,v 1.2 2004/05/18 15:04:23 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _CONTROL = {}
@@ -167,6 +167,15 @@ function sandbox(f, allowed)
                   end
                   return f,e
                 end
+  ng.dofile = function(p)
+                local f,e = loadfile(p)
+                if f then
+                  changefenv(f, ng)
+                  return f()
+                else
+                  error(e)
+                end
+              end
   ng.require = function(s)
                 return new_require(s, ng)
                end
