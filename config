@@ -14,8 +14,6 @@ LUAC= /usr/local/bin/luac
 # Lua Binary converter (bin2c)
 # Lua distribution includes it at etc directory
 BIN2C= /usr/local/bin/bin2c
-# Lua 5.1 package compatibility
-COMPAT_DIR= compat
 
 # OS dependent
 #LIB_EXT= .dylib
@@ -42,8 +40,10 @@ DIST_DIR= ../$(PKG)/$T
 CGILUA_DIR=        $(LUA_DIR)/cgilua
 CGILUA_TMPDIR=     /tmp/cgilua
 CGILUA_DOC=        $(CGILUA_DIR)/doc
+# Lua 5.1 package compatibility
+COMPAT_DIR= compat
 
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.25 2004/10/20 10:18:02 tomas Exp $
+# $Id: config,v 1.26 2004/10/29 15:36:30 tomas Exp $
