@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 2004/06/30 22:05:01 tomas Exp $
+# $Id: Makefile,v 1.10 2004/07/13 14:26:46 tomas Exp $
 
 T= clmain
 
@@ -19,9 +19,9 @@ cgi fcgi mod: $(LUAS)
 
 cgiinstall fcgiinstall modinstall: $(LUAS)
 	mkdir -p $(CGILUA_DIR)
-	cp $(MAIN) $(CGILUA_DIR)
+	cp -i $(MAIN) $(CGILUA_DIR)
 	mkdir -p $(CGILUA_CONFDIR)
-	cp $(CONF) $(CGILUA_CONF)
+	cp -i $(CONF) $(CGILUA_CONF)
 	mkdir -p $(CGILUA_LIBDIR)
 	cp $(LUA_LIBS) $(CGILUA_LIBDIR)
 	mkdir -p $(CGILUA_USRLIBDIR)
