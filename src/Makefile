@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 2004/04/20 09:34:16 tomas Exp $
+# $Id: Makefile,v 1.7 2004/05/26 17:34:04 tomas Exp $
 
 T= clmain
 
@@ -6,13 +6,13 @@ include ../config
 
 #DIST_DIR=../$(PKG)/$T
 
-LIBS= cgilua.lua cookies.lua post.lua prep.lua readuntil.lua urlcode.lua sandbox.lua
+LIBS= cgilua.lua cookies.lua post.lua prep.lua readuntil.lua urlcode.lua venv.lua
 CONF= cgilua.conf
 T_CONF= t_cgilua.conf
 MAIN= main.lua
 T_MAIN= t_main.lua
 LUAS= $(MAIN) $(CONF) $(LIBS)
-SRCS= $(T_MAIN) $(T_CONF) cgilua.lua cookies.lua post.lua prep.lua readuntil.lua urlcode.lua sandbox.lua
+SRCS= $(T_MAIN) $(T_CONF) cgilua.lua cookies.lua post.lua prep.lua readuntil.lua urlcode.lua venv.lua
 
 cgi fcgi mod cgimac fcgimac modmac: $(LUAS)
 
