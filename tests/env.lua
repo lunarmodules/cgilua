@@ -1,5 +1,5 @@
 -- This file should be executed before any script in this directory
--- according to the configuration (conf/cgilua.conf).
+-- according to the configuration (cgilua/conf.lua).
 
 cgilua.addclosefunction (function ()
 	cgilua.put [[
@@ -10,6 +10,7 @@ cgilua.addclosefunction (function ()
 			{ "Get", "test_main.lua", {ab = "cd", ef = "gh"} },
 			{ "Cookies", "test_cookies.lua", },
 			{ "FileSystem", "test_fs.lua", },
+			{ "Libraries", "test_lib.lua", },
 			{ "Session", "test_session.lua", },
 			{ "Variables", "test_variables.lp", },
 		} do
