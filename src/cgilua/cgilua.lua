@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.14 2004/12/15 15:21:53 carregal Exp $
+-- $Id: cgilua.lua,v 1.15 2004/12/15 15:23:32 carregal Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -50,10 +50,10 @@ local lua_cpath = package.cpath
 
 module (arg and arg[1])
 
-_COPYRIGHT = "Copyright (C) 2003-2004 Kepler Project"
+_COPYRIGHT = "Copyright (C) 2003-2005 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic HTML pages and manipulating input data from forms"
 _NAME = "CGILua"
-_VERSION = "5.0a4"
+_VERSION = "5.0b"
 script_path = false
 
 ----------------------------------------------------------------------------
