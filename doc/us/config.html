@@ -216,9 +216,9 @@ the other does not depend even on the launcher.
 <h3>Launcher installation</h3>
 <p>
 Each launcher is composed by a C file (compiled to an executable) and
-a Lua file.
-Each Lua file should live on the very same directory of the executable
-except the module because !!!!!!!!!!!
+a Lua file, which should live on the very same directory of the executable.
+The only situation where this not occurs is when the <tt>mod2.lua</tt> file
+is pre-compiled and included inside the C file.
 The following table shows where these files should be installed.
 <p>
 <table border="0" cellspacing="1" cellpadding="0">
@@ -293,14 +293,14 @@ for the user's scripts, like LuaSocket, LuaSQL etc.
 <b>CGILua's internal libraries directory</b> are used according to the
 situation and should not be directly accessible to the final user.
 Useful functionality provided by these libraries like URL encode/decode
-and cookies, is offered by CGILua's library.
+and cookies, is offered through CGILua's library.
 <p>
-To provide some protection to the whole environment,
+To provide protection over the whole environment,
 CGILua redefine the function <code>require</code> to search for
 files only at <code>cgilua/usr/lib</code> directory.
-Plus the function <code>loadlib</code> is allowed only for scripts
-loaded by <code>require</code>.
-This way the system's administrator can copy every library loader script
+Furthermore, the function <code>loadlib</code> is allowed only for scripts
+loaded by <code>require</code>,
+therefore the system's administrator can copy every library loader script
 to this directory and leave the binary libraries at the usual system's 
 directory.
 
@@ -308,13 +308,15 @@ directory.
 <a name="config"></a>
 <h2>Configuration</h2>
 <p>
-CGILua provides three levels of configuration:
-system, application and directory.
+CGILua provides two levels of configuration:
+system and directory.
 The system configuration is for the system's administrator
 while the directory configuration applies to just one directory and
 is restricted by the system configuration;
 it is the user's level configuration.
+<!--
 The application level is optional and lies between the two of them.
+-->
 
 <a name="sys_config"></a>
 <h3>System configuration</h3>
@@ -328,9 +330,11 @@ This file defines:
        <a href="reference.html#addscripthandler"><code>cgilua.addscripthandler</code></a>
        (when using Apache module's launcher, this handlers must conform to
        the Apache configuration);
+<!--
   <li> application script file (optional), by assigning to
        <code>appscript</code> variable.  This variable indicates the path
        of a Lua script that will be executed after the global configuration;
+-->
   <li> user environment script (optional), by assigning to
        <code>userscriptname</code> variable.  This variable indicates the
        name of a Lua script that will be searched on the same directory of
@@ -345,7 +349,7 @@ This file defines:
        <a href="reference.html#setmaxinput"><code>cgilua.setmaxinput</code></a> and
        <a href="reference.html#setmaxfilesize"><code>cgilua.setmaxfilesize</code></a>;
   <li> closing function (optional), by calling
-       <a href="reference.html#setclosefunction"><code>cgilua.setclosefunction</code></a>.
+       <a href="reference.html#addclosefunction"><code>cgilua.addclosefunction</code></a>.
        This function will be executed after the end of the script even if
        an error occurs.
 </ul>
@@ -394,7 +398,7 @@ Lua Apache module has some configuration directives that must be used:
 
 <hr>
 <small>
-$Id: config.html,v 1.13 2004/06/08 12:55:00 tomas Exp $
+$Id: config.html,v 1.14 2004/06/08 16:36:20 tomas Exp $
 </small>
 
 </body>
