@@ -1,3 +1,4 @@
+require"cookies"
 CL_COOKIE = "cgilua_cookie"
 
 local test = cookies.get (CL_COOKIE)
