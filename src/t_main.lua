@@ -2,7 +2,7 @@
 -- Main Lua script.
 -- This script does not depend on the launcher, only on the
 -- basic API.
--- $Id: t_main.lua,v 1.4 2004/04/20 14:58:52 tomas Exp $
+-- $Id: t_main.lua,v 1.5 2004/05/05 16:46:31 tomas Exp $
 ---------------------------------------------------------------------
 
 local cgilua_root = "CGILUA_DIR"
@@ -41,6 +41,6 @@ cgilua.pcall (cgilua.doif, cgilua.userscriptname)
 -- Executing script
 cgilua.pcall (cgilua.handle, cgilua.script_file)
 -- Closing function
-cgilua.close ()
+cgilua.pcall (cgilua.close)
 -- Cleanup
 cgilua.reset ()
