@@ -33,19 +33,19 @@ Distributed libraries
 Gets the value of the named cookie
 
 <a name="set"></a>
-<h3><code>cookie.set (name, value, options)</code></h3>
+<h3><code>cookie.set (name, value[, options])</code></h3>
 Sets the value of the named cookie.
-This function should be called before the HTTP header was sent.
+This function should be called before the HTTP header is sent.
 
 <a name="sethtml"></a>
-<h3><code>cookie.sethtml (name, value, options)</code></h3>
+<h3><code>cookie.sethtml (name, value[, options])</code></h3>
 Sets the value of the named cookie.
 This function generates a <code>&lt;meta&gt;</code> HTML element
 so it should be called after the <code>&lt;head&gt;</code> HTML tag
 was produced and before the <code>&lt;body&gt;</code>.
 
 <a name="delete"></a>
-<h3><code>cookie.delete (name, options)</code></h3>
+<h3><code>cookie.delete (name[, options])</code></h3>
 Deletes the value of the named cookie by setting its value to <code>xxx</code>.
 
 
@@ -68,7 +68,7 @@ Returns the current working directory or <code>nil</code> plus an error string.
 
 <a name="translate"></a>
 <h3><code>translate (string)</code></h3>
-Create a string with Lua code that reproduce the given string executing
+Creates a string with Lua code that reproduces the given string executing
 the Lua chunks or expressions inside it.
 
 <a name="setcompatmode"></a>
@@ -113,7 +113,7 @@ URL for passing data/parameters to another script.
 
 <hr>
 <small>
-$Id: libraries.html,v 1.1 2004/03/25 19:31:05 tomas Exp $
+$Id: libraries.html,v 1.2 2004/04/19 16:53:03 tomas Exp $
 </small>
 
 </body>
