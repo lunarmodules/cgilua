@@ -1,10 +1,10 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.1 2004/07/13 06:21:59 tomas Exp $
+-- $Id: session.lua,v 1.2 2004/07/19 19:30:20 tomas Exp $
 ----------------------------------------------------------------------------
 
-require"filesystem"
+require"luafilesystem"
 
 local Public = {}
 session = Public
@@ -16,7 +16,7 @@ local assert, loadfile, pairs, type = assert, loadfile, pairs, type
 local format, strsub = string.format, string.sub
 local open, write = io.open, io.write
 local remove = os.remove
-local dir = filesystem.dir
+local dir = luafilesystem.dir
 
 -- Internal state variables.
 local root_dir = "/Users/tomas/tmp/"
