@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: urlcode.lua,v 1.1 2004/03/25 19:01:39 tomas Exp $
+-- $Id: urlcode.lua,v 1.2 2004/05/26 17:43:39 tomas Exp $
 ----------------------------------------------------------------------------
 
 local next, tonumber, type = next, tonumber, type
@@ -37,13 +37,18 @@ end
 function url_insertfield (args, name, value)
 	if not args[name] then
 		args[name] = value
-	elseif type(args) == "string" then
-		args[name] = {
-			args[name],
-			value,
-		}
 	else
-		table.insert (args, value)
+		local t = type (args[name])
+		if t == "string" then
+			args[name] = {
+				args[name],
+				value,
+			}
+		elseif t == "table" then
+			table.insert (args[name], value)
+		else
+			error ("CGILua fatal error (invalid args table)!")
+		end
 	end
 end
 
