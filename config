@@ -25,13 +25,13 @@ LIB_OPTION= -dynamiclib #for MacOS X
 #LIB_OPTION= -shared #for Linux
 
 # Compilation directives
-# pre-compile and include mod2.lua into mod_lua.c
-MOD2_LUA= -DINCLUDE_MOD2
+# pre-compile and include .lua file of launchers into .c file.
+CGILUA_DEFS= -DINCLUDE_LUA
 # On FreeBSD systems, the following line should be commented
 DLLIB= -ldl
 WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings
 INCS= -I/usr/local/include/lua5
-CFLAGS= $(WARN) $(INCS) $(MOD2_LUA)
+CFLAGS= $(WARN) $(INCS) $(CGILUA_DEFS)
 CC= gcc
 
 #########################################################
@@ -47,4 +47,4 @@ CGILUA_DOC=        $(CGILUA_DIR)/doc
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.20 2004/08/27 15:42:46 tomas Exp $
+# $Id: config,v 1.21 2004/09/27 14:56:17 tomas Exp $
