@@ -1,4 +1,4 @@
--- $Id: test_main.lua,v 1.4 2004/07/22 23:44:03 tomas Exp $
+-- $Id: test_main.lua,v 1.5 2004/08/24 09:08:15 tomas Exp $
 if ap then handler = ap.handler() end
 cgilua.htmlheader()
 for i,v in pairs (cgi) do
@@ -24,5 +24,5 @@ cgilua.put = nil
 local status, err = pcall (function ()
 	assert (cgilua.put == nil, "cannot change cgilua.put value")
 end)
-assert (status == false)
 cgilua.put = my_output
+assert (status == true, err)
