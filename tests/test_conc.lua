@@ -1,6 +1,8 @@
 cgilua.htmlheader()
-local pid, ppid = ap.pid ()
-cgilua.put ("pid = "..pid.." ("..ppid..")".."<br>\n")
+if ap then
+	local pid, ppid = ap.pid ()
+	cgilua.put ("pid = "..pid.." ("..ppid..")".."<br>\n")
+end
 
 assert(type(stable.get) == "function")
 assert(type(stable.set) == "function")
