@@ -1,8 +1,10 @@
 ----------------------------------------------------------------------------
--- $Id: cookies.lua,v 1.4 2004/10/27 17:17:24 tomas Exp $
+-- $Id: cookies.lua,v 1.5 2005/03/08 21:04:51 carregal Exp $
 --
 -- Cookies Library
 ----------------------------------------------------------------------------
+
+require"cgilua.urlcode"
 
 local error = error
 local format, gsub, strfind = string.format, string.gsub, string.find
@@ -40,7 +42,6 @@ end
 
 
 function set (name, value, options)
-  --cgilua.header("Set-Cookie: "..build(name, value, options).."\n")
   header("Set-Cookie", build(name, value, options))
 end
 

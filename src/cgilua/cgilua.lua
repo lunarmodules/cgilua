@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.17 2005/02/11 14:32:32 tomas Exp $
+-- CGILua library.
 --
--- Auxiliar functions defined for CGILua scripts
+-- $Id: cgilua.lua,v 1.18 2005/03/08 21:04:51 carregal Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.urlcode"
@@ -278,7 +278,8 @@ end
 ----------------------------------------------------------------------------
 local function getparams (args)
 	-- Define variables.
-	script_pdir, script_file = splitpath (script_path or servervariable"PATH_TRANSLATED")
+	script_path = script_path or servervariable"PATH_TRANSLATED"
+	script_pdir, script_file = splitpath (script_path)
 	local vpath = servervariable"PATH_INFO"
 	script_vpath = vpath
 	if vpath and vpath ~= "" then
@@ -487,7 +488,7 @@ function main ()
 	-- Default values
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
-	-- Configuring CGILua (trying to load cgilua/conf.lua)
+	-- Configuring CGILua (trying to load cgilua/config.lua)
 	pcall (_G.require, "cgilua.config")
 	-- Cleaning environment
 	removeglobals {

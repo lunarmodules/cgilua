@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: readuntil.lua,v 1.2 2004/09/14 11:02:58 tomas Exp $
+-- $Id: readuntil.lua,v 1.3 2005/03/08 21:04:51 carregal Exp $
 ----------------------------------------------------------------------------
 
 local strsub, strfind, strlen = string.sub, string.find, string.len

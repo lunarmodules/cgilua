@@ -2,7 +2,7 @@
 -- Serialize tables.
 -- It works only for tables without cycles and without functions or
 -- userdata inside it.
--- $Id: serialize.lua,v 1.4 2004/11/22 17:28:32 tomas Exp $
+-- $Id: serialize.lua,v 1.5 2005/03/08 21:04:51 carregal Exp $
 ----------------------------------------------------------------------------
 
 local ipairs, pairs, type = ipairs, pairs, type

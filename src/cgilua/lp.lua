@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: lp.lua,v 1.1 2005/02/11 14:32:32 tomas Exp $
+-- $Id: lp.lua,v 1.2 2005/03/08 21:04:51 carregal Exp $
 ----------------------------------------------------------------------------
 
 local format = string.format
@@ -36,7 +36,7 @@ function translate (s)
   local res = {}
   local start = 1   -- start of untranslated part in `s'
   while true do
-    local ip, fp, target, exp, code = find(s, "<%?(%w*)%s*(=?)(.-)%?>", start)
+    local ip, fp, target, exp, code = find(s, "<%?(%w*)[ \t]*(=?)(.-)%?>", start)
     if not ip then break end
     tinsert(res, out(s, start, ip-1))
     if target ~= "" and target ~= "lua" then

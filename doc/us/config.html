@@ -1,6 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html><head>
-  <meta name="generator" content="HTML Tidy, see www.w3.org">
   <title>CGILua 5.0: Installing and configuring</title>
   <style type="text/css">
      ul { list-style-type: disc };
@@ -27,22 +26,14 @@
 </table>
 </center>
 <center><small><a href="index.html">home</a>
-&middot; <a href="#build">building</a>
-&middot; <a href="#pre-installation">pre-installation</a>
 &middot; <a href="#installation">installation</a>
-&middot; <a href="#config">configuration</a></small></center>
+&middot; <a href="#config">configuration</a>
+</small></center>
+
 <hr>
+
 <h2>Contents</h2>
 <ul>
-  <li><a href="#choosing">Choosing a launcher</a><br>
-</li><li><a href="#build">Building</a>
-    <ul>
-      <li><a href="#automatic_build">Automatic build</a></li>
-      <li><a href="#manual_build">Manual build</a></li>
-    </ul>
-  </li>
-  <li><a href="#pre-installation">Pre-installation</a>
-  </li>
   <li><a href="#installation">Installation</a></li>
   <li><a href="#config">Configuration</a>
     <ul>
@@ -51,509 +42,27 @@
     </ul>
   </li>
 </ul>
-<a name="choosing"></a>
-<h2>Choosing a launcher</h2>
-CGILua can be used with different launchers so its installation
-and configuration depends on the launcher type.
-<a href="#Building">Building</a> refers to the generation of the launcher
-binary files, <a href="#installation">Installation</a> refers to where
-those files should be copied and <a href="#Configuration">Configuration</a>
-refers to what should be done with the web server involved.<br>
 
-<a name="build"></a>
-<h2>Building</h2>
-
-<p>CGILua depends on Lua 5 (it was tested with versions 5.0 through 5.0.2).<br>
-The <span style="font-weight: bold;">FastCGI</span> launcher depends on a
-FastCGI developer's kit (it was tested with Open Market's FastCGI library
-version 2.4.0) and a FastCGI module for the HTTP server (it was tested with
-Open Market's FastCGI module version 2.4.2).<br>
-The <span style="font-weight: bold;">Apache</span> module depends on Apache
-version 2 (it was tested on 2.0.48).<br>
-The <span style="font-weight: bold;">ISAPI</span> extension has been tested
-on IIS 5.1 (Windows XP).<br>
-The <span style="font-weight: bold;">Servlet</span> launcher depends on
-<a href="http://www.keplerproject.org/luajava">LuaJava</a>,
-<a href="http://logging.apache.org/log4j/docs/">Log4J</a> and a servlet
-container (such as <a href="http://jakarta.apache.org/tomcat">Tomcat</a>).
-It has been tested on Tomcat 5.0.28, with LuaJava 1.0 Beta 4 and Log4J 1.2.9.<br>
-</p>
-
-<a name="automatic_build"></a>
-<h3>Automatic build (CGI, FastCGI and Mod)</h3>
-
-<p>CGILua's distribution provides a set of Makefiles that should
-build the system correctly for the CGI, FastCGI and Mod launchers
-(ISAPI and Servlet currently require manual building).</p>
-
-<p> The file <code>config</code> should be edited to inform directory
-names, compiler options and building choices.</p>
-
-<p>After that, a launcher should be chosen: <tt>cgi</tt>, <tt>fcgi</tt>
-or <tt>mod</tt>. For instance,</p>
-<pre>  make mod</pre>
-<span style="background-color: rgb(255, 153, 0);"></span>
-will compile the Apache 2 module. The Makefiles are prepared to install
-the software. The options are: <tt>cgiinstall</tt>, <tt>fcgiinstall</tt> or
-<tt>modinstall</tt>. For instance,<br>
-<pre>  make modinstall</pre>
-<span style="background-color: rgb(255, 153, 0);"></span>
-will install the Apache 2 module and all the other CGILua files needed by
-CGILua to run. The next two sections (Pre-installation and Installation)
-could be skipped since the Makefiles already do the tasks explained there,
-but the <a href="configuration">Configuration</a> section should be read
-carefully.<br>
-
-<p>The Makefiles use <code>sed</code>
-to edit the templates and
-<code>bin2c</code>
-(provided by the Lua distribution) to convert
-Lua-compiled code into C source code before compilation of
-<code>mod_lua.c</code>.</p>
-
-<p> <a name="manual_build"></a></p>
-
-<h3>Manual build (all launchers)<br></h3>
-
-<p>There are some binary files that must be built for each launcher:<br></p>
-
-<ul>
-  <li>
-<big><b><code>CGI</code></b></big><br>
-<code>cgi.c</code> is the only source file. It depends on Lua libraries and
-includes. This is a simple stand-alone interpreter used as the cgi launcher.
-  </li>
-  <li>
-<big><b><code>FastCGI</code></b></big><br>
-<code>fastcgi.c</code>, <code>lfcgi.c</code> and <code>lfcgi.h</code>
-are the source files. They depend on Lua and FastCGI libraries and includes.
-This is a simple stand-alone interpreter used as the fastcgi launcher.
-  </li>
-  <li>
-<b><code><big>mod_lua</big></code></b><br>
-<code>mod_lua.c</code> and <code>apache2_lib.c</code> are the source files.
-They depend on Lua and on Apache 2 installation. The Makefile uses the utility
-<code>libtool</code> that comes with Apache (usually at
-<code>apache2/build/libtool</code>) to build the module and install it.
-  </li>
-  <li>
-<big><b><code>ISAPI</code></b></big><br>
-Compile <code>isapi_lib.c</code> to produce <code>cgilua_isapi.dll</code>.
-  </li>
-  <li>
-<big><b><code>Servlet</code></b></big><br>
-You have two options to compile cgilua servlet launcher, use the provided 
-<a href="http://ant.apache.org/">Ant</a> build file or use the provided
-Makefile.
-  <h3><small>Ant</small></h3>
-  <p>If you don't know how to use Ant you should read the manual at 
-<a href="http://ant.apache.org/manual/index.html">
-http://ant.apache.org/manual/index.html</a>.<br>
-Edit the <code>build.xml</code> to modify the properties <code>cgilua.dir</code>
-and <code>libext</code>.<br>
-  </p>
-  <p>The <code>cgilua.dir</code> property defines the installation directory for
-cgilua. This directory is used as the base for lua modules loading.</p>
-  <p>The <code>libext</code> property must contain the shared library extension 
-used by your OS. Example:</p>
-  </li>
-  <ul>
-    <li>Windows: ".dll"</li>
-  </ul>
-  <ul>
-    <li>MacOS: ".dylib"</li>
-  </ul>
-  <ul>
-    <li>Unix: ".so"</li>
-  </ul>
-</ul>
-
-<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; After editing the 
-<code>build.xml</code> file, run the default target.</p>
-<h3>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <small>Makefile</small></h3>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Edit cgilua
-<code>config</code> file, and <code>make</code>.<br>
-
-<ul>
-  <li>
-<big><b><code>lfs</code></b></big><br>
-<code>lfs.c</code> and <code>lfs.h</code> are the source files. They depend on
-Lua 5.0 and <a href="http://www.keplerproject.org/compat">Compat-5.1</a> or Lua
-5.1.
-  </li>
-</ul>
-
-<a name="pre-installation"></a>
-<h2>Pre-installation: editing template files</h2>
-
-<p>CGILua 5.0 follows some
-improvements added by Lua 5.1.
-Therefore, if CGILua is compiled using Lua 5.0 it will need the
-compatibilization package
-<a href="http://www.keplerproject.org/compat"> Compat-5.1</a> which
-redefines some functions according to the new behavior. Each launcher checks
-the Lua <tt>_VERSION</tt> variable to decide if the compatibilization file
-should be loaded.</p>
-
-<p>The variables <tt>_PATH</tt>
-and <tt>_CPATH</tt>
-are also
-checked and defined (if needed) to assure the system will function
-correctly. However, to correctly define these variables, the
-launcher script should be edited. The set of Makefiles use
-<tt>sed</tt>
-to do that automatically: the scripts are provided as
-templates (with a <tt>t_</tt>
-prefix); some strings in capital
-letters should be substituted by the values defined in the
-<tt>config</tt>
-file; the resulting file should be saved without
-the <tt>t_</tt>
-prefix. Note that sometimes the strings are quoted:
-the quotes should be maintained.</p>
-
-<p> <a name="config_samples"></a></p>
-
-<h3>Configuration samples</h3>
-
-The following files are configuration examples for the FastCGI
-module and the Apache 2 module.<br>
-
-<a name="t_fastcgi_conf"></a>
-<h4><code>t_fastcgi.conf</code></h4>
-
-<p>The file <code>launcher/fastcgi/t_fastcgi.conf</code>
-is a
-sample Apache configuration (<code>.conf</code>)
-file; the string
-<code>FCGI_DIR</code>
-must be replaced by the FastCGI installation
-directory. The contents of the file could be copied to the Apache
-main configuration file (<code>httpd.conf</code>)
-or it could be
-<i>Included</i>
-there.</p>
-
-<p> <a name="t_mod2_conf"></a></p>
-
-<h4><code>t_mod2.conf</code></h4>
-<p>The file <code>launcher/mod2/t_mod2.conf</code>
-is a sample
-configuration for the Apache 2 module; the string
-<code>CGILUA_DIR</code>
-must be replaced by the directory where
-CGILua is installed. Note that the directive <tt>LuaMain</tt>
-is
-ignored if the <code>launcher/mod2/mod2.lua</code>
-is pre-compiled
-and included in the C source file (default option).</p>
-
-<p> <a name="installation"></a></p>
-
+<a name="installation"></a>
 <h2>Installation</h2>
 
-<p>CGILua's architecture is
-divided into two layers. The lower level is closer to the web server and to the
-operating system and is represented by the launchers implementation of the
-Server API (<a href="sapi.html">SAPI</a>); the higher level is represented by
-the CGILua API and is portable over the launchers.</p>
-
-<p>Following this division, the
-installation is also divided into
-two parts. One is closely related to the HTTP server and the launcher
-while the
-other does not depend even on the launcher. <br>
+<p>
+CGILua is a Lua package which follows the
+<a href="http://www.keplerproject.org/compat">package proposal</a>
+for Lua 5.1.
 </p>
 
-<p><a name="launcher_install"></a></p>
-
-<h3>Launcher installation</h3>
-<p><big><span style="font-weight: bold;">CGI, FastCGI and Mod</span></big><br>
+<p>
+The whole package should be installed in a directory called
+<tt>cgilua</tt>.
 </p>
 
-<p>Each launcher is composed by a
-C file (compiled to an
-executable) and a Lua file. This Lua file should live on the very
-same directory of the executable or could be pre-compiled and
-included inside the corresponding C file. The following table shows
-where these files should be installed.</p>
 
-<table border="0" cellpadding="0" cellspacing="1">
-  <tbody>
-    <tr>
-      <td>&nbsp;</td>
-      <td align="right"><code>cgi-bin/</code></td>
-      <td><code>cgi[.EXE]</code></td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td><br>
-      </td>
-      <td><code>cgi.lua</code></td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td align="right"><code>fcgilua/</code></td>
-      <td><code>fastcgi[.EXE]</code></td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td><br>
-      </td>
-      <td><code>fastcgi.lua</code></td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td align="right"><code>modules/</code></td>
-      <td><code>mod_lua.[so
-| DLL]</code></td>
-    </tr>
-  </tbody>
-</table>
+<a name="config"></a>
+<h2>Configuration</h2>
 
-<p>Lua Apache Module offers a
-directive <a href="#apache_handler">LuaMain</a>
-which should be used to indicate
-where the file is installed.</p>
-<p><a name="apache_config"></a></p>
-
-<h3><small>Apache module configuration</small></h3>
-<p>Lua Apache module has some
-configuration directives that must be
-used:</p>
-<ul>
-<li><b><code>LuaHandler
-    <i>handler</i></code></b><br>
-Registers a handler to be processed by the module. This should be
-used in conjunction with <code>AddHandler</code>
-directive or <code>&lt;Files&gt;
-construction (both associate a name with a file
-type). Only the file types specified by the handler defined
-with</code> LuaHandler will be
-processed by the module.</li><li><b><code>LuaMain
-    <i>path</i></code></b><br>
-Indicates where the launcher's Lua file is intalled.</li>
-</ul>
-
-<p style="font-weight: bold;"><big>ISAPI</big></p>
-<ul>
-  <li>
-    <p>Copy <code>cgilua_isapi.dll</code> and all dependent libraries to IIS
-working directory.<br>
-This directory is usually <code>"$(WINDOWS)\system32\inetsrv\"</code>.</p>
-  </li>
-  <li>
-  <p>Configure <code>".lua"</code> and <code>".lp"</code> to execute
-cgilua_isapi.dll.<br>
-In order to configure this in IIS go to the Web Site property page,
-Home Directory, Configuration.<br>
-In the Mappings tab add each extension pointing to <code>cgilua_isapi.dll</code>.
-</p>
-  </li>
-  <li>
-  <p>Edit the provided <code>isapi.reg</code> file to point to the installation
-directory of CGILua.<br>
-Run isapi.reg, this will create a key in the registry at the location 
-<code>"HKLM\Software\CGILua\5.0\MainScriptPath"</code>, pointing to
-<code>isapi.lua</code>.</p>
-  </li>
-  <li>
-    <p>Restart IIS and try to run a <code>lua</code> or <code>lp</code> file.</p>
-  </li>
-</ul>
-
-<big><span style="font-weight: bold;">Servlet</span></big><br>
-<ul>
-  <li>
-Install LuaJava JNI library in a path included by the java system variable 
-<code>"java.library.path"</code> (Usually the most suitable paths are
-<code>"$(JAVA_HOME)/jre/bin"</code> and <code>"$(CATALINA_HOME)/bin"</code>).
-  </li>
-  <li>
-Make sure Tomcat if configured to use the specified JRE.</li>
-  <li>
-Install LuaJava, Log4J and cgilua jar files in
-<code>"$(CATALINA_HOME)/common/lib"</code></li>
-  <li>
-Create a simple Tomcat application with a ".lua" file and "run" it.</li>
-</ul>
-<br>
-
-The application descriptor, <code>WEB-INF/web.xml</code>, defines a servlet
-called <code>CGILuaLauncherServlet</code>.
-This configuration is listed below.<br>
-
-<pre>
-<xmp>
-  <servlet>
-    <servlet-name>cgilua</servlet-name>
-    <servlet-class>org.keplerproject.cgilua.servlet.CGILuaServlet</servlet-class>
-    
-    <!-- Full path of CGILua servlet lua launcher -->
-    <init-param>
-      <param-name>cgilua.launcherpath</param-name>
-      <param-value>C:/Program Files/CGILua/servlet.lua</param-value>
-    </init-param>
-    
-    <!-- CGILua installation dir -->
-    <init-param>
-      <param-name>cgilua.basedir</param-name>
-      <param-value>C:/Program Files/CGILua</param-value>
-    </init-param>
-
-    <!-- Number of LuaState's created for the pool to handle requests. -->
-    <init-param>
-      <param-name>cgilua.poolsize</param-name>
-      <param-value>30</param-value>
-    </init-param>
-  </servlet>
-
-  <!-- CGILua files extension mappings -->
-  <servlet-mapping>
-    <servlet-name>cgilua</servlet-name>
-    <url-pattern>*.lua</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>cgilua</servlet-name>
-    <url-pattern>*.lp</url-pattern>
-  </servlet-mapping>
-</xmp>
-</pre>
-
-<hr>
-<h3>CGILua installation</h3>
-
-<p>Every launcher loads CGILua's library and executes the function
-which processes the request. This function loads some internal
-libraries, prepares the environment for the script and runs it.</p>
-
-<p>CGILua contains a set of internal libraries and offers some
-libraries to the user's script.</p>
-<table border="0" cellpadding="0" cellspacing="1">
-  <tbody>
-    <tr>
-      <td><code>lua/5.0/</code></td>
-      <td><code></code><br>
-      </td>
-      <td><code></code><br>
-      </td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><code>cgilua/</code></td>
-      <td><br>
-      </td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>cgilua.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>config.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>cookies.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>post.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>lp.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>readuntil.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>serialize.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>session.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
-      <td><code>urlcode.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><code>compat-5.1.lua</code></td>
-      <td><br>
-      </td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><code>stable.lua</code></td>
-      <td><br>
-      </td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><code>venv.lua</code></td>
-      <td><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<p>To provide protection over the
-whole environment, CGILua
-redefines the function <code>require</code>
-in order to maintain
-the original values for <code>package.path</code>
-and
-<code>package.cpath</code>
-variables. Furthermore, the function
-<code>loadlib</code>
-is allowed only for scripts loaded by
-<code>require</code>
-(in fact, this function will be less important
-when Lua 5.1 comes around).</p>
-
-<p> <a name="config"></a></p>
-
-<h2><a name="Configuration"></a>Configuration</h2>
-
-<p>CGILua 5.0 offers a single
-configuration file, called
-<code>config.lua</code>
+<p>CGILua 5.0 offers a single configuration file,
+called <code>config.lua</code>
 and a set of functions to alter the default
 configuration.
 </p>
@@ -569,8 +78,10 @@ Some of the configuration parameters are listed below:
   <li>
 script handlers, by calling
 <a href="reference.html#addscripthandler">
-<code>cgilua.addscripthandler</code></a> (when using Apache module's launcher,
-these handlers must conform to the Apache configuration);
+<code>cgilua.addscripthandler</code></a> (see also
+<a href="reference.html#buildplainhandler">cgilua.buildplainhandler</a> and
+<a href="reference.html#buildprocesshandler">cgilua.buildprocesshandler</a>
+for functions that build simple handlers);
   </li>
   <li>
 POST data sizes, by calling <a href="reference.html#setmaxinput">
@@ -611,5 +122,5 @@ or sent to an e-mail address (with the help of LuaSocket, for example).
 is provided to write directly to the http server error log file.
 </p>
 <hr>
-<small>$Id: config.html,v 1.27 2005/02/11 14:32:32 tomas Exp $</small>
+<small>$Id: config.html,v 1.28 2005/03/08 21:04:51 carregal Exp $</small>
 </body></html>
