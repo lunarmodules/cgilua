@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.6 2004/10/13 20:03:45 tomas Exp $
+-- $Id: cgilua.lua,v 1.7 2004/10/15 10:54:03 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ end
 ----------------------------------------------------------------------------
 -- Pack results of a function call
 ----------------------------------------------------------------------------
-function _pack (...) return arg end
+function pack (...) return arg end
 
 ----------------------------------------------------------------------------
 -- Redefine require.
@@ -131,7 +131,7 @@ _G.require = function (packagename)
 	assert (not strfind (packagename, "%.%."),
 		"Package name cannot contain `..'")
 	_G.loadlib = _loadlib
-	local ret = _pack (_require (packagename))
+	local ret = pack (_require (packagename))
 	_G.loadlib = nil
 	return unpack (ret)
 end
@@ -385,7 +385,7 @@ end
 -- Executes a function with an error handler.
 ---------------------------------------------------------------------------
 function pcall (f, ...)
-	local result = _pack (xpcall (function () return f(unpack(arg)) end,
+	local result = pack (xpcall (function () return f(unpack(arg)) end,
 		errorhandler))
 	if not result[1] then
 		erroroutput (result[2])
@@ -471,7 +471,7 @@ end
 ---------------------------------------------------------------------------
 -- Request processing.
 ---------------------------------------------------------------------------
-function main (cgilua_conf)
+function main ()
 	-- Default values
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", preprocess)
@@ -487,13 +487,12 @@ function main (cgilua_conf)
 	_G.cgi = {}
 	pcall (getparams, _G.cgi)
 	-- Changing curent directory to the script's "physical" dir
-	--_G.require"lfs"
 	local curr_dir = lfs.currentdir ()
 	pcall (lfs.chdir, script_pdir)
 	-- Opening function
 	pcall (open)
 	-- Executing script
-	local result = _pack (pcall (handle, script_file))
+	local result = pack (pcall (handle, script_file))
 	-- Closing function
 	pcall (close)
 	-- Cleanup
