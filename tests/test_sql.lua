@@ -1,4 +1,4 @@
-require"postgres"
+require"luasql.postgres"
 
 local env = assert (luasql.postgres ())
 local conn = assert (env:connect ("luasql-test", "tomas"))
