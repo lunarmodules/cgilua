@@ -123,7 +123,9 @@ There are some binary files that must be built:
 
   <li> <b><code>lfs</code></b>
        <code>lfs.c</code> and <code>lfs.h</code> are the source files.
-       They depend only on Lua.
+       They depend on Lua 5.0 and
+       <a href="http://www.keplerproject.org/compat">Compat-5.1</a> or
+       Lua 5.1.
 
 </ul>
 
@@ -133,13 +135,13 @@ There are some binary files that must be built:
 <p>
 CGILua 5.0 follows some improvements added by Lua 5.1.
 Therefore,
-if CGILua is compiled using Lua 5.0 it will need a compatibilization file,
-called <tt>compat-5.1.lua</tt> which redefines some functions according to
-the new behavior.
+if CGILua is compiled using Lua 5.0 it will need the compatibilization package
+<a href="http://www.keplerproject.org/compat">Compat-5.1</a>
+which redefines some functions according to the new behavior.
 Each launcher checks the Lua <tt>_VERSION</tt> variable to decide if the
 compatibilization file should be loaded.
 <p>
-The variables <tt>LUA_PATH</tt> and <tt>LUA_LIBPATH</tt> are also checked
+The variables <tt>_PATH</tt> and <tt>_CPATH</tt> are also checked
 and defined (if needed) to assure the system will function correctly.
 However, to correctly define these variables, the launcher script should
 be edited.
@@ -258,10 +260,12 @@ to the user's script.
     <td><code>cgilua.lua</code></td>
   </tr>
   <tr><td></td><td></td><td><code>cl_ses.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>conf.lua</code></td></tr>
   <tr><td></td><td></td><td><code>cookies.lua</code></td></tr>
   <tr><td></td><td></td><td><code>post.lua</code></td></tr>
   <tr><td></td><td></td><td><code>prep.lua</code></td></tr>
   <tr><td></td><td></td><td><code>readuntil.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>serialize.lua</code></td></tr>
   <tr><td></td><td></td><td><code>session.lua</code></td></tr>
   <tr><td></td><td></td><td><code>urlcode.lua</code></td></tr>
   <tr><td></td><td><code>compat-5.1.lua</code></td></tr>
@@ -270,7 +274,7 @@ to the user's script.
 <p>
 To provide protection over the whole environment,
 CGILua redefines the function <code>require</code> in order to maintain
-the original values for <code>LUA_PATH</code> and <code>LUA_LIBPATH</code>
+the original values for <code>_PATH</code> and <code>_CPATH</code>
 variables.
 Furthermore, the function <code>loadlib</code> is allowed only for scripts
 loaded by <code>require</code>.
@@ -369,7 +373,7 @@ Lua Apache module has some configuration directives that must be used:
 
 <hr>
 <small>
-$Id: config.html,v 1.17 2004/08/30 10:35:56 tomas Exp $
+$Id: config.html,v 1.18 2004/10/23 22:30:30 tomas Exp $
 </small>
 
 </body>
