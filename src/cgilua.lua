@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.11 2004/06/22 10:39:08 tomas Exp $
+-- $Id: cgilua.lua,v 1.12 2004/07/07 16:26:17 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -64,9 +64,9 @@ function redirect (url, args)
 		if args then
 			params = "?"..encodetable(args)
 		end
-		locationheader(url..params)
+		return locationheader(url..params)
 	else
-		locationheader(mkabsoluteurl(mkurlpath(url,args)))
+		return locationheader(mkabsoluteurl(mkurlpath(url,args)))
 	end
 end
 
@@ -378,14 +378,13 @@ end
 -- Executes a function with an error handler.
 ---------------------------------------------------------------------------
 function pcall (f, ...)
-	local ok, errmsg = xpcall (function () return f(unpack(arg)) end,
-		errorhandler)
-	if not ok then
+	local result = { xpcall (function () return f(unpack(arg)) end,
+		errorhandler) }
+	if not result[1] then
 		erroroutput (errmsg)
 		errorlog (errmsg)
-		return false
 	end
-	return true
+	return unpack (result)
 end
 
 ----------------------------------------------------------------------------

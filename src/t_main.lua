@@ -2,7 +2,7 @@
 -- Main Lua script.
 -- This script does not depend on the launcher, only on the
 -- basic API.
--- $Id: t_main.lua,v 1.7 2004/06/30 22:05:01 tomas Exp $
+-- $Id: t_main.lua,v 1.8 2004/07/07 16:26:17 tomas Exp $
 ---------------------------------------------------------------------
 
 local cgilua_root = "CGILUA_DIR"
@@ -37,8 +37,11 @@ cgilua.pcall (filesystem.chdir, cgilua.script_pdir)
 -- Opening function
 cgilua.pcall (cgilua._open)
 -- Executing script
-cgilua.pcall (cgilua.handle, cgilua.script_file)
+local result = { cgilua.pcall (cgilua.handle, cgilua.script_file) }
 -- Closing function
 cgilua.pcall (cgilua.close)
 -- Cleanup
 cgilua.reset ()
+
+table.remove (result, 1)
+return unpack (result)
