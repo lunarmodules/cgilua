@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.12 2004/07/07 16:26:17 tomas Exp $
+-- $Id: cgilua.lua,v 1.13 2004/07/13 06:18:01 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -381,8 +381,8 @@ function pcall (f, ...)
 	local result = { xpcall (function () return f(unpack(arg)) end,
 		errorhandler) }
 	if not result[1] then
-		erroroutput (errmsg)
-		errorlog (errmsg)
+		erroroutput (result[2])
+		errorlog (result[2])
 	end
 	return unpack (result)
 end
