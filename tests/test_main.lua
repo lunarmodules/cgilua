@@ -1,6 +1,13 @@
--- $Id: test_main.lua,v 1.5 2004/08/24 09:08:15 tomas Exp $
+-- $Id: test_main.lua,v 1.6 2004/08/27 10:39:39 tomas Exp $
 if ap then handler = ap.handler() end
 cgilua.htmlheader()
+cgilua.put[[
+<html>
+<head><title>Script Lua Test</title></head>
+
+<body>
+]]
+
 for i,v in pairs (cgi) do
 	if type(v) == "table" then
 		local vv = "{"
@@ -26,3 +33,17 @@ local status, err = pcall (function ()
 end)
 cgilua.put = my_output
 assert (status == true, err)
+-- Checking require
+local status, err = pcall (function () require"unknown_module" end)
+cgilua.put(tostring(err).."<br>\n")
+assert (status == false, "<tt>unknown_module</tt> loaded!")
+local status, err = pcall (function () LUA_PATH="." require"test_main" end)
+cgilua.put(tostring(err).."<br>\n")
+assert (status == false, "LUA_PATH was changed!")
+
+cgilua.put[[
+<p>
+</body>
+<small>$Id: test_main.lua,v 1.6 2004/08/27 10:39:39 tomas Exp $</small>
+</html>
+]]
