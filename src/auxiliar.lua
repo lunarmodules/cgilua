@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: auxiliar.lua,v 1.4 2003/04/28 10:49:48 tomas Exp $
+-- $Id: auxiliar.lua,v 1.5 2003/08/05 14:59:00 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -17,6 +17,7 @@ local os = os
 local pcall = pcall
 local require = require
 local table = table
+local tonumber = tonumber
 local translate = HTMLPreProcessor.translate
 local type = type
 local string = string
@@ -436,7 +437,7 @@ function Public.parsepostdata (args)
     error("Undefined Media Type") 
   end
   if string.find(contenttype, "x%-www%-form%-urlencoded") then
-    Public.parsequery(read(inputsize),args)
+    Public.parsequery(io.read(inputsize),args)
   elseif string.find(contenttype, "multipart/form%-data") then
     Public.loadlibrary("upload")
     upl_formupload(inputsize, Private.maxfilesize, args)

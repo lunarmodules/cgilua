@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: mainscript.lua,v 1.4 2003/04/28 10:49:48 tomas Exp $
+-- $Id: mainscript.lua,v 1.5 2003/08/05 14:59:00 tomas Exp $
 --
 -- CGILua "main" script
 ----------------------------------------------------------------------------
@@ -97,15 +97,21 @@ else
 	-- change current directory to the script's "physical" dir
 	dir.chdir(cgilua.script_pdir)
 
-	-- set the script environment
-	cgilua.doenv(cgilua.script_pdir.."env.lua")
-
 	-- parse the incoming request data
 	cgi = {}
 	if os.getenv("REQUEST_METHOD") == "POST" then
 		cgilua.parsepostdata(cgi)
 	end
 	cgilua.parsequery(os.getenv("QUERY_STRING"),cgi)
+
+	-- load user library.
+	local f = loadfile (libscript)
+	if type (f) == "function" then
+		f ()
+	end
+
+	-- set the script environment
+	cgilua.doenv(cgilua.script_pdir.."env.lua")
 
 	handler (cgilua.script_path)
 	cgilua.close()				-- "close" function
