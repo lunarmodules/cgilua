@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.6 2004/04/16 10:17:36 tomas Exp $
+-- $Id: cgilua.lua,v 1.7 2004/04/20 14:58:52 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -12,6 +12,7 @@ local Public = {
 	script_path = false,
 	escape = url_escape,
 	unescape = url_unescape,
+	userscriptname = false,
 }
 cgilua = Public
 setmetatable (Public, {
@@ -23,8 +24,7 @@ local _require = require
 local assert, error, _G, loadstring, loadfile, type, unpack, xpcall = assert, error, _G, loadstring, loadfile, type, unpack, xpcall
 local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
 local open = io.open
-local getn = table.getn
-local traceback = debug.traceback
+local getn, tinsert = table.getn, table.insert
 local url_encodetable, url_insertfield, url_parsequery = url_encodetable, url_insertfield, url_parsequery
 local ap = ap
 local post = post
@@ -241,7 +241,7 @@ end
 ----------------------------------------------------------------------------
 function getparams (args)
 	-- Define variables.
-	script_pdir, script_file = splitpath (script_path)
+	script_pdir, script_file = splitpath (script_path or servervariable"PATH_TRANSLATED")
 	script_vpath = servervariable"PATH_INFO"
 	script_vdir = splitpath (servervariable"PATH_INFO")
 	urlpath = servervariable"SCRIPT_NAME"
@@ -368,15 +368,20 @@ function pcall (f, ...)
 	return true
 end
 
+----------------------------------------------------------------------------
+-- Stores all close functions in order they are set.
+local close_functions = {
+}
+
 ---------------------------------------------------------------------------
 -- Set "close" function
 --
 -- This function will be called after the user script execution
 ---------------------------------------------------------------------------
-function setclosefunction (f)
+function addclosefunction (f)
 	local tf = type(f)
 	if tf == "function" then
-		closefunction = f
+		tinsert (close_functions, f)
 	else
 		error (format ("Invalid type: expected `function', got `%s'", tf))
 	end
@@ -386,8 +391,8 @@ end
 -- Close function.
 ---------------------------------------------------------------------------
 function close()
-	if closefunction then
-		closefunction()
+	for i = getn(close_functions), 1, -1 do
+		close_functions[i]()
 	end
 end
 
@@ -404,14 +409,7 @@ function reset ()
 	errorhandler = nil
 	errorlog = nil
 	erroroutput = nil
-	-- Handlers ???
+	-- Handlers
+	script_handlers = {}
+	close_functions = {}
 end
-
-seterrorhandler (traceback)
-seterroroutput (function (msg)
-	contentheader("text", "plain")
-	put ("There was an error.\nProper information was written to the error log.")
-end)
-seterrorlog (function (msg)
-	HTTP_Response.errorlog (msg)
-end)

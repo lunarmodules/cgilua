@@ -2,7 +2,7 @@
 -- Main Lua script.
 -- This script does not depend on the launcher, only on the
 -- basic API.
--- $Id: t_main.lua,v 1.3 2004/04/16 10:17:36 tomas Exp $
+-- $Id: t_main.lua,v 1.4 2004/04/20 14:58:52 tomas Exp $
 ---------------------------------------------------------------------
 
 local cgilua_root = "CGILUA_DIR"
@@ -34,12 +34,10 @@ cgilua.pcall (cgilua.doif, cgilua_conf)
 cgi = {}
 cgilua.pcall (cgilua.getparams, cgi)
 
--- Loading application script (is this really necessary?)
-cgilua.pcall (cgilua.doif, appscript)
 -- Changing current directory to the script's "physical" dir
 cgilua.pcall (dir.chdir, cgilua.script_pdir)
 -- Loading script environment
-cgilua.pcall (cgilua.doif, userscriptname)
+cgilua.pcall (cgilua.doif, cgilua.userscriptname)
 -- Executing script
 cgilua.pcall (cgilua.handle, cgilua.script_file)
 -- Closing function
