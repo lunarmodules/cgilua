@@ -2,14 +2,12 @@
 -- Serialize tables.
 -- It works only for tables without cycles and without functions or
 -- userdata inside it.
--- $Id: serialize.lua,v 1.3 2004/09/14 11:02:58 tomas Exp $
+-- $Id: serialize.lua,v 1.4 2004/11/22 17:28:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 local ipairs, pairs, type = ipairs, pairs, type
 local format = string.format
 local sort, tinsert = table.sort, table.insert
-
---module (arg and arg[1])
 
 ----------------------------------------------------------------------------
 local value = nil
@@ -21,7 +19,7 @@ local value = nil
 -- @param ind String with indentation pattern.
 -- @param pre String with indentation prefix.
 ----------------------------------------------------------------------------
-function tabledump (tab, outf, ind, pre)
+local function tabledump (tab, outf, ind, pre)
 	local sep_n, sep, _n = ",\n", ", ", "\n"
 	if (not ind) or (ind == "") then ind = ""; sep_n = ", "; _n = "" end
 	if not pre then pre = "" end
@@ -108,3 +106,6 @@ value = function (v, outf, ind, pre)
 		outf (format ("%q", tostring(v)))
 	end
 end
+
+----------------------------------------------------------------------------
+cgilua.serialize = tabledump
