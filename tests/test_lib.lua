@@ -26,6 +26,6 @@ function test_lib (libname)
 end
 
 cgilua.htmlheader ()
-for _, lib in ipairs { "socket", "luasql.postgres", "lxp", "lxp.lom", "lualdap", "htk", "xmlrpc", "xmlrpc.http" } do
+for _, lib in ipairs { "lfs", "socket", "luasql.postgres", "luasql", "lxp", "lxp.lom", "lualdap", "htk", "xmlrpc", "xmlrpc.http" } do
 	test_lib (lib)
 end
