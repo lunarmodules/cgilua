@@ -1,13 +1,12 @@
 
 <h2>Compilation</h2>
 
-<p>Pre-requisites:
+<p>Requirements:
 <ul>
-<li><a href="http://www.keplerproject.org/luajava">LuaJava 1.0 Beta 4</a>: download the <code>jar</code> and put in <code>"WEB-INF/lib"</code></li>
-<li><a href="http://logging.apache.org/log4j/docs/">Log4J</a>: download the <code>jar</code> and put in <code>"WEB-INF/lib"</code></li>
-<li>Any servlet container. Tomcat will be used in the 
-<a href="#installation">installation</a> and 
-<a href="#configuration">configuration</a> sections as an example. TODO: instrucoes de onde configurar o jar do servlet-api</li>
+<li><a href="http://www.keplerproject.org/luajava">LuaJava 1.0 Beta 4</a></li>
+<li><a href="http://logging.apache.org/log4j/docs/">Log4J</a></li>
+<li>Any servlet container. <a href="http://jakarta.apache.org/tomcat">Tomcat</a> 
+will be used in the guide.</li>
 </ul>
 </p>
 
@@ -26,7 +25,7 @@ Edit the <code>build.xml</code> to modify the properties <code>cgilua.dir</code>
 </p>
 
 <p>
-The <code>cgilua.dir</code> property must define the installation directory for cgilua.
+The <code>cgilua.dir</code> property defines the installation directory for cgilua.
 This directory is used as the base for lua modules loading.
 </p>
 
@@ -46,22 +45,22 @@ After editing the <code>build.xml</code> file, run the default target.
 
 <h3>Makefile</h3>
 
+Edit cgilua <code>config</code> file, and <code>make</code>.
+
 <h2>Installation and Configuration</h2>
 
 <p>
-Whatever compilation method you choose, Ant or Makefile, four files are generated:
+Whichever compilation method you choose, Ant or Makefile, three files are generated:
 <ul>
-<li><code>cgilua-5.0a4.jar</code>: Java side of CGILua servlet launcher</li>
-<li><code>WEB-INF/web.xml</code>: application descriptor</li>
-<li><code>servlet.conf</code>: </li>
+<li><code>cgilua-5.0a4.jar</code>: CGILua servlet implementation</li>
+<li><code>WEB-INF/web.xml</code>: sample application descriptor</li>
 <li><code>servlet.lua</code>: CGILua sapi implementation</li>
 </ul>
 </p>
 
 <p>
 Any servlet container can be used to run cgilua applications through the
-servlet launcher.<br>
-Tomcat will be used in this configuration manual.
+servlet launcher. Tomcat will be used as an example.
 </p>
 
 <p>
@@ -71,41 +70,58 @@ This configuration is listed below.<br>
 <pre>
 <xmp>
   <servlet>
-    <servlet-name>CGILuaLauncherServlet</servlet-name>
-    <servlet-class>org.keplerproject.cgilua.launcher.CGILuaLauncherServlet</servlet-class>
+    <servlet-name>cgilua</servlet-name>
+    <servlet-class>org.keplerproject.cgilua.servlet.CGILuaServlet</servlet-class>
+    
+    <!-- Full path of CGILua servlet lua launcher -->
     <init-param>
-      <param-name>propertyFile</param-name>
-      <param-value>C:/Program Files/CGILua/servlet.conf</param-value>
+      <param-name>cgilua.launcherpath</param-name>
+      <param-value>C:/Program Files/CGILua/servlet.lua</param-value>
+    </init-param>
+    
+    <!-- CGILua installation dir -->
+    <init-param>
+      <param-name>cgilua.basedir</param-name>
+      <param-value>C:/Program Files/CGILua</param-value>
+    </init-param>
+
+    <!-- Number of LuaState's created for the pool to handle requests. -->
+    <init-param>
+      <param-name>cgilua.poolsize</param-name>
+      <param-value>30</param-value>
     </init-param>
   </servlet>
+
+  <!-- CGILua files extension mappings -->
+  <servlet-mapping>
+    <servlet-name>cgilua</servlet-name>
+    <url-pattern>*.lua</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>cgilua</servlet-name>
+    <url-pattern>*.lp</url-pattern>
+  </servlet-mapping>
 </xmp>
 </pre>
 </p>
 
 <p>
-The parameter <code>propertyFile</code> points to the location of the 
-<code>servlet.conf</code> file. This configuration file, listed below, 
-defines 4 variables:
-</p>
-
-<pre>
-launcher=C:/Program Files/CGILua/servlet.lua
-root.dir=C:/Program Files/CGILua
-cgi.path=WEB-INF/cgilua
-active.max=30
-</pre>
-
-<ul>
-<li><code>launcher</code>: the full path of the servlet launcher script;</li>
-<li><code>root.dir</code>: the path to CGILua installation;</li>
-<li><code>cgi.path</code>: path, relative to the application, that contains lua pages;</li>
-<li><code>active.max</code>: maximum number of LuaState's created by the LuaStatePool</li>
-</ul>
+In order to configure CGILua to run on every Tomcat application insert the above
+configuration to <code>"$(CATALINA_HOME)/conf/web.xml"</code>.
 </p>
 
 <p>
+Install LuaJava JNI library in a path included by the java system variable 
+<code>"java.library.path"</code>.<br>
+The most suitable path is <code>"$(JAVA_HOME)/jre/bin"</code>.<br>
+Make sure this is the JRE Tomcat is configured to use.<br>
 </p>
 
 <p>
+Install LuaJava JAR and Log4J in <code>"$(CATALINA_HOME)/common/lib"</code>
 </p>
 
+<p>
+Create a simple Tomcat application with a ".lua" file and "run" it.
+</p>
