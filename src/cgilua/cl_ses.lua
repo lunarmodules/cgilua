@@ -1,30 +1,31 @@
-cl_ses = {}
+require"cgilua.session"
 
-local ID = "cl_session.identification"
+local _G = _G
+module (arg and arg[1])
 
-function cl_ses.open ()
+local ID_NAME = "cgilua session identification"
+local id = nil
+
+function open ()
 	local mkurlpath = cgilua.mkurlpath
-	function cgilua.mkurlpath (script, data)
+	function _G.cgilua.mkurlpath (script, data)
 		if not data then
 			data = {}
 		end
-		data[ID] = cl_ses.id
+		data[ID_NAME] = id
 		return mkurlpath (script, data)
 	end
 
-	local id = cgi[ID] or session.new()
+	id = cgi[ID_NAME] or cgilua.session.new()
 	if id then
-		cgi[ID] = nil
-		cgilua.session = session.load (id) or {}
-		cl_ses.id = id
-	--else
-		--cgilua.session = {}
+		_G.cgi[ID_NAME] = nil
+		_G.cgilua.data = cgilua.session.load (id) or {}
 	end
 end
 
-function cl_ses.close ()
-	if next (cgilua.session) then
-		session.save (cl_ses.id, cgilua.session)
-		cl_ses.id = nil
+function close ()
+	if next (cgilua.data) then
+		cgilua.session.save (id, cgilua.data)
+		id = nil
 	end
 end

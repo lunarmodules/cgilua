@@ -14,17 +14,17 @@ end
 
 
 if cgi.field then
-	if not cgilua.session.field then
-		cgilua.session.field = {}
+	if not cgilua.data.field then
+		cgilua.data.field = {}
 	end
-	table.insert (cgilua.session.field, cgi.field)
+	table.insert (cgilua.data.field, cgi.field)
 end
 cgilua.htmlheader()
 cgilua.put "cgi = {<br>\n"
 pt (cgi)
 cgilua.put "}<br>\n"
-cgilua.put "session = {<br>\n"
-pt (cgilua.session)
+cgilua.put "data = {<br>\n"
+pt (cgilua.data)
 cgilua.put "}<br>\n"
 
 cgilua.put [[
