@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.2 2004/07/19 19:30:20 tomas Exp $
+-- $Id: session.lua,v 1.3 2004/07/22 23:41:24 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"luafilesystem"
@@ -13,7 +13,7 @@ setmetatable (Public, {
 })
 
 local assert, loadfile, pairs, type = assert, loadfile, pairs, type
-local format, strsub = string.format, string.sub
+local format, strfind, strrep, strsub = string.format, string.find, string.rep, string.sub
 local open, write = io.open, io.write
 local remove = os.remove
 local dir = luafilesystem.dir
@@ -65,6 +65,21 @@ local function serialize_table (tab, outf)
 end
 
 ----------------------------------------------------------------------------
+-- Creates a new identifier.
+----------------------------------------------------------------------------
+local function new_id ()
+	counter = counter + 1
+	return format ("%08d", counter)
+end
+
+----------------------------------------------------------------------------
+-- Checks identifier format.
+----------------------------------------------------------------------------
+local function check_id (id)
+	return (strfind (id, strrep ("%d", 8)) ~= nil)
+end
+
+----------------------------------------------------------------------------
 -- Produces a file name based on a session.
 -- @param id Session identification.
 -- @return String with the session file name.
@@ -78,6 +93,7 @@ end
 -- @param id Session identification.
 ----------------------------------------------------------------------------
 function delete (id)
+	assert (check_id (id))
 	remove (filename (id))
 end
 
@@ -86,15 +102,13 @@ end
 -- @return Session identification.
 ----------------------------------------------------------------------------
 function new ()
-	local dirs = {}
-	for d in dir (root_dir) do
-		dirs[d] = true
+	local files = {}
+	for f in dir (root_dir) do
+		files[f] = true
 	end
-	counter = counter + 1
-	local id = format ("%08d", counter)
-	while dirs[id..".lua"] do
-		counter = counter + 1
-		id = format ("%08d", counter)
+	local id = new_id ()
+	while files[id..".lua"] do
+		id = new_id ()
 	end
 	return id
 end
@@ -104,6 +118,7 @@ end
 -- @param id Session identification.
 ----------------------------------------------------------------------------
 function load (id)
+	assert (check_id (id))
 	local f, err = loadfile (filename (id))
 	if not f then
 		return nil, err
@@ -118,6 +133,7 @@ end
 -- @param data Table with session data to be saved.
 ----------------------------------------------------------------------------
 function save (id, data)
+	assert (check_id (id))
 	local fh = assert (open (filename (id), "w+"))
 	fh:write "return "
 	serialize_table (data, function (s) fh:write(s) end)
