@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: main.lua,v 1.1 2003/09/28 23:38:44 tomas Exp $
+-- $Id: main.lua,v 1.2 2003/11/07 14:47:10 tomas Exp $
 --
 -- CGILua "main" script
 ----------------------------------------------------------------------------
@@ -50,8 +50,8 @@ local function redefine_require ()
 	local original_lib_dir = lib_dir
 	local original_loadlib = loadlib
 	_G.loadlib = nil
-	cgilua.loadlibrary = function (packagename, funcname)
-		return original_loadlib (original_lib_dir..packagename, funcname)
+	local nova_loadlib = function (packagename, funcname)
+		return original_loadlib (packagename, funcname)
 	end
 	local original_require = require
 	_G.require = function (packagename)
