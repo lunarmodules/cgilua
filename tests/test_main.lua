@@ -1,4 +1,4 @@
--- $Id: test_main.lua,v 1.2 2004/06/15 15:26:53 tomas Exp $
+-- $Id: test_main.lua,v 1.3 2004/06/22 10:29:38 tomas Exp $
 if ap then handler = ap.handler() end
 cgilua.htmlheader()
 for i,v in pairs (cgi) do
@@ -21,4 +21,7 @@ if handler then cgilua.put (handler) end
 -- Checking Virtual Environment
 local my_output = cgilua.put
 cgilua.put = nil
-assert (cgilua.put == nil, "cannot change cgilua.put value")
+local status, err = pcall (function ()
+	assert (cgilua.put == nil, "cannot change cgilua.put value")
+end)
+assert (status == false)
