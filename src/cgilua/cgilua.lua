@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.13 2004/12/13 23:40:07 tomas Exp $
+-- $Id: cgilua.lua,v 1.14 2004/12/15 15:21:53 carregal Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -471,7 +471,7 @@ local function reset ()
 	--lua_path = nil
 	maxfilesize = default_maxfilesize
 	maxinput = default_maxinput
-	-- Error treatment
+	-- Error Handling
 	errorhandler = default_errorhandler
 	erroroutput = default_erroroutput
 	-- Handlers
