@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.8 2004/04/27 17:08:01 tomas Exp $
+-- $Id: cgilua.lua,v 1.9 2004/04/27 17:13:49 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ end
 -- Create an HTTP header redirecting the browser to another URL
 ----------------------------------------------------------------------------
 function redirect (url, args)
-	if strfind(url,"http:") then
+	if strfind(url,"^https?:") then
 		local params=""
 		if args then
 			params = "?"..encodetable(args)
