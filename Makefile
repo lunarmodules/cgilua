@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.25 2004/11/09 14:05:04 tomas Exp $
+# $Id: Makefile,v 1.26 2004/11/11 15:59:34 tomas Exp $
 
 include ./config
 
@@ -40,7 +40,7 @@ clean:
 	cd doc; make $@
 
 luafilesystem: $(COMPAT_DIR)
-	cvs checkout luafilesystem
+	cvs checkout -r v1_0b luafilesystem
 
 $(COMPAT_DIR):
-	cvs checkout compat
+	cvs checkout -r release_1 compat
