@@ -34,6 +34,7 @@ ul { list-style-type: disc };
 <ul>
   <li> <a href="#build">Build</a>
     <ul>
+      <li> <a href="#automatic_build">Automatic build</a>
       <li> <a href="#manual_build">Manual build</a>
     </ul>
   <li> <a href="#pre-installation">Pre-installation</a>
@@ -72,6 +73,28 @@ CGILua's distribution provides a set of Makefiles that should build
 the system properly.
 The file <code>config</code> should be edited to suit the other packages
 installations.
+<p>
+After that,
+a launcher should be chosen:
+<tt>cgi</tt>, <tt>fastcgi</tt> or <tt>mod</tt>.
+For instance,
+<pre>
+  make mod
+</pre>
+will compile the Apache 2 module.
+The Makefiles are prepared to install the software.
+The options are:
+<tt>cgiinstall</tt>, <tt>fastcgiinstall</tt> or <tt>modinstall</tt>.
+For instance,
+<pre>
+  make modinstall
+</pre>
+will install the Apache 2 module and all the other CGILua files needed
+by CGILua to work at <tt>CGILUA_DIR</tt>.
+The next two sections (Pre-installation and Installation) could be skipped
+while the Makefiles already do the tasks explained there.
+However, section <a href="configuration">Configuration</a> should be read
+carefully.
 <p>
 The Makefiles use <code>sed</code> to edit the templates and
 <code>bin2c</code> to convert Lua-compiled code into C-source code before
@@ -247,8 +270,8 @@ The following table shows CGILua's root directory.
   <tr><td></td><td></td><td><code>post.lua</code></td></tr>
   <tr><td></td><td></td><td><code>prep.lua</code></td></tr>
   <tr><td></td><td></td><td><code>readuntil.lua</code></td></tr>
-  <tr><td></td><td></td><td><code>sandbox.lua</code></td></tr>
   <tr><td></td><td></td><td><code>urlcode.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>venv.lua</code></td></tr>
   <tr><td></td><td><code>usr/lib/</code></td></tr>
 </table>
 <p>
@@ -363,7 +386,7 @@ Lua Apache module has some configuration directives that must be used:
 
 <hr>
 <small>
-$Id: config.html,v 1.11 2004/05/12 18:37:53 tomas Exp $
+$Id: config.html,v 1.12 2004/05/26 17:36:27 tomas Exp $
 </small>
 
 </body>

@@ -65,6 +65,10 @@ Changes the current working directory.
 <h3><code>filesystem.currentdir ()</code></h3>
 Returns the current working directory or <code>nil</code> plus an error string.
 
+<a name="dir"></a>
+<h3><code>filesystem.dir (path)</code></h3>
+Lua iterator over the entries of a given directory.
+
 <a name="lock"></a>
 <h3><code>filesystem.lock (filehandle, mode[, start[, length]])</code></h3>
 Locks a file or a part of it.
@@ -143,7 +147,7 @@ URL for passing data/parameters to another script.
 
 <hr>
 <small>
-$Id: libraries.html,v 1.6 2004/05/18 14:58:50 tomas Exp $
+$Id: libraries.html,v 1.7 2004/05/26 17:36:27 tomas Exp $
 </small>
 
 </body>
