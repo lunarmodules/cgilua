@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.27 2004/12/22 09:24:20 tomas Exp $
+# $Id: Makefile,v 1.28 2005/01/28 15:55:15 tomas Exp $
 
 T= clmain
 
@@ -14,7 +14,7 @@ cgi fcgi mod: $(LUAS)
 
 cgiinstall fcgiinstall modinstall: $(LUAS)
 	mkdir -p $(LUA_DIR)
-	cp $(LIB_LUAS) $(LUA_DIR)
+	cp $(COMPAT) $(LIB_LUAS) $(LUA_DIR)
 	mkdir -p $(CGILUA_DIR)
 	cp $(CGILUA_LUAS) $(CGILUA_DIR)
 	if [ ! -e $(CGILUA_DIR)/$(CONFIG_FILE) ] ; then cp cgilua/$(CONFIG_FILE) $(CGILUA_DIR); fi
