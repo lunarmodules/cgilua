@@ -1,0 +1,121 @@
+<html>
+
+<head>
+<title>CGILua 5.0: Distributed libraries</title>
+<style type="text/css">
+ul { list-style-type: disc };
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<hr>
+<h1>
+<a href="index.html">
+<img border=0 alt="CGILua" src="cgi-128.gif"></a>
+Distributed libraries
+</H1>
+
+<small><FONT FACE="Arial,Helvetica">
+<a href="#cookies">cookies</a> &middot;
+<a href="#dir">directories</a> &middot;
+<a href="#prep">HTML pre-processing</a> &middot;
+<a href="#post">POST data processing</a> &middot;
+<a href="#urlcode">URL encoding</a>
+</font></small>
+
+<hr>
+<a name="cookies"</a>
+<h2>Cookies
+
+<a name="get"></a>
+<h3><code>cookie.get (name)</code></h3>
+Gets the value of the named cookie
+
+<a name="set"></a>
+<h3><code>cookie.set (name, value, options)</code></h3>
+Sets the value of the named cookie.
+This function should be called before the HTTP header was sent.
+
+<a name="sethtml"></a>
+<h3><code>cookie.sethtml (name, value, options)</code></h3>
+Sets the value of the named cookie.
+This function generates a <code>&lt;meta&gt;</code> HTML element
+so it should be called after the <code>&lt;head&gt;</code> HTML tag
+was produced and before the <code>&lt;body&gt;</code>.
+
+<a name="delete"></a>
+<h3><code>cookie.delete (name, options)</code></h3>
+Deletes the value of the named cookie by setting its value to <code>xxx</code>.
+
+
+<hr>
+<a name="dir"></a>
+<h2>Directories</h2>
+
+<a name="chdir"></a>
+<h3><code>dir.chdir (path)</code></h3>
+Changes the current working directory.
+
+<a name="getcwd"></a>
+<h3><code>dir.getcwd ()</code></h3>
+Returns the current working directory or <code>nil</code> plus an error string.
+
+
+<hr>
+<a name="prep"</a>
+<h2>Pre-processing</h2>
+
+<a name="translate"></a>
+<h3><code>translate (string)</code></h3>
+Create a string with Lua code that reproduce the given string executing
+the Lua chunks or expressions inside it.
+
+<a name="setcompatmode"></a>
+<h3><code>setcompatmode (boolean)</code></h3>
+Turns on or off the compatibility mode.
+Turning it on will make the translator understands the old
+<i>expression fields</i> and <i>code fields</i>
+structures, now obsolete.
+
+<a name="setoutfunc"></a>
+<h3><code>setoutfunc (string)</code></h3>
+Defines the output function.
+The translator will write calls to the function with the given name.
+
+
+<hr>
+<a name="urlcode"></a>
+<h2>URL-encode</h2>
+
+<a name="url_unescape"></a>
+<h3><code>url_unescape (str)</code></h3>
+Decode an URL-encoded string following RFC-2396.
+
+<a name="url_escape"></a>
+<h3><code>url_escape (str)</code></h3>
+URL-encode a string following RFC-2396.
+
+<a name="url_insertfield"></a>
+<h3><code>url_insertfield (args, name, value)</code></h3>
+Insert a (name=value) pair into table args.
+
+<a name="url_parsequery"></a>
+<h3><code>url_parsequery (query, args)</code></h3>
+Parse URL-encoded request data
+(the query part of the script URL or URL-encoded POST data).
+Each decoded (name=value) pair is inserted into table args.
+
+<a name="url_encodetable"></a>
+<h3><code>url_encodetable (args)</code></h3>
+URL-encode the elements of a table creating a string to be used in an
+URL for passing data/parameters to another script.
+
+<hr>
+<small>
+$Id: libraries.html,v 1.1 2004/03/25 19:31:05 tomas Exp $
+</small>
+
+</body>
+</html>
+
