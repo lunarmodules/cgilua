@@ -1,15 +1,12 @@
 # Installation directories
 LUA_DIR= /usr/local/share/lua/5.0
 LUA_LIBDIR= /usr/local/lib/lua/5.0
-# CGILua root directory
-CGILUA_DIR= /usr/local/cgilua
 # Apache root directory
 APACHE2_DIR= /usr/local/apache2
 CGI_DIR= $(APACHE2_DIR)/cgi-bin
 # Lua FastCGI directory
 FCGI_DIR= $(APACHE2_DIR)/fcgilua
 # Lua Apache module directory
-MOD_DIR= $(CGILUA_DIR)
 MOD_DEFS= -DLUA_STATE_PER_PROCESS
 #MOD_DEFS= -DLUA_STATE_PER_REQUEST
 # Lua Compiler
@@ -47,4 +44,4 @@ CGILUA_DOC=        $(CGILUA_DIR)/doc
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.21 2004/09/27 14:56:17 tomas Exp $
+# $Id: config,v 1.22 2004/09/29 18:22:11 tomas Exp $
