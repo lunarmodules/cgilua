@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: mainscript.lua,v 1.5 2003/08/05 14:59:00 tomas Exp $
+-- $Id: mainscript.lua,v 1.6 2003/08/12 11:13:26 tomas Exp $
 --
 -- CGILua "main" script
 ----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ cgilua.setmaxfilesize(500 * 1024) -- 500 KB
 ----------------------------------------------------------------------------
 
 -- get the 'physical' directory of the script
-cgilua.script_pdir = cgilua.splitpath(cgilua.script_path)
+cgilua.script_pdir, cgilua.script_file = cgilua.splitpath(cgilua.script_path)
 
 -- check if CGILua handles this script type
 local handler = cgilua.getscripthandler (cgilua.script_path)
@@ -113,7 +113,7 @@ else
 	-- set the script environment
 	cgilua.doenv(cgilua.script_pdir.."env.lua")
 
-	handler (cgilua.script_path)
+	handler (cgilua.script_file)
 	cgilua.close()				-- "close" function
 end
 
