@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.7 2004/04/20 14:58:52 tomas Exp $
+-- $Id: cgilua.lua,v 1.8 2004/04/27 17:08:01 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -20,6 +20,7 @@ setmetatable (Public, {
 })
 
 local _require = require
+local _loadlib = loadlib
 
 local assert, error, _G, loadstring, loadfile, type, unpack, xpcall = assert, error, _G, loadstring, loadfile, type, unpack, xpcall
 local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
@@ -75,6 +76,11 @@ end
 servervariable = HTTP_Request.servervariable
 
 ----------------------------------------------------------------------------
+-- Primitive error output function
+----------------------------------------------------------------------------
+error_log = HTTP_Response.errorlog
+
+----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
 --  to the server
 -- Its basic implementation is to use Lua function 'write', which writes
@@ -108,7 +114,10 @@ _G.require = function (packagename)
 			strfind (packagename, "%.%.")),
 		"Package name cannot contain punctuation characters")
 	_G.LUA_PATH = format ("%s?.lua;%s?", libdir, libdir)
-	return _require (packagename)
+	_G.loadlib = _loadlib
+	local ret = _require (packagename)
+	_G.loadlib = nil
+	return ret
 end
 
 ----------------------------------------------------------------------------
