@@ -2,7 +2,7 @@
 # CGILua root directory
 CGILUA_DIR= /usr/local/cgilua
 # System's libraries directory (where Lua libraries are installed)
-LIB_DIR= /usr/local/lib
+LIB_DIR= /usr/local/cgilua
 # Apache root directory
 APACHE2_DIR= /usr/local/apache2
 CGI_DIR= $(APACHE2_DIR)/cgi-bin
@@ -50,4 +50,4 @@ CGILUA_TMPDIR= $(CGILUA_DIR)/tmp
 CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
 CGILUA_DOC= $(CGILUA_DIR)/doc
 
-# $Id: config,v 1.15 2004/07/29 14:52:28 tomas Exp $
+# $Id: config,v 1.16 2004/07/29 15:27:28 tomas Exp $
