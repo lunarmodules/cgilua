@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: auxiliar.lua,v 1.2 2003/04/11 11:22:44 tomas Exp $
+-- $Id: auxiliar.lua,v 1.3 2003/04/14 16:39:40 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -13,7 +13,9 @@ local _G = _G
 local io = io
 local loadfile = loadfile
 local os = os
+local require = require
 local table = table
+local translate = translate
 local type = type
 local string = string
 setfenv (1, { __fenv = 1 })
@@ -214,13 +216,13 @@ end
 --  currently 'open' HTML document. 
 ----------------------------------------------------------------------------
 function Public.includehtml (filename)
-  Public.loadlibrary("preprocess")
-  if not readfrom(filename) then
+  --Public.loadlibrary("preprocess")
+  if not io.input(filename) then
     _ALERT("Error opening file '"..filename.."', preprocessing aborted")
     return
   end
-  local prog = read("*a")
-  readfrom()
+  local prog = io.read("*a")
+  io.input()
   prog = translate(prog, "file "..filename)
   if prog then
     return dostring(prog, "@"..filename)
@@ -254,10 +256,10 @@ end
 -- URL-encode a string (see RFC 2396)
 ----------------------------------------------------------------------------
 function Public.escape (str)
-  local estr = gsub(gsub(gsub(str,"\n","\r\n"),
+  local estr = string.gsub(string.gsub(string.gsub(str,"\n","\r\n"),
                          "([^%w ])",
 			 function(c) 
-                           return format("%%%02X", strbyte(c))
+                           return string.format("%%%02X", string.byte(c))
                          end),
                     " ","+")
   return estr

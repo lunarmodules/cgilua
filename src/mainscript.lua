@@ -1,25 +1,20 @@
 ----------------------------------------------------------------------------
--- $Id: mainscript.lua,v 1.2 2003/04/11 11:22:44 tomas Exp $
+-- $Id: mainscript.lua,v 1.3 2003/04/14 16:39:40 tomas Exp $
 --
 -- CGILua "main" script
 ----------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------
--- Load auxiliar functions defined in CGILua namespace (cgilua)
-----------------------------------------------------------------------------
-local aux = main_dir.."auxiliar.lua"
-local f_aux, err = loadfile (aux)
-assert (f_aux, err)
-f_aux()
-
-----------------------------------------------------------------------------
 -- CGILua Libraries configuration
 ----------------------------------------------------------------------------
 
--- Redefine require
+-- Redefine require e loadlib
 local original_lib_dir = lib_dir
 local original_loadlib = loadlib
 _G.loadlib = nil
+local nova_loadlib = function (packagename, funcname)
+	return original_loadlib (original_lib_dir..packagename, funcname)
+end
 local original_require = require
 setfenv (1, _G)
 _G.require = function (packagename)
@@ -28,12 +23,23 @@ _G.require = function (packagename)
 			string.find (packagename, "%.%.")),
 		"Package name cannot contain punctuation characters")
 
-	_G.loadlib = original_loadlib
-	_G.LUA_PATH = original_lib_dir
+	_G.loadlib = nova_loadlib
+	_G.LUA_PATH = original_lib_dir.."?.lua"
 	original_require (packagename)
 	_G.loadlib = nil
 end
 
+----------------------------------------------------------------------------
+-- Load auxiliar functions defined in CGILua namespace (cgilua)
+----------------------------------------------------------------------------
+require"prep"
+local aux = main_dir.."auxiliar.lua"
+local f_aux, err = loadfile (aux)
+assert (f_aux, err)
+f_aux()
+
+
+----------------------------------------------------------------------------
 --
 -- Set CGILua's default libraries directory
 --

@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: prep.lua,v 1.1 2003/04/07 15:53:53 tomas Exp $
+-- $Id: prep.lua,v 1.2 2003/04/14 16:39:40 tomas Exp $
 ----------------------------------------------------------------------------
 
 local Prep = {}
@@ -8,7 +8,7 @@ local Prep = {}
 -- return current line; that is, the line that starts the current mark
 function Prep:CurrentLine ()
   local pos = self.marks[self.current].i
-  local dummy, nl = gsub(strsub(self.s, 1, pos), "\n", "")
+  local dummy, nl = string.gsub(string.sub(self.s, 1, pos), "\n", "")
   return nl+1
 end
 
@@ -16,7 +16,7 @@ end
 -- building an appropriate error message if needed
 function Prep:checkField (fields, f)
   if not fields[f] then
-    error(format("mark `%s' without field `%s' (at line %d)",
+    error(string.format("mark `%s' without field `%s' (at line %d)",
                   self.marks[self.current].label,
                   f,
                   self:CurrentLine()))
@@ -31,7 +31,7 @@ function Prep:checkMark (mark)
   if next == mark then
     self.current = self.current + 1
   else
-    error(format("unexpected `%s' at line %d", next, self:CurrentLine()))
+    error(string.format("unexpected `%s' at line %d", next, self:CurrentLine()))
   end
 end
 
@@ -43,15 +43,15 @@ end
 -- other stuff.
 function Prep:getFields (s)
   local fields = {}
-  s = gsub(s, "(%s*)(%w+)[ \t]*=[ \t]*(['\"])(.-)%3(%s*),?",
+  s = string.gsub(s, "(%s*)(%w+)[ \t]*=[ \t]*(['\"])(.-)%3(%s*),?",
         function (s1, k, _, v, s2)
-          %fields[k] = s1..v..s2     -- keep eventual newlines
+          fields[k] = s1..v..s2     -- keep eventual newlines
         end)
-  s = gsub(s, '[ \t]', '')   -- remove extra spaces
+  s = string.gsub(s, '[ \t]', '')   -- remove extra spaces
   if s ~= "" then   -- still something left?
     self.current = self.marks.n   -- to call CurrentLine
-    error(format("unexpected character `%s' (0x%02x) in mark %s on line %d",
-          strsub(s, 1, 1), strbyte(s), self.marks[self.current].label,
+    error(string.format("unexpected character `%s' (0x%02x) in mark %s on line %d",
+          string.sub(s, 1, 1), string.byte(s), self.marks[self.current].label,
           self:CurrentLine()))
   end
   return fields
@@ -72,7 +72,7 @@ function Prep:scan ()
   self.marks = marks
   -- collect all expression marks ($| ... |$)
   while 1 do
-    i, e = strfind(s, "%$|.-|%$", i)
+    i, e = string.find(s, "%$|.-|%$", i)
     if not i then break end
     tinsert(marks, {label = "EXP", i = i, e = e})
     i = e+1
@@ -81,7 +81,7 @@ function Prep:scan ()
   i = 1
   while 1 do
     local label, fields
-    i, e, label, fields = strfind(s, "<!%-%-%$%$[ \t]*(%u*)(.-)%$%$%-%->", i)
+    i, e, label, fields = string.find(s, "<!%-%-%$%$[ \t]*(%u*)(.-)%$%$%-%->", i)
     if not i then break end
     tinsert(marks, {label = "CODE", i = i, e = e})
     if self.labels[label] then   -- known label?
@@ -91,7 +91,7 @@ function Prep:scan ()
     end
     i = e+1
   end
-  tinsert(marks, {label = "end-of-file", i = strlen(s)+1})
+  tinsert(marks, {label = "end-of-file", i = string.len(s)+1})
   -- put marks in proper order
   sort (marks, function (a,b) return a.i < b.i end)
   self.current = 2
@@ -100,25 +100,25 @@ end
 
 function Prep:out (s)
   if s == '' then return s end
-  s = gsub(s, '[ \t]+', ' ')    -- remove multiple spaces
-  s = gsub(s, ' ?\n ?', '\n')   -- keeping newlines (for correct line numbers)
+  s = string.gsub(s, '[ \t]+', ' ')    -- remove multiple spaces
+  s = string.gsub(s, ' ?\n ?', '\n')   -- keeping newlines (for correct line numbers)
   -- put eventual `[[' or `]]' outside string
-  s = gsub(s, "([%[%]])%1", "]],'%1%1',[[")
-  return format(" cgilua.put([[%s]]); ", s)
+  s = string.gsub(s, "([%[%]])%1", "]],'%1%1',[[")
+  return string.format(" cgilua.put([[%s]]); ", s)
 end
 
 
 function Prep:EXP ()
   local mark = self.marks[self.current]
   self.current = self.current + 1
-  return format(" cgilua.put(%s or ''); ", strsub(self.s, mark.i+2, mark.e-2))
+  return string.format(" cgilua.put(%s or ''); ", string.sub(self.s, mark.i+2, mark.e-2))
 end
 
 
 function Prep:CODE ()
   local mark = self.marks[self.current]
   self.current = self.current + 1
-  return " do " .. strsub(self.s, mark.i+6, mark.e-5) .. " end  "
+  return " do " .. string.sub(self.s, mark.i+6, mark.e-5) .. " end  "
 end
 
 
@@ -131,9 +131,9 @@ function Prep:LOOP ()
   local body = self:body()
   self:checkMark("ENDLOOP")
   return
-    format("do %s  local __ = 1; ", fields.start) ..
-    format("while 1 do if __ then __ = nil else %s end; ", fields.action) ..
-    format("if not (%s) then break end; ", fields.test) ..
+    string.format("do %s  local __ = 1; ", fields.start) ..
+    string.format("while 1 do if __ then __ = nil else %s end; ", fields.action) ..
+    string.format("if not (%s) then break end; ", fields.test) ..
     body ..
    "end; end; " 
 end
@@ -151,7 +151,7 @@ function Prep:IF ()
     elsepart = " else " .. self:body()
   end
   self:checkMark("ENDIF")
-  return format("if (%s) then %s  %s end", fields.test, thenpart, elsepart)
+  return string.format("if (%s) then %s  %s end", fields.test, thenpart, elsepart)
 end
 
 
@@ -159,7 +159,7 @@ function Prep:body ()
   local marks = self.marks
   local code = ""
   while self.current <= marks.n do
-    code = code .. self:out(strsub(self.s, marks[self.current-1].e+1,
+    code = code .. self:out(string.sub(self.s, marks[self.current-1].e+1,
                                             marks[self.current].i-1))
     local next = self[marks[self.current].label]
     if next then
@@ -184,7 +184,7 @@ end
 function translate (prog, source)
   source = source or "(no source)"
   local EM = function (m)
-               _ALERT(format("error translating %s:\n  %s\n", %source, m))
+               _ALERT(format("error translating %s:\n  %s\n", source, m))
              end
-  return call(%Prep.Main, {%Prep, prog}, "x", EM)
+  return pcall(Prep.Main, {Prep, prog}, "x", EM)
 end

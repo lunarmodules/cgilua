@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: upload.lua,v 1.1 2003/04/07 15:53:55 tomas Exp $ 
+-- $Id: upload.lua,v 1.2 2003/04/14 16:39:40 tomas Exp $ 
 --
 -- Multipart/form-data processing (with file upload)
 ----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ local Upload = {
 -- Extract the boundary string from CONTENT_TYPE metavariable
 ----------------------------------------------------------------------------
 function Upload:getboundary ()
-  local _,_,boundary = strfind(getenv("CONTENT_TYPE"), "boundary%=(.-)$")
+  local _,_,boundary = string.find(os.getenv("CONTENT_TYPE"), "boundary%=(.-)$")
   return  "--"..boundary 
 end
 
@@ -48,9 +48,9 @@ end
 ----------------------------------------------------------------------------
 function Upload:breakheaders (hdrdata)
   local headers = {}
-  gsub(hdrdata, '([^%c%s:]+):%s+([^\n]+)', function(type,val)
-    type = strlower(type)
-    %headers[type] = val
+  string.gsub(hdrdata, '([^%c%s:]+):%s+([^\n]+)', function(type,val)
+    type = string.lower(type)
+    headers[type] = val
   end)
   return headers
 end
@@ -75,7 +75,7 @@ function Upload:readfieldheaders ()
   end				--  (no more fields to process)
 
   -- read header data from temporary file
-  local hdrdata = read(self.inputfile, bytesread - strlen(EOH))
+  local hdrdata = read(self.inputfile, bytesread - string.len(EOH))
 
   -- parse headers
   return self:breakheaders(hdrdata)
@@ -88,8 +88,8 @@ function Upload:getfieldnames (headers)
   local disposition_hdr = headers["content-disposition"]
   local attrs = {}
   if disposition_hdr then
-    gsub(disposition_hdr, ';%s*([^%s=]+)="(.-)"', function(attr, val)
-	   %attrs[attr] = val
+    string.gsub(disposition_hdr, ';%s*([^%s=]+)="(.-)"', function(attr, val)
+	   attrs[attr] = val
          end)
   else
     error("Error processing multipart/form-data."..
@@ -115,7 +115,7 @@ function Upload:readfieldcontents ()
   end
 
   -- copy the field contents to a string
-  return read(self.inputfile, bytesread - strlen(boundaryline))
+  return read(self.inputfile, bytesread - string.len(boundaryline))
 end
 
 ----------------------------------------------------------------------------
@@ -141,14 +141,14 @@ function Upload:fileupload (filename)
   self.bytesleft = self.bytesleft - bytesread
 
   if status == "boundary" then
-    return file, bytesread - strlen(boundaryline)
+    return file, bytesread - string.len(boundaryline)
   elseif status == "count" and count == self.maxfilesize then
     cgilua.discardinput(self.bytesleft)
-    error(format("Maximum file size (%d KB) exceeded while uploading '%s'", 
+    error(string.format("Maximum file size (%d KB) exceeded while uploading '%s'", 
                  self.maxfilesize / 1024, filename))
   else
      error("Error processing multipart/form-data."..
-           format("\nUnexpected end of input while uploading %s", filename))
+           string.format("\nUnexpected end of input while uploading %s", filename))
   end
 end
 
@@ -230,5 +230,5 @@ function Upload:Main (inputsize, maxfilesize, args)
 end
 
 function upl_formupload (inputsize, maxfilesize, args)
-  %Upload.Main(%Upload, inputsize, maxfilesize, args)
+  Upload.Main(Upload, inputsize, maxfilesize, args)
 end
