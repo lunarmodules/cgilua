@@ -27,7 +27,7 @@ CGILUA_DEFS= -DINCLUDE_LUA
 # On FreeBSD systems, the following line should be commented
 DLLIB= -ldl
 WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings
-INCS= -I/usr/local/include/lua5
+INCS= -I/usr/local/include/lua5 -I..
 CFLAGS= $(WARN) $(INCS) $(CGILUA_DEFS)
 CC= gcc
 
@@ -44,4 +44,4 @@ CGILUA_DOC=        $(CGILUA_DIR)/doc
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.23 2004/10/13 20:07:58 tomas Exp $
+# $Id: config,v 1.24 2004/10/15 10:53:23 tomas Exp $
