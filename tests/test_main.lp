@@ -19,8 +19,8 @@ end
 <br>
 ap = <?lua= tostring(ap) ?> <br>
 lfcgi = <% = tostring(lfcgi) %> <br>
-<%= (ap and ap.handler()) or "" %>
+<%= (ap and ap.handler()) or "" %> <br>
 
 </body>
-<small>$Id: test_main.lp,v 1.1 2004/03/25 19:31:05 tomas Exp $</small>
+<small>$Id: test_main.lp,v 1.2 2004/05/18 14:58:50 tomas Exp $</small>
 </html>

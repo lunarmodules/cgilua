@@ -65,6 +65,32 @@ Changes the current working directory.
 <h3><code>filesystem.currentdir ()</code></h3>
 Returns the current working directory or <code>nil</code> plus an error string.
 
+<a name="lock"></a>
+<h3><code>filesystem.lock (filehandle, mode[, start[, length]])</code></h3>
+Locks a file or a part of it.
+This function works on <em>open files</em>;
+the file handle should be specified as the first argument.
+The string <code>mode</code> could be either <code>r</code> (for a read/shared
+lock) or <code>w</code> (for a write/exclusive lock).
+The optional arguments <code>start</code> and <code>length</code> can be
+used to specify a starting point and its length;
+both should be numbers.
+This function returns a boolean indicating if the operation was successful;
+in case of error, it returns <code>false</code> plus a string describing the
+error.
+
+<a name="unlock"></a>
+<h3><code>filesystem.unlock (filehandle[, start[, length]])</code></h3>
+Unlocks a file or a part of it.
+This function works on <em>open files</em>;
+the file handle should be specified as the first argument.
+The optional arguments <code>start</code> and <code>length</code> can be
+used to specify a starting point and its length;
+both should be numbers.
+This function returns a boolean indicating if the operation was successful;
+in case of error, it returns <code>false</code> plus a string describing the
+error.
+
 
 <hr>
 <a name="prep"</a>
@@ -117,7 +143,7 @@ URL for passing data/parameters to another script.
 
 <hr>
 <small>
-$Id: libraries.html,v 1.5 2004/05/12 18:37:53 tomas Exp $
+$Id: libraries.html,v 1.6 2004/05/18 14:58:50 tomas Exp $
 </small>
 
 </body>
