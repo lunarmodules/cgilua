@@ -40,11 +40,6 @@ PKG= cgilua-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 DIST_DIR= ../$(PKG)/$T
-#CGILUA_LIBDIR=     $(CGILUA_DIR)/lib
-#CGILUA_LUADIR=     $(CGILUA_DIR)/lua
-#CGILUA_CGILUADIR=  $(CGILUA_DIR)/lib/cgilua
-#CGILUA_USRLIBDIR=  $(CGILUA_DIR)/usr/lib
-#CGILUA_CONFDIR=    $(CGILUA_DIR)/conf
 CGILUA_DIR=        $(LUA_DIR)/cgilua
 CGILUA_TMPDIR=     $(CGILUA_DIR)/tmp
 CGILUA_DOC=        $(CGILUA_DIR)/doc
@@ -52,4 +47,4 @@ CGILUA_DOC=        $(CGILUA_DIR)/doc
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.19 2004/08/26 09:20:57 tomas Exp $
+# $Id: config,v 1.20 2004/08/27 15:42:46 tomas Exp $
