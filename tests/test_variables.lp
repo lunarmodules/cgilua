@@ -4,15 +4,4 @@
 <% end %>
 </table>
 
-script_vpath = [<%= cgilua.script_vpath %>]<br>
-script_vdir = [<%= cgilua.script_vdir %>]<br>
-urlpath = [<%= cgilua.urlpath %>]<br>
-<%= cgilua.mkurlpath("outro.lua") %>
-<%
-vp = cgilua.script_vpath
-if vp and vp ~= "" then
-	cgilua.put ("PATH_INFO")
-else
-	cgilua.put ("SCRIPT_NAME")
-end
-%>
+<p>
