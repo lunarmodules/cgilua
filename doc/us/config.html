@@ -26,11 +26,11 @@
   </tbody>
 </table>
 </center>
-<center><small><a href="index.html">Home</a>
-&middot; <a href="#build">Building</a>
-&middot; <a href="#pre-installation">Pre-installation</a>
-&middot; <a href="#installation">Installation</a>
-&middot; <a href="#config">Configuration</a></small></center>
+<center><small><a href="index.html">home</a>
+&middot; <a href="#build">building</a>
+&middot; <a href="#pre-installation">pre-installation</a>
+&middot; <a href="#installation">installation</a>
+&middot; <a href="#config">configuration</a></small></center>
 <hr>
 <h2>Contents</h2>
 <ul>
@@ -458,13 +458,6 @@ libraries to the user's script.</p>
       </td>
       <td><br>
       </td>
-      <td><code>cl_ses.lua</code></td>
-    </tr>
-    <tr>
-      <td><br>
-      </td>
-      <td><br>
-      </td>
       <td><code>config.lua</code></td>
     </tr>
     <tr>
@@ -526,6 +519,13 @@ libraries to the user's script.</p>
     <tr>
       <td><br>
       </td>
+      <td><code>stable.lua</code></td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
       <td><code>venv.lua</code></td>
       <td><br>
       </td>
@@ -555,39 +555,22 @@ when Lua 5.1 comes around).</p>
 configuration file, called
 <code>config.lua</code>
 and a set of functions to alter the default
-configuration. <a name="sys_config"></a></p>
+configuration.
+</p>
 
+<a name="sys_config"></a>
 <h3>CGILua configuration</h3>
 
 <p>CGILua system configuration is placed at <code>config.lua</code>.
-This file defines:</p>
+Some of the configuration parameters are listed below:
+</p>
 
 <ul>
-  <li>
-<a href="#usrlibdir">user's libraries directory</a>, by calling
-<a href="reference.html#setlibdir"><code>cgilua.setlibdir</code></a>;
-  </li>
   <li>
 script handlers, by calling
 <a href="reference.html#addscripthandler">
 <code>cgilua.addscripthandler</code></a> (when using Apache module's launcher,
 these handlers must conform to the Apache configuration);
-<!--
-   application script file (optional), by assigning to
-#        appscript variable.  This variable indicates the path
-       of a Lua script that will be executed after the global configuration;
--->
-  </li>
-  <li>user environment script (optional), by assigning to the
-<code>userscriptname</code> variable. This variable indicates the name of a Lua
-script that will be searched on the same directory of the script and executed
-before the script;
-  </li>
-  <li>
-script's path, by assigning to
-<a href="reference.html#script_path"><code>cgilua.script_path</code></a>
-which is the path used by CGILua's main script to find the actual script to run
-(usually this is set to environment variable <code>PATH_TRANSLATED</code>);
   </li>
   <li>
 POST data sizes, by calling <a href="reference.html#setmaxinput">
@@ -595,22 +578,19 @@ POST data sizes, by calling <a href="reference.html#setmaxinput">
 <code>cgilua.setmaxfilesize</code></a>;
   </li>
   <li>
-closing function (optional), by calling
+opening and closing functions, by calling
+<a href="reference.html#addopenfunction"><code>cgilua.addopenfunction</code></a> and
 <a href="reference.html#addclosefunction"><code>cgilua.addclosefunction</code></a>.
-This function will be executed after the end of the script even if an error
-occurs.
+This functions are executed just before and after the script execution,
+even if an error occurs.
   </li>
 </ul>
 
-<span style="background-color: rgb(255, 153, 0);">
-</span><a name="error_handling"></a><br>
-
+<a name="error_handling"></a>
 <h3>Error Handling</h3>
 
-<p>There are three functions to configure the error handling in 
-CGILua: one for building the error message and two for generating
-the output (output sent to the client's browser and output to the
-error log).</p>
+<p>There are three functions to handle errors in CGILua:
+</p>
 
 <p>The function <a href="reference.html#seterrorhandler">
 <code>cgilua.seterrorhandler</code></a> defines the <i>error handler</i>,
@@ -620,14 +600,16 @@ build an error message using stack information. Lua also provides a function
 to do that: <code>debug.traceback</code>.</p>
 
 <p>The function <a href="reference.html#seterroroutput">
-<code>cgilua.seterroroutput</code></a> defines the function that sends the
-message to the client's browser -- or not. The output can be a standard polite
-message avoiding user's misunderstanding.</p>
+<code>cgilua.seterroroutput</code></a> defines the function that decides
+what to do with the message.
+It could be sent to the client's browser or written to the log file
+or sent to an e-mail address (with the help of LuaSocket, for example).
+</p>
 
-<p>An appropriate error message with all information necessary for debugging
-can be logged by the function defined with
-<a href="reference.html#seterrorlog"><code>cgilua.seterrorlog</code></a>.
+<p>The function
+<a href="reference.html#errorlog"><code>cgilua.errorlog</code></a>
+is provided to write directly to the http server error log file.
 </p>
 <hr>
-<small>$Id: config.html,v 1.25 2004/12/15 13:26:13 carregal Exp $</small>
+<small>$Id: config.html,v 1.26 2004/12/15 15:14:39 tomas Exp $</small>
 </body></html>
