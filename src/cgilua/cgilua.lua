@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.12 2004/11/23 10:44:18 tomas Exp $
+-- $Id: cgilua.lua,v 1.13 2004/12/13 23:40:07 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -213,6 +213,31 @@ function preprocess (filename)
 end
 
 ----------------------------------------------------------------------------
+-- Builds a handler that sends a header and the contents of the given file.
+-- Sends the contents of the file to the output without processing it.
+----------------------------------------------------------------------------
+function buildplainhandler (type, subtype)
+	return function (filename)
+		contentheader (type, subtype)
+		local fh = assert (_open (filename))
+		local prog = fh:read("*a")
+		fh:close()
+		put (prog)
+	end
+end
+
+----------------------------------------------------------------------------
+-- Builds a handler that sends a header and the processed file.
+-- Sends the contents of the file to the output without processing it.
+----------------------------------------------------------------------------
+function buildprocesshandler (type, subtype)
+	return function (filename)
+		contentheader (type, subtype)
+		includehtml (filename)
+	end
+end
+
+----------------------------------------------------------------------------
 -- Create an URL path to be used as a link to a CGILua script
 ----------------------------------------------------------------------------
 function mkurlpath (script, args)
@@ -318,7 +343,7 @@ end
 ----------------------------------------------------------------------------
 function getscripthandler (path)
 	local i,f, ext = strfind (path, "%.([^.]+)$")
-	return script_handlers[strlower(ext or '')] or default_handler
+	return script_handlers[strlower(ext or '')]
 end
 
 ---------------------------------------------------------------------------
@@ -327,7 +352,8 @@ end
 -- @return The returned values from the script.
 ---------------------------------------------------------------------------
 function handle (path)
-	return getscripthandler (path) (path)
+	local h = assert (getscripthandler (path), "There is no handler defined to process this kind of file ("..path..")")
+	return h (path)
 end
 
 ---------------------------------------------------------------------------
