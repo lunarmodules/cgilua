@@ -1,390 +1,429 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
+
 <head>
-<meta name="generator" content="HTML Tidy, see www.w3.org">
 <title>CGILua 5.0: Reference</title>
 <style type="text/css">
 ul { list-style-type: disc };
 </style>
 </head>
+
 <body bgcolor="#FFFFFF">
+
 <center>
-<table border="0" cellspacing="2" cellpadding="2">
-<tr>
-<td align="center"><a href="http://www.keplerproject.org"><img
-border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
-</tr>
-
-<tr>
-<td align="center"><big><b>CGILua 5.0</b></big> </td>
-</tr>
-
-<tr>
-<td align="center" valign="top">Reference guide</td>
-</tr>
+<table border=0 cellspacing=2 cellpadding=2>
+<tr><td align=center><a href="http://www.keplerproject.org">
+<img border=0 alt="CGILua" src="cgi-128.gif"></a>
+<tr><td align=center><big><b>CGILua 5.0</b></big>
+<tr><td align=center valign=top>Reference guide
 </table>
 </center>
+<p>
 
-<p></p>
-
-<center><small><a href="index.html">home</a> &middot; <a href=
-"#headers">headers</a> &middot; <a href="#prep">pre-processing</a>
-&middot; <a href="#contents">contents</a> &middot; <a href=
-"#variables">variables</a> &middot; <a href=
-"#error_treatment">error treatment</a> &middot; <a href=
-"#behavior">behavior</a> &middot; <a href="#auxiliar">auxiliar</a>
-&middot; <a href="#internals">internals</a> &middot; <a href=
-"#index">index</a></small></center>
+<center><small>
+<a href="index.html">home</a> &middot;
+<a href="#headers">headers</a> &middot;
+<a href="#contents">contents</a> &middot;
+<a href="#prep">pre-processing</a> &middot;
+<a href="#variables">variables</a> &middot;
+<a href="#error_treatment">error treatment</a> &middot;
+<a href="#behavior">behavior</a> &middot;
+<a href="#auxiliar">auxiliar</a> &middot;
+<a href="#urlcode">encoding</a> &middot;
+<a href="#internals">internals</a> &middot;
+<a href="#index">index</a>
+</small></center>
 
 <hr>
-<a name="headers"></a> 
-
+<a name="headers"</a>
 <h2>Headers</h2>
 
-<a name="contentheader"></a> 
-
+<a name="contentheader"></a>
 <h3><code>cgilua.contentheader (type, subtype)</code></h3>
-
-Sends a <i>Content-type</i> header with the given values of type
-and sub-type.<br>
+Sends a <i>Content-type</i> header with the given values of type and
+sub-type.<br>
 Both arguments are strings: <tt>type</tt> is the header type;
 <tt>subtype</tt> is the header sub-type.<br>
-Returns nothing. <a name="htmlheader"></a> 
+Returns nothing.
 
+<a name="htmlheader"></a>
 <h3><code>cgilua.htmlheader ()</code></h3>
+Sends the header of a HTML file (<i>Content-type: text/html</i> followed
+by two <i>line-feeds</i>).<br>
+Returns nothing.
 
-Sends the header of a HTML file (<i>Content-type: text/html</i>
-followed by two <i>line-feeds</i>).<br>
-Returns nothing. <a name="locationheader"></a> 
-
+<a name="locationheader"></a>
 <h3><code>cgilua.locationheader (url)</code></h3>
-
 Sends the header to force a redirection to the given URL.<br>
 The argument must be a string.<br>
-Returns nothing. <a name="redirect"></a> 
+Returns nothing.
 
+<a name="redirect"></a>
 <h3><code>cgilua.redirect (url, args)</code></h3>
-
-Sends the header to force a redirection to the given URL adding the
-parameters in table <tt>args</tt> to the new URL.<br>
+Sends the header to force a redirection to the given URL adding the parameters
+in table <tt>args</tt> to the new URL.<br>
 The first argument (<tt>url</tt>) is the URL the browser should be
-redirected to; the second one (<tt>args</tt>) is an optional table
-which could have pairs <i>name = value</i> that will be encoded to
-form a valid URL (see function <a href=
-"#encodetable">cgilua.urlcode.encodetable</a>).<br>
-Returns nothing. <a name="header"></a> 
+redirected to;
+the second one (<tt>args</tt>) is an optional table which could have pairs
+<i>name = value</i> that will be encoded to form a valid URL
+(see function <a href="#encodetable">cgilua.urlcode.encodetable</a>).<br>
+Returns nothing.
 
+<a name="header"></a>
 <h3><code>cgilua.header (header, value)</code></h3>
+Sends a generic header.
+This function should <em>not</em> be used to generate a
+<em>Content-type</em> nor a <em>Location</em> header.<br>
+Both arguments are strings: <tt>header</tt> is the name of the header;
+<tt>value</tt> is its value.<br>
+Returns nothing.
 
-Sends a generic header. This function should <em>not</em> be used
-to generate a <em>Content-type</em> nor a <em>Location</em>
-header.<br>
-Both arguments are strings: <tt>header</tt> is the name of the
-header; <tt>value</tt> is its value.<br>
-Returns nothing. 
 
 <hr>
-<a name="contents"></a> 
-
+<a name="contents"></a>
 <h2>Content generation</h2>
 
-<a name="mkabsoluteurl"></a> 
-
+<a name="mkabsoluteurl"></a>
 <h3><code>cgilua.mkabsoluteurl (path)</code></h3>
-
 Creates an absolute URL containing the given URL path.<br>
-Returns nothing. <a name="mkurlpath"></a> 
+Returns nothing.
 
+<a name="mkurlpath"></a>
 <h3><code>cgilua.mkurlpath (script [, args])</code></h3>
-
 Creates an URL path to be used as a link to a CGILua script.<br>
-Returns nothing. <a name="put"></a> 
+Returns nothing.
 
+<a name="put"></a>
 <h3><code>cgilua.put (string)</code></h3>
-
 Sends the given string to the client.<br>
-Returns nothing. <a name="error_log"></a> 
+Returns nothing.
 
-<h3><code>cgilua.error_log (string)</code></h3>
-
-Sends the given string to the error log file.<br>
-Returns nothing. 
 
 <hr>
-<a name="prep"></a> 
-
+<a name="prep"</a>
 <h2>Pre-processing</h2>
 
-<a name="includehtml"></a> 
-
+<a name="includehtml"></a>
 <h3><code>cgilua.includehtml (filename)</code></h3>
+Pre-processes the given HTML file and sends the result to the client.<br>
+Returns nothing.
 
-Pre-processes the given HTML file and sends the result to the
-client.<br>
-Returns nothing. <a name="preprocess"></a> 
-
+<a name="preprocess"></a>
 <h3><code>cgilua.preprocess (filename)</code></h3>
+Equivalent to <a href="includehtml"><code>includehtml</code></a> but
+sends the HTML header before the pre-processed file.<br>
+Returns nothing.
 
-Equivalent to <a href="includehtml"><code>includehtml</code></a>
-but sends the HTML header before the pre-processed file.<br>
-Returns nothing. 
+<a name="setcompatmode"></a>
+<h3><code>cgilua.prep.setcompatmode (boolean)</code></h3>
+Turns on or off the compatibility mode.
+Turning it on will make the translator understands the old
+<i>expression fields</i> and <i>code fields</i>
+structures, now obsolete.<br>
+Returns nothing.
+
+<a name="setoutfunc"></a>
+<h3><code>cgilua.prep.setoutfunc (outfuncname)</code></h3>
+Defines the output function.
+The translator will write calls to the function with the given name.<br>
+Returns nothing.
+
+<a name="translate"></a>
+<h3><code>cgilua.prep.translate (string)</code></h3>
+Creates a string with Lua code that reproduces the given string executing
+the Lua chunks or expressions inside it.<br>
+Returns a string with the resulting code.
+
 
 <hr>
-<a name="variables"></a> 
-
+<a name="variables"></a>
 <h2>CGILua's variables</h2>
 
-<a name="script_path"></a> 
-
-<h3><code>cgilua.script_path</code></h3>
-
-The complete path of the running script. This variable is usually
-the same as the CGI environment variable
-<code>PATH_TRANSLATED</code>. <a name="script_file"></a> 
-
+<a name="script_file"></a>
 <h3><code>cgilua.script_file</code></h3>
+The file name of the running script.
+Obtained from <a href="#script_path"><code>cgilua.script_path</code></a>.
 
-The file name of the running script. Obtained from <a href=
-"#script_path"><code>cgilua.script_path</code></a>. <a name=
-"script_pdir"></a> 
+<a name="script_path"></a>
+<h3><code>cgilua.script_path</code></h3>
+The complete path of the running script.
+This variable is usually the same as the CGI environment variable
+<code>PATH_TRANSLATED</code>.
 
+<a name="script_pdir"></a>
 <h3><code>cgilua.script_pdir</code></h3>
+The directory of the running script.
+Obtained from <a href="#script_path"><code>cgilua.script_path</code></a>.
 
-The directory of the running script. Obtained from <a href=
-"#script_path"><code>cgilua.script_path</code></a>. <a name=
-"script_vpath"></a> 
-
-<h3><code>cgilua.script_vpath</code></h3>
-
-The complete virtual path of the running script. Equivalent to CGI
-environment variable <code>PATH_INFO</code>. <a name=
-"script_vdir"></a> 
-
+<a name="script_vdir"></a>
 <h3><code>cgilua.script_vdir</code></h3>
+The virtual directory of the running script.
+Obtained from <a href="#script_vpath"><code>cgilua.script_vpath</code></a>.
 
-The virtual directory of the running script. Obtained from <a href=
-"#script_vpath"><code>cgilua.script_vpath</code></a>. <a name=
-"servervariable"></a> 
+<a name="script_vpath"></a>
+<h3><code>cgilua.script_vpath</code></h3>
+The complete virtual path of the running script.
+Equivalent to CGI environment variable <code>PATH_INFO</code>.
 
+<a name="servervariable"></a>
 <h3><code>cgilua.servervariable (varname)</code></h3>
+Returns a string with the value of a CGI environment variable whose name
+is indicated by the argument (<tt>varname</tt>).
 
-Returns the value of a CGI environment variable. <a name=
-"urlpath"></a> 
-
+<a name="urlpath"></a>
 <h3><code>cgilua.urlpath</code></h3>
+The name of the script.
+Equivalent to CGI environment variable <code>SCRIPT_NAME</code>.
 
-The name of the script. Equivalent to CGI environment variable
-<code>SCRIPT_NAME</code>. 
 
 <hr>
-<a name="error_treatment"></a> 
-
+<a name="error_treatment"></a>
 <h2>Error treatment</h2>
 
-<a name="seterrorhandler"></a> 
+<a name="error_log"></a>
+<h3><code>cgilua.error_log (string)</code></h3>
+Sends the given string to the error log file.<br>
+Returns nothing.
 
+<a name="seterrorhandler"></a>
 <h3><code>cgilua.seterrorhandler (func)</code></h3>
+Sets <i>errorhandler</i> function.
+This function is called by Lua when an error occurs.
+It receives the error message generated by Lua and it is resposible
+for the final message which should be returned.<br>
+Returns nothing.
 
-Sets <i>errorhandler</i> function. This function is called by Lua
-when an error occurs. It receives the error message generated by
-Lua and it is resposible for the final message which should be
-returned.<br>
-Returns nothing. <a name="seterrorlog"></a> 
-
+<a name="seterrorlog"></a>
 <h3><code>cgilua.seterrorlog (func)</code></h3>
+Sets the <i>errorlog</i> function.
+This function is called to log the error message.<br>
+Returns nothing.
 
-Sets the <i>errorlog</i> function. This function is called to log
-the error message.<br>
-Returns nothing. <a name="seterroroutput"></a> 
-
+<a name="seterroroutput"></a>
 <h3><code>cgilua.seterroroutput (func)</code></h3>
+Sets the <i>erroroutput</i> function.
+This function is called to generate the error output.<br>
+Returns nothing.
 
-Sets the <i>erroroutput</i> function. This function is called to
-generate the error output.<br>
-Returns nothing. 
 
 <hr>
-<a name="behavior"></a> 
-
+<a name="behavior"></a>
 <h2>CGILua's behavior</h2>
 
-<a name="addscripthandler"></a> 
-
+<a name="addscripthandler"></a>
 <h3><code>cgilua.addscripthandler (ext, func)</code></h3>
+Defines a function to pre-process a certain type of files.
+The default configuration uses
+<code>cgilua.doscript</code> to process Lua scripts (<tt>.lua</tt> files) and
+<code>cgilua.preprocess</code> to process HTML templates (<tt>.lp</tt> files).<br>
+Returns nothing.
 
-Defines a function to pre-process a certain type of files. The
-default configuration uses <code>cgilua.doscript</code> to process
-Lua scripts (<tt>.lua</tt> files) and
-<code>cgilua.preprocess</code> to process HTML templates
-(<tt>.lp</tt> files).<br>
-Returns nothing. <a name="addclosefunction"></a> 
-
+<a name="addclosefunction"></a>
 <h3><code>cgilua.addclosefunction (func)</code></h3>
-
 Defines a function to be executed after the script execution.<br>
-Returns nothing. <a name="addopenfunction"></a> 
+Returns nothing.
 
+<a name="addopenfunction"></a>
 <h3><code>cgilua.addopenfunction (func)</code></h3>
-
 Defines a function to be executed before the script execution.<br>
-Returns nothing. <a name="setlibdir"></a> 
+Returns nothing.
 
+<a name="setlibdir"></a>
 <h3><code>cgilua.setlibdir (dir)</code></h3>
+Sets CGILua's default libraries directory.
+This value will be used to build the current <code>LUA_PATH</code>
+used by the redefined <code>require</code> function.<br>
+Returns nothing.
 
-Sets CGILua's default libraries directory. This value will be used
-to build the current <code>LUA_PATH</code> used by the redefined
-<code>require</code> function.<br>
-Returns nothing. <a name="setmaxfilesize"></a> 
-
+<a name="setmaxfilesize"></a>
 <h3><code>cgilua.setmaxfilesize (size)</code></h3>
+Sets the maximum size for each "uploaded" file (in bytes).
+This value is bounded by the maximum "total" input size (see
+<a href="#setmaxinput">cgilua.setmaxinput</a>).
+This function only takes efect if used before POST data is processed,
+therefore its use in scripts are useless.<br>
+Returns nothing.
 
-Sets the maximum size for each "uploaded" file (in bytes). This
-value is bounded by the maximum "total" input size (see <a href=
-"#setmaxinput">cgilua.setmaxinput</a>).<br>
-Returns nothing. <a name="setmaxinput"></a> 
-
+<a name="setmaxinput"></a>
 <h3><code>cgilua.setmaxinput (size)</code></h3>
+Sets the maximum "total" input size allowed (in bytes).
+This function only takes efect if used before POST data is processed,
+therefore its use in scripts are useless.<br>
+Returns nothing.
 
-Sets the maximum "total" input size allowed (in bytes).<br>
-Returns nothing. 
 
 <hr>
-<a name="auxiliar"></a> 
-
+<a name="auxiliar"></a>
 <h2>Auxiliar functions</h2>
 
-<a name="pack"></a> 
-
+<a name="pack"></a>
 <h3><code>cgilua.pack (...)</code></h3>
+Returns a new table with all its arguments stored in it.
 
-Stores all its arguments in a table and returns it to the caller.
-<a name="splitpath"></a> 
-
+<a name="splitpath"></a>
 <h3><code>cgilua.splitpath (path)</code></h3>
+Returns two strings with the "directory" and "file" parts of the given
+<code>path</code>.
 
-Extracts the "directory" and "file" parts of a given path. 
 
 <hr>
-<a name="urlcode"></a> 
-
+<a name="urlcode"></a>
 <h2>URL encoding functions</h2>
 
-<a name="encodetable"></a> 
-
+<a name="encodetable"></a>
 <h3><code>cgilua.urlcode.encodetable (table)</code></h3>
+<i>URL-encode</i> the elements of a table creating a string to be used in a
+URL for passing data/parameters to another script.<br>
+Returns a string representing the argument <code>table</code>.
 
-<i>URL-encode</i> the elements of a table creating a string to be
-used in a URL for passing data/parameters to another script. <a
-name="escape"></a> 
-
+<a name="escape"></a>
 <h3><code>cgilua.urlcode.escape (string)</code></h3>
+<i>URL-encode</i> a string.<br>
+Returns the encoded string.
 
-<i>URL-encode</i> a string. <a name="parsequery"></a> 
+<a name="insertfield"></a>
+<h3><code>cgilua.urlcode.insertfield (args, name, value)</code></h3>
+Adds the given <tt>value</tt> to the field <tt>name</tt> in table <tt>args</tt>.
+If the field already has a value,
+it is transformed into a table with the previous (at index <tt>1</tt>) and
+the new value (at index <tt>2</tt>).
+Other values will be added at the end of the <i>array-part</i> of the table.<br>
+Returns nothing.
 
+<a name="parsequery"></a>
 <h3><code>cgilua.urlcode.parsequery (query, args)</code></h3>
+Parse URL-encoded request data.
+This could be the query part of the script URL or URL-encoded post data.
+Each decoded
+<em>name = value</em>
+pair is inserted into table
+<code>args</code>.<br>
+Returns nothing.
 
-Parse URL-encoded request data. This could be the query part of the
-script URL or URL-encoded post data. Each decoded <em>name =
-value</em> pair is inserted into table <code>args</code>. <a name=
-"unescape"></a> 
-
+<a name="unescape"></a>
 <h3><code>cgilua.urlcode.unescape (string)</code></h3>
+<i>URL-decode</i>s a string.<br>
+Returns the decoded string.
 
-<i>URL-decode</i> a string. 
 
 <hr>
-<a name="internals"></a> 
-
+<a name="internals"></a>
 <h2>Internal functions</h2>
 
-<a name="close"></a> 
-
-<h3><code>cgilua.close ()</code></h3>
-
-Executes the defined closing function, if it exists.<br>
-Returns nothing. <a name="doif"></a> 
-
+<a name="doif"></a>
 <h3><code>cgilua.doif (path)</code></h3>
+Executes the given file if there is no "file error".
+If an error occurs, returns <code>nil</code> followed by the error message.<br>
+In case of success, returns the values returned by the execution.
 
-Execute the given file if there is no "file error". If an error
-occurs, returns <code>nil</code> followed by an error message. <a
-name="doscript"></a> 
-
+<a name="doscript"></a>
 <h3><code>cgilua.doscript (path)</code></h3>
+Executes the given file.
+Raises an error if it occurs.
+In case of success, returns the values returned by the execution.
 
-Execute the given file. Raises an error if it occurs. <a name=
-"getparams"></a> 
-
+<a name="getparams"></a>
 <h3><code>cgilua.getparams (args)</code></h3>
+Defines CGILua's variables and assigns all parameters to the given table.<br>
+Returns nothing.
 
-Defines CGILua's variables and assigns all parameters to the given
-table. <a name="getscripthandler"></a> 
-
+<a name="getscripthandler"></a>
 <h3><code>cgilua.getscripthandler (path)</code></h3>
+Gets the handler defined to process the given path.<br>
+Returns the handler (a function).
 
-Gets the handler defined to process the given path. <a name=
-"handle"></a> 
-
+<a name="handle"></a>
 <h3><code>cgilua.handle (path)</code></h3>
+Executes a script (given its full path) according to the defined handlers.<br>
+Returns the result of the execution of the script.
 
-Executes a script (given its full path) according to the defined
-handlers. <a name="main"></a> 
-
+<a name="main"></a>
 <h3><code>cgilua.main ()</code></h3>
+Processes the incoming request.
+It is the main function,
+responsible for setting defaults,
+loading the configuration file,
+removing the disallowed globals,
+creating the <tt>cgi</tt> table (processing <i>POST data</i> if necessary),
+executing the script on its own directory
+and resetting everything for a new request.<br>
+Returns nothing.
 
-Processes the incoming request. It is the main function,
-responsible for setting defaults, loading the configuration file,
-removing the disallowed globals, creating the <tt>cgi</tt> table
-(processing <i>POST data</i> if necessary), executing the script on
-its own directory and resetting everything for a new request. <a
-name="parsequery"></a> 
-
-<h3><code>cgilua.parsequery (query, args)</code></h3>
-
-Parse URL-encoded request data. This could be the query part of the
-script URL or URL-encoded post data. Each decoded <em>name =
-value</em> pair is inserted into table <code>args</code>. <a name=
-"pcall"></a> 
-
+<a name="pcall"></a>
 <h3><code>cgilua.pcall (func, ...)</code></h3>
+Executes a function using the CGILua's error functions.<br>
+Returns the result of the calling.
 
-Executes a function using the CGILua's error functions. <a name=
-"removeglobals"></a> 
+<a name="post"></a>
+<a name="parsedata"></a>
+<h3><code>cgilua.post.parsedata (defs)</code></h3>
+Parse the POST REQUEST incoming data according to its "content type",
+as defined by the metavariable CONTENT_TYPE (RFC CGI).
+An error is issued if the "total" size of the incoming data
+(defined by the metavariable CONTENT_LENGTH) exceeds the maximum input size
+allowed.<br>
+The argument is a table with some information needed to do the job:
+<code>read</code>, the function which could read the data;
+<code>discardinput</code>, the (optional) function to discard the rest of the
+input;
+<code>content_type</code>, the request's content-type;
+<code>content_length</code>, the request's content-length;
+<code>maxinput</code>, the maximum input size allowed;
+<code>maxfilesize</code>, the maximum file size allowed;
+<code>args</code>, a table in which to store the parameters obtained.<br>
+Returns nothing.
 
+<a name="readuntil"></a>
+<a name="iterate"></a>
+<h3><code>cgilua.readuntil.iterate (inpfunc)</code></h3>
+Creates a function which reads until a delimiter in blocks.
+The <i>readuntil</i> created function receives a string with the delimiter
+and an output function each time it is called.<br>
+<code>iterate</code> returns a <i>readuntil</i> function;
+the created function returns the string read
+(from the last call until the given delimiter).
+
+<a name="removeglobals"></a>
 <h3><code>cgilua.removeglobals (notallowed)</code></h3>
+Removes the variables listed in table <code>notallowed</code>.<br>
+Returns nothing.
 
-Removes the variables listed in table <code>notallowed</code>. <a
-name="reset"></a> 
-
+<a name="reset"></a>
 <h3><code>cgilua.reset ()</code></h3>
+Resets CGILua's internal state.<br>
+Returns nothing.
 
-Resets CGILua's internal state. <a name="index"></a> 
 
+<a name="index"></a>
 <h2>Alphabetic Index</h2>
-
 <a href="#addclosefunction">addclosefunction</a><br>
 <a href="#addopenfunction">addopenfunction</a><br>
 <a href="#addscripthandler">addscripthandler</a><br>
-<a href="#close">close</a><br>
 <a href="#contentheader">contentheader</a><br>
 <a href="#doif">doif</a><br>
 <a href="#doscript">doscript</a><br>
-<a href="#encodetable">encodetable</a><br>
+<a href="#encodetable">encodetable (urlcode)</a><br>
 <a href="#error_log">error_log</a><br>
-<a href="#escape">escape</a><br>
+<a href="#escape">escape (urlcode)</a><br>
 <a href="#getscripthandler">getscripthandler</a><br>
 <a href="#handle">handle</a><br>
 <a href="#header">header</a><br>
 <a href="#htmlheader">htmlheader</a><br>
 <a href="#includehtml">includehtml</a><br>
+<a href="#insertfield">insertfield (urlcode)</a><br>
+<a href="#iterate">iterate (readuntil)</a><br>
+<a href="#locationheader">locationheader</a><br>
 <a href="#main">main</a><br>
 <a href="#mkabsoluteurl">mkabsoluteurl</a><br>
 <a href="#mkurlpath">mkurlpath</a><br>
 <a href="#pack">pack</a><br>
-<a href="#parsequery">parsequery</a><br>
+<a href="#parsequery">parsequery (urlcode)</a><br>
 <a href="#pcall">pcall</a><br>
+<a href="#post">post</a><br>
+<a href="#parsedata">parsedata (post)</a><br>
 <a href="#preprocess">preprocess</a><br>
+<a href="#prep">prep</a><br>
 <a href="#put">put</a><br>
+<a href="#readuntil">readuntil</a><br>
 <a href="#redirect">redirect</a><br>
 <a href="#removeglobals">removeglobals</a><br>
 <a href="#script_file">script_file</a><br>
@@ -393,21 +432,25 @@ Resets CGILua's internal state. <a name="index"></a>
 <a href="#script_vdir">script_vdir</a><br>
 <a href="#script_vpath">script_vpath</a><br>
 <a href="#servervariable">servervariable</a><br>
+<a href="#setcompatmode">setcompatmode (prep)</a><br>
 <a href="#seterrorhandler">seterrorhandler</a><br>
 <a href="#seterrorlog">seterrorlog</a><br>
 <a href="#seterroroutput">seterroroutput</a><br>
 <a href="#setlibdir">setlibdir</a><br>
 <a href="#setmaxfilesize">setmaxfilesize</a><br>
 <a href="#setmaxinput">setmaxinput</a><br>
+<a href="#setoutfunc">setoutfunc (prep)</a><br>
 <a href="#splitpath">splitpath</a><br>
-<a href="#unescape">unescape</a><br>
+<a href="#urlcode">urlcode</a><br>
+<a href="#unescape">unescape (urlcode)</a><br>
 <a href="#urlpath">urlpath</a><br>
-<a href="#userscriptname">userscriptname</a><br>
- 
+
 
 <hr>
-<small>$Id: reference.html,v 1.10 2004/11/18 21:33:09 tomas Exp
-$</small>
+<small>
+$Id: reference.html,v 1.12 2004/11/22 19:58:12 tomas Exp $
+</small>
+
 </body>
 </html>
 
