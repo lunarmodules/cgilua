@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.23 2004/11/08 16:39:51 tomas Exp $
+# $Id: Makefile,v 1.24 2004/11/09 13:50:44 tomas Exp $
 
 include ./config
 
@@ -23,7 +23,7 @@ dist_dir: luafilesystem $(COMPAT_DIR)
 
 cgi fcgi mod: luafilesystem
 	cd luafilesystem; export COMPAT_DIR="../$(COMPAT_DIR)"; export LIB_EXT="$(LIB_EXT)"; export LIB_OPTION="$(LIB_OPTION)"; export LIBS="$(LIBS)"; make -e lib
-	cd launcher; make $@
+	cd launcher; export LIB_EXT="$(LIB_EXT)"; make -e $@
 	cd clmain; export COMPAT_DIR="../$(COMPAT_DIR)"; make -e $@
 	cd doc; make $@
 
