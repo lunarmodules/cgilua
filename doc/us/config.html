@@ -37,7 +37,7 @@ ul { list-style-type: disc };
     </ul>
   <li> <a href="#pre-installation">Pre-installation</a>
     <ul>
-      <li> <a href="#t_dir_lua"><code>t_dir.lua</code></a>
+      <li> <a href="#t_filesystem_lua"><code>t_filesystem.lua</code></a>
       <li> <a href="#t_fastcgi_conf"><code>t_fastcgi.conf</code></a>
       <li> <a href="#t_mod2_conf"><code>t_mod2.conf</code></a>
       <li> <a href="#other_tmpl"><code>Templates of Lua scripts</code></a>
@@ -63,12 +63,18 @@ for the HTTP server (it was tested with Open Market's FastCGI module
 version 2.4.2).
 <br>
 The Apache module depends on Apache version 2 (it was tested on 2.0.48).
+
+<a name="automatic_build"></a>
+<h3>Automatic build</h3>
 <p>
 CGILua's distribution provides a set of Makefiles that should build
 the system properly.
 The file <code>config</code> should be edited to suit the other packages
 installations.
-The Makefiles should do the rest of the job.
+<p>
+The Makefiles use <code>sed</code> to edit the templates and
+<code>bin2c</code> to convert Lua-compiled code into C-source code before
+compilation of <code>mod_lua.c</code>.
 
 <a name="manual_build"></a>
 <h3>Manual build</h3>
@@ -93,11 +99,11 @@ There are some binary files that must be built:
        Apache (usually at <code>apache2/build/libtool</code> to build the
        module and install it.
 
-  <li> <b><code>libdir</code></b>
-       <code>dir.c</code> and <code>dir.h</code> are the source files.
-       They depend only on Lua.  A file called <code>dir.lua</code> should
-       be built based on <code>t_dir.lua</code> to dynamically load the
-       library (see <a href="#t_dir_lua"><code>t_dir.lua</code></a>).
+  <li> <b><code>libfilesystem</code></b>
+       <code>filesystem.c</code> and <code>filesystem.h</code> are the source files.
+       They depend only on Lua.  A file called <code>filesystem.lua</code> should
+       be built based on <code>t_filesystem.lua</code> to dynamically load the
+       library (see <a href="#t_filesystem_lua"><code>t_filesystem.lua</code></a>).
 
 </ul>
 
@@ -111,14 +117,14 @@ The Makefiles that come with the distribution use <code>sed</code> to do
 the substitutions.
 Note that sometimes the strings are quoted: the quotes should be maintained.
 
-<a name="t_dir_lua"></a>
-<h3><code>t_dir.lua</code></h3>
+<a name="t_filesystem_lua"></a>
+<h3><code>t_filesystem.lua</code></h3>
 <p>
-The file <code>libdir/t_dir.lua</code> is a template for a Lua file that's
-used to load the <code>dir</code> dynamic library.
+The file <code>libfilesystem/t_filesystem.lua</code> is a template for a Lua file that's
+used to load the <code>filesystem</code> dynamic library.
 It has the string <code>LIB_NAME</code>
 that must be replaced by the dynamic library's complete file name
-(<code>libdir.1.0a.so</code> or <code>DIR.DLL</code> for example)
+(<code>libfilesystem.1.0a.so</code> or <code>FILESYSTEM.DLL</code> for example)
 with the full path if not living in a system's directory.
 
 <a name="t_fastcgi_conf"></a>
@@ -236,7 +242,7 @@ The following table shows CGILua's root directory.
     <td><code>cgilua.lua</code></td>
   </tr>
   <tr><td></td><td></td><td><code>cookies.lua</code></td></tr>
-  <tr><td></td><td></td><td><code>dir.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>filesystem.lua</code></td></tr>
   <tr><td></td><td></td><td><code>post.lua</code></td></tr>
   <tr><td></td><td></td><td><code>prep.lua</code></td></tr>
   <tr><td></td><td></td><td><code>readuntil.lua</code></td></tr>
@@ -356,7 +362,7 @@ Lua Apache module has some configuration directives that must be used:
 
 <hr>
 <small>
-$Id: config.html,v 1.9 2004/05/10 09:06:03 tomas Exp $
+$Id: config.html,v 1.10 2004/05/12 11:41:22 tomas Exp $
 </small>
 
 </body>
