@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.9 2004/04/27 17:13:49 tomas Exp $
+-- $Id: cgilua.lua,v 1.10 2004/05/12 11:26:39 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -110,10 +110,9 @@ end
 ----------------------------------------------------------------------------
 _G.require = function (packagename)
 	-- packagename cannot contain some special punctuation characters
-	assert (not (strfind (packagename, "[^%w_.-]") or
-			strfind (packagename, "%.%.")),
-		"Package name cannot contain punctuation characters")
-	_G.LUA_PATH = format ("%s?.lua;%s?", libdir, libdir)
+	assert (not strfind (packagename, "%.%."),
+		"Package name cannot contain `..'")
+	_G.LUA_PATH = format ("%s?/?.lua;%s?.lua;%s?", libdir, libdir, libdir)
 	_G.loadlib = _loadlib
 	local ret = _require (packagename)
 	_G.loadlib = nil
