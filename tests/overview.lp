@@ -10,7 +10,7 @@ function color () i = math.mod (i + 1, 3) return colors[i + 1] end
 
 function pack_name (p) return string.gsub (p, "^([^.]+).-", "%1") end
 
-function idx (table, field) return _G[table][field] end
+function idx (table, field) return _G[table][field] or "" end
 ?>
 <html>
 <head><title>CGILua installation overview</title></head>
