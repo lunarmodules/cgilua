@@ -9,8 +9,6 @@ ul { list-style-type: disc };
 
 <body bgcolor="#FFFFFF">
 
-<hr>
-
 <center>
 <table border=0 cellspacing=2 cellpadding=2>
 <tr><td align=center><a href="http://www.lua.org">
@@ -22,108 +20,350 @@ ul { list-style-type: disc };
 <p>
 
 <center><small>
-<a href="#organization">organization</a> &middot;
-<a href="#config">configuration</a> &middot;
-<a href="#advanced">advanced</a>
+<a href="#build">build</a> &middot;
+<a href="#pre-installation">pre-installation</a> &middot;
+<a href="#installation">installation</a> &middot;
+<a href="#config">configuration</a>
 </small></center>
 
 <hr>
 
-<a name="organization"></a>
-<h2>Organization</h2>
+<h2>Contents</h2>
 <p>
-The following table shows the installation files used by CGILua and
-the directories where they should live:
-<table cellpadding="10">
-  <tr><td><table border cellspacing="1" cellpadding="10"><tr><td>
-<table cellspacing="0" cellpadding="0">
-  <tr> <td align="right"><tt>cgi-scripts/</tt></td> <td><tt>cgilua</tt></td> </tr>
-  <tr> <td>&nbsp;</td> <td><tt>map.lua</tt></td> </tr>
-  <tr> <td>&nbsp;</td> </tr>
-  <tr> <td align="right"><tt>main-dir/</tt></td> <td><tt>main.lua</tt></td> </tr>
-  <tr> <td>&nbsp;</td> <td><tt>cgilua.lua</tt></td> </tr>
-  <tr> <td>&nbsp;</td> <td><tt>prep.lua</tt></td> </tr>
-  <tr> <td>&nbsp;</td> <td><tt>readuntil.lua</tt></td> </tr>
-  <tr> <td>&nbsp;</td> </tr>
-  <tr> <td align="right"><tt>lib-dir/</tt></td> <td><tt>cookies.lua</tt></td> </tr>
-</table>
-    </td></tr></table></td>
-    <td valign="top">
-We recommend <tt>lib-dir</tt> to be placed inside <tt>main-dir</tt>:
-assuring that only the Lua files inside it could be <em>required</em>
-by the scripts.
+<ul>
+  <li> <a href="#build">Build</a>
+    <ul>
+      <li> <a href="#manual_build">Manual build</a>
+    </ul>
+  <li> <a href="#pre-installation">Pre-installation</a>
+    <ul>
+      <li> <a href="#loader_tmpl"><code>loader.tmpl</code></a>
+      <li> <a href="#conf_tmpl"><code>conf.tmpl</code></a>
+      <li> <a href="#other_tmpl"><code>The launchers, the mainscript and the configuration file</code></a>
+    </ul>
+  <li> <a href="#installation">Installation</a>
+  <li> <a href="#config">Configuration</a>
+    <ul>
+      <li> <a href="#sys_config"><code>System configuration</code></a>
+      <li> <a href="#error_treatment"><code>Error treatment</code></a>
+      <li> <a href="#apache_config"><code>Apache module configuration</code></a>
+    </ul>
+</ul>
+
+
+<a name="build"></a>
+<h2>Build</h2>
+<p>
+CGILua depends on Lua 5 (it was tested with Lua 5.0).
 <br>
-We also recommend <tt>main-dir</tt> to be named <tt>cgilua-5.0</tt>
-and be placed side-by-side of <tt>cgi-scripts</tt> directory.
+The FastCGI launcher depends on a FastCGI developer's kit (it was tested
+with Open Market's FastCGI library version 2.4.0) and a FastCGI module
+for the HTTP server (it was tested with Open Market's FastCGI module
+version 2.4.2).
 <br>
-The names of the directories can be defined at <tt>map.lua</tt>
-(see <a href="#config">Configuration</a>).
-<br>
-Other libraries available to the scripts should be put at <tt>lib-dir</tt>.
-This directory will be in the <tt>LUA_PATH</tt> therefore accessible via
-<tt>require</tt>.
-In the case of dynamic loadable libraries (<tt>.DLL</tt>, <tt>.so</tt>,
-<tt>.dylib</tt> etc.) the corresponding "loader" Lua file should be placed
-there at <tt>lib-dir</tt> and the binary object at the appropriate place
-according to the operating system used (<tt>C:\SYSTEM</tt> on Windows,
-<tt>/usr/local/lib</tt> on Unix etc.).
-    </td>
+The Apache module depends on Apache version 2 (it was tested on 2.0.48).
+<p>
+CGILua's distribution provides a set of Makefiles that should build
+the system properly.
+The file <code>config</code> should be edited to suit the other packages
+installations.
+The Makefiles should do the rest of the job.
+
+<a name="manual_build"></a>
+<h3>Manual build</h3>
+<p>
+There two binary libraries and two launchers (executables) that must be built:
+<ul>
+  <li> <b><code>launcher</code></b>
+       <code>launcher.c</code> is the only source file.  It depends on
+       Lua libraries and includes.  This is a simple stand-alone interpreter
+       that is used to run the main scripts of two launchers: CGI and FastCGI.
+
+  <li> <b><code>mod_lua</code></b>
+       <code>mod_lua.c</code> and <code>apache2_lib.c</code> are the
+       source files.  They depend on Lua and on Apache 2 installation.
+       The Makefile uses the utility <code>libtool</code> that comes with
+       Apache (usually at <code>apache2/build/libtool</code> to build the
+       module and install it.
+
+  <li> <b><code>libdir</code></b>
+       <code>dir.c</code> and <code>dir.h</code> are the source files.
+       They depend only on Lua.  A file called <code>dir.lua</code> should
+       be built based on <code>loader.tmpl</code>.
+
+  <li> <b><code>liblfcgi</code></b>
+       <code>lfcgi.c</code> and <code>lfcgi.h</code> are the source files.
+       They depend on Lua and on FastCGI developer's kit library.
+       A file called <code>lfcgi.lua</code> should be built besed on
+       <code>loader.tmpl</code>.
+
+</ul>
+
+
+<a name="pre-installation"></a>
+<h2>Pre-installation: editing <code>.tmpl</code> files</h2>
+<p>
+CGILua's distribution includes some files with the <code>.tmpl</code>
+extension.
+These files must be edited by substituting some strings in capital letters.
+The Makefiles that come with the distribution use <code>sed</code> to do
+the substitutions.
+<code>.tmpl</code> files can be Lua source files (<code>.lua</code>) or
+Apache's configuration files (<code>.conf</code>).
+Note that sometimes the strings are quoted: the quotes should be maintained.
+
+<a name="loader_tmpl"></a>
+<h3><code>loader.tmpl</code></h3>
+<p>
+The file <code>loader.tmpl</code> is a template for a Lua file that's
+used to load a dynamic library.
+This file is a generic "library loader" and
+will be used for the two binary libraries: <code>dir</code> and
+<code>lfcgi</code>.
+<p>
+This file has the strings <code>TAB_NAME</code> and <code>LIB_NAME</code>
+that must be replaced by the name of the table that holds the library's
+functions (<code>dir</code> and <code>lfcgi</code>, respectively)
+and the dynamic library's complete file name (<code>libdir.so</code> or
+<code>DIR.DLL</code> for example) with the full path if not living in a
+system's directory.
+
+<a name="conf_tmpl"></a>
+<h3><code>conf.tmpl</code></h3>
+<p>
+The <code>conf.tmpl</code> files are Apache configuration
+(<code>.conf</code>) files.
+The contents of the files could copied to the Apache configuration file
+(<code>httpd.conf</code>) or the files could be <i>Included</i>.
+<p>
+<code>launcher/conf.tmpl</code> is the configuration for the FastCGI
+Apache module;
+the string <code>FCGI_DIR</code> must be replaced by the FastCGI installation
+directory.
+<p>
+<code>launcher/mod/conf.tmpl</code> is the configuration for the Apache
+module;
+the string <code>MOD_DIR</code> must be replaced by the directory where
+the <code>mod.lua</code> file will be installed.
+
+<a name="other_tmpl"></a>
+<h3>The launchers, the mainscript and the configuration file</h3>
+<p>
+The other files are all Lua scripts:
+the launchers (<code>cgi.tmpl</code>, <code>fcgi.tmpl</code> and
+<code>mod.tmpl</code>),
+the main CGILua's script (<code>main.tmpl</code>) and
+the configuration file (<code>cgilua.tmpl</code>).
+Its extension must be changed to <code>.lua</code>.
+All of them has some local variable assignment at the beginning where
+the substitutions are concerned.
+These variables indicate a full path or related to Apache's root directory.
+The strings are:
+<ul>
+  <li> <code>MAINSCRIPT</code>: CGILua's main script (<code>main.lua</code>)
+  <li> <code>CGILUA_LIBDIR</code>: CGILua's internal libraries directory
+  <li> <code>CGILUA_CONF</code>: CGILua's configuration file (<code>conf.lua</code>)
+  <li> <code>CGILUA_USRLIBDIR</code>: User's libraries directory
+</ul>
+
+
+<a name="installation"></a>
+<h2>Installation</h2>
+<p>
+CGILua's architecture is divided into two layers.
+On the first layer reside the launchers.
+All of them implement a
+<a href="basic_api.html">Basic API</a>
+and are responsible for calling the CGILua's main script.
+On the second layer reside most of CGILua:
+HTML pre-processing, POST data processing, URL-encoding etc.
+Currently,
+there are three launchers available:
+CGI, FastCGI and Apache module.
+They are planned to be as simple as possible.
+<p>
+Following this division,
+the installation is also divided into two parts.
+One is closely related to the HTTP server while
+the other is independet of the launcher.
+<p>
+Each launcher is composed by a C file (compiled to an executable) and
+a Lua file that should live on the same directory.
+The only exception is the Apache module Lua file that can live anywhere.
+The following table shows where these files should be installed.
+<p>
+<table border="0" cellspacing="1" cellpadding="0">
+  <tr>
+    <td>&nbsp;</td>
+    <td><code>cgi-bin/</code></td>
+    <td><code>cgi[.EXE]</code></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td></td>
+    <td><code>cgi.lua</code></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><code>fcgilua/</code></td>
+    <td><code>fcgi[.EXE]</code></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td></td>
+    <td><code>fcgi.lua</code></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><code>modules/</code></td>
+    <td><code>mod_lua.[so | EXE]</code></td>
   </tr>
 </table>
+<p>
+Every launcher is prepared to run CGILua's main script,
+which is responsible for preparing the environment for the user script
+and running it.
+Before doing it the main script loads the configuration file and
+some internal libraries.
+<p>
+The following table shows CGILua's root directory.
+<p>
+<table border="0" cellspacing="1" cellpadding="0">
+  <tr>
+    <td><code>cgilua/</code></td>
+    <td><code>main.lua</code></td>
+  </tr>
+  <tr><td></td><td><code>mod.lua</code></td></tr>
+  <tr><td></td>
+    <td><code>conf/</code></td>
+    <td><code>cgilua.conf</code></td>
+  </tr>
+  <tr><td></td>
+    <td><code>lib/</code></td>
+    <td><code>cgilua.lua</code></td>
+  </tr>
+  <tr><td></td><td></td><td><code>dir.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>lfcgi.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>post.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>prep.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>readuntil.lua</code></td></tr>
+  <tr><td></td><td></td><td><code>urlcode.lua</code></td></tr>
+  <tr><td></td><td>usr/lib/</td></tr>
+</table>
+<p>
+<a name="usrlibdir"></a>
+<a name="libdir"></a>
+Note that there are two libraries directories:
+one for CGILua's internal libraries and
+another for user's libraries.
+The <b>user's libraries directory</b> is the place for libraries available
+for the user's scripts, like LuaSocket, LuaSQL etc.
+<b>CGILua's internal libraries directory</b> are used according to the
+situation and should not be directly accessible to the final user.
+This division avoids the use of Lua-FastCGI library with other than
+FastCGI launcher.
+Useful functionality provided by these libraries like URL encode/decode
+is offered by CGILua's library.
+<p>
+To provide some protection over the whole environment,
+CGILua only allows the function <code>loadlib</code> to scripts on that
+directory and the function <code>require</code> will search for Lua files
+only in this directory too.
+This way the administrator can copy the "loaders" (similar to
+<code>loader.tmpl</code>) of the libraries he wants to offer to CGILua's
+scripts to this directory and leave the binary libraries at the system's
+directory.
+
 
 <a name="config"></a>
 <h2>Configuration</h2>
 <p>
-CGILua 5.0 offers configuration in three levels:
-system, application and script.
-<br>
-System configuration is placed at <tt>map.lua</tt>.
-The other two configuration levels will be described
-on the <a href="#advanced">next section</a>.
+CGILua provides three levels of configuration:
+system, application and directory.
+The system configuration is for the system's administrator
+while the directory configuration applies to just one directory and
+is restricted by the system configuration;
+it is the user's level configuration.
+The application level is optional and lies between the two of them.
+
+<a name="sys_config"></a>
+<h3>System configuration</h3>
 <p>
-<tt>map.lua</tt> is the only file with a fixed place (the same directory
-as the executable) and is also where the other directories are
-defined.
-There are five variables to define at <tt>map.lua</tt>:
+System configuration is placed at <code>cgilua.conf</code>.
+This file defines:
 <ul>
-  <li> <b><tt>main_dir</tt></b> The path of main CGILua directory.
-This path can be absolute or relative to the root cgi directory.
-
-  <li> <b><tt>lib_dir</tt></b> The full path of the libraries directory.
-This directory will be accessed via <tt>require</tt> so it should
-be an absolute path to make sure it will work for every script.
-
-  <li> <b><tt>appscript</tt></b> The optional application Lua script.
-This script will be called for all requests;
-this is the second configuration level.
-The path to the script can be relative to the root cgi directory.
-
-  <li> <b><tt>userscriptname</tt></b> The optional script environment
-file name.
-A file with that name will be searched at the same directory of the
-(request) script.
-This is the third configuration level.
-
-  <li> <b><tt>script_path</tt></b> The (request) script path.
-Typically it will be the value of <tt>PATH_TRANSLATED</tt>
-environment variable.
+  <li> <a href="#usrlibdir">user's libraries directory</a>, by calling
+       <a href="reference.html#setlibdir"><code>setlibdir</code></a>;
+  <li> script handlers, by calling
+       <a href="reference.html#addscripthandler"><code>addscripthandler</code></a>
+       (when using Apache module's launcher, this handlers must conform to
+       the Apache configuration !!!!!!!!<b>but this is not true</b>!!!!!!!!);
+  <li> application script file (optional), by assigning to
+       <code>appscript</code> variable.  This variable indicates the path
+       of a Lua script that will be executed after the global configuration; !!!!!!!!<b>nao deveria ser cgilua.appscript ? </b>!!!!!!!!
+  <li> user environment script (optional), by assigning to
+       <code>userscriptname</code> variable.  This variable indicates the
+       name of a Lua script that will be searched on the same directory of
+       the script and executed before the script; !!!!!!!<b>nao deveria ser cgilua.userscriptname ? </b>!!!!!!!
+  <li> script's path, by assigning to
+       <a href="reference.html#script_path"><code>script_path</code></a>
+       which is the path used by CGILua's main script to find the actual
+       script to run (usually this is set to environment variable
+       <code>PATH_TRANSLATED</code>);
+  <li> <a href="#error_treatment">error treatment</a>;
+  <li> POST data sizes, by calling
+       <a href="reference.html#setmaxinput"><code>setmaxinput</code></a> and
+       <a href="reference.html#setmaxfilesize"><code>setmaxfilesize</code></a>;
+  <li> closing function (optional), by calling
+       <a href="reference.html#setclosefunction"><code>setclosefunction</code></a>.
+       This function will be executed after the end of the script even if
+       an error occurrs.
 </ul>
 
-<a name="advanced"></a>
-<h2>Advanced configuration</h2>
+<a name="error_treatment"></a>
+<h3>Error treatment</h3>
 <p>
-The application and script configuration levels are defined
-at the application script (<tt>appscript</tt> variable) and
-at the environment script (<tt>userscriptname</tt> variable)
-respectively.
-The only difference between them is the encloseness (?!?!):
-the application script will be run for every request while
-the user script will be run before every script in the same
-directoy.
+There are three functions to configure the error treatment in CGILua:
+one for building the error message and two for generating the output
+(output sent to the client's browser and output to the error log).
+<p>
+The function <code>cgilua.seterrorhandler</code> defines the
+<i>error handler</i>,
+a function called by Lua when an error has just occurred.
+The error handler has access to the execution stack before the error
+is thrown and so it can build an error message using stack information.
+Lua also provides a function to do that: <code>debug.traceback</code>.
+<p>
+The function <code>cgilua.seterroroutput</code> defines the function
+that sends the message to the client's browser -- or not.
+The output can be a standard polite message avoiding user's misunderstanding.
+<p>
+An appropriate error message with all information necessary for debugging
+can be logged properly by the function defined with
+<code>cgilua.seterrorlog</code>.
+
+<a name="apache_config"></a>
+<h3>Apache module configuration</h3>
+<p>
+Lua Apache module has some configuration directives that must be used:
+<ul>
+  <li> <b><code>LuaHandler <i>handler</i></code></b> Register a handler
+       to be processed by the module.  This should be used in conjunction
+       with <code>AddHandler</code> directive or <code>&lt;Files&gt;
+       construction (both associate a name with a file type).  Only the
+       file types specified by the handler defined with <code>LuaHandler</code>
+       will be processed by the module.
+
+  <li> <b><code>LuaMain <i>path</i></code></b> path of module's launcher script
+       (<code>mod.lua</code>).
+
+</ul>
+
+<p>
 
 <hr>
 <small>
-$Id: config.html,v 1.2 2003/10/01 13:48:57 tomas Exp $
+$Id: config.html,v 1.3 2004/03/25 18:54:57 tomas Exp $
 </small>
 
 </body>

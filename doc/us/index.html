@@ -9,8 +9,6 @@ ul { list-style-type: disc };
 
 <body bgcolor="#FFFFFF">
 
-<hr>
-
 <center>
 <table border=0 cellspacing=2 cellpadding=2>
 <tr><td align=center><a href="http://www.lua.org">
@@ -25,8 +23,7 @@ ul { list-style-type: disc };
 <a href="#over">overview</a> &middot;
 <a href="#download">download</a> &middot;
 <a href="config.html">install & config</a> &middot;
-<a href="scripts.html">scripts</a> &middot;
-<a href="upload.html">file upload</a> &middot;
+<a href="scripts.html">scripting</a> &middot;
 <a href="reference.html">reference</a> &middot;
 <a href="idx.html">index</a> 
 </small></center>
@@ -44,82 +41,37 @@ ul { list-style-type: disc };
   <li> <a href="#incompatibility">Incompatibility with previous versions</a>
   <li> <a href="config.html">Installation and configuration</a>
     <ul>
-      <li> <a href="config.html#directories">Special directories</a>
-      <li> <a href="config.html#install">Installation</a>
+      <li> <a href="config.html#build">Build</a>
+      <li> <a href="config.html#pre-installation">Pre-installation</a>
+      <li> <a href="config.html#installation">Installation</a>
       <li> <a href="config.html#config">Configuration</a>
     </ul>
   <li> <a href="scripts.html">CGILua scripts</a>
     <ul>
+      <li> <a href="scripts.html#scripts">Lua Scripts</a>
       <li> <a href="scripts.html#templates">HTML Templates</a>
-      <li> <a href="scripts.html#lua_scripts">Lua Scripts</a>
+      <li> <a href="scripts.html#parameteres">Receiving parameters: the <code>cgi</code> table</a>
     </ul>
-  <li> <a href="upload.html">File upload</a>
   <li> <a href="reference.html">CGILua Reference</a>
     <ul>
       <li> <a href="reference.html#headers">Headers</a>
-<!--
-cgilua.httpheader
-cgilua.contentheader
-cgilua.locationheader
-cgilua.htmlheader
-cgilua.redirect
--->
       <li> <a href="reference.html#prep">Pre-processing HTML</a>
-<!--
-cgilua.preprocess
-cgilua.includehtml
-cgilua.mkurlpath
-cgilua.mkabsolutepath
--->
-      <li> <a href="reference.html#auxiliar">Auxiliar functions</a>
-<!--
-cgilua.escape
-cgilua.unescape
-cgilua.insertfield
-cgilua.encodetable
-cgilua.splitpath
-cgilua.getscripttype
-cgilua.parsequery
-cgilua.doscript
-cgilua.doif
--->
+      <li> <a href="reference.html#contents">Content generation</a>
+      <li> <a href="reference.html#variables">CGILua's variables</a>
+      <li> <a href="reference.html#error_treatment">Error treatment</a>
       <li> <a href="reference.html#behavior">CGILua behavior</a>
-<!--
-cgilua.setclosefunction
-cgilua.setmaxfilesize
-cgilua.setmaxinput
-cgilua.addscripthandler
-cgilua.getscripthandler
--->
-      <li> <a href="reference.html#error">Error treatment</a>
-<!--
-cgilua.seterrorhandler
-cgilua.seterroroutput
-cgilua.seterrorlog
-cgilua.pcall
--->
-      <li> <a href="reference.html#variables">Global variables</a>
-<!--
-cgilua.script_path
-cgilua.script_pdir
-cgilua.script_file
-cgilua.script_vpath
-cgilua.script_vdir
-cgilua.urlpath
--->
-      <li> <a href="reference.html#cookies">Cookies</a>
-<!--
-cookie.set
-cookie.sethtml
-cookie.get
-cookie.delete
--->
-      <li> <a href="reference.html#dir">Directories</a>
-<!--
-dir.getcwd
-dir.chdir
--->
+      <li> <a href="reference.html#auxiliar">Auxiliar functions</a>
+      <li> <a href="reference.html#internals">Internal functions</a>
     </ul>
+  <li> <a href="libraries.html">Distributed libraries</a>
+    <ul>
+      <li> <a href="libraries.html#cookies">Cookies</a>
+      <li> <a href="libraries.html#dir">Directories</a>
+      <li> <a href="libraries.html#post">Processing POST data</a>
+      <li> <a href="libraries.html#urlcode">URL-encode</a>
+      <li> <a href="libraries.html#prep">Pre-processing HTML</a>
+    </ul>
+  <li> <a href="basic_api.html">Basic API</a>
 </ul>
 
 <a name="over"></a>
@@ -130,28 +82,40 @@ data from forms.
 It is simple but powerful, allowing complex tasks to be carried out
 with minimum effort. Typical applications that can be developed 
 with CGILua include, for instance, WWW information systems based on external 
-data (databases) and WWW gateways to existing systems.<p>
-
+data (databases) and WWW gateways to existing systems.
+<p>
 CGILua uses the interpreted language <a href="http://www.lua.org">Lua</a>
 as a server-side scripting language for creating dynamic Web pages. Both 
-pure <a href="scripts.html#lscripts">Lua scripts</a> and 
-<a href="templates.html">HTML templates</a> are supported by CGILua. 
+pure <a href="scripts.html#scripts">Lua scripts</a> and 
+<a href="scripts.html#templates">HTML templates</a> are supported by CGILua. 
 A Lua script is essentially a Lua program that creates the 
 contents of an HTML page and sends it to the HTTP server. An HTML template is 
 a conventional HTML file that embeds Lua code by using some special marks.
-
-<p>Lua scripts and HTML templates are equally easy to use, 
+<p>
+Lua scripts and HTML templates are equally easy to use, 
 and choosing one of them 
 basically depends on the characteristics
 of a specific page. While HTML templates are convenient for 
 creating graphically sophisticated pages, probably with the help
 of an HTML editor, Lua scripts are more adequate for creating
 pages that are simple in terms of its HTML structure, but require a 
-significative amount of internal processing.  By also allowing these two methods to be 
+significative amount of internal processing.
+By also allowing these two methods to be 
 intermixed, CGILua provides Web applications developers with great
 flexibility when both requirements are present. For a detailed description
 of both scripting methods and some examples of their use 
 see <a href="scripts.html">CGILua scripts</a>.
+<p>
+CGILua comes in three versions: Apache module, Fast-CGI and
+traditional CGI.
+CGILua's architecture is divided in two layers.
+The lowest one is represented by the three launchers:
+the Apache module, the Fast-CGI script and the CGI executable.
+These three launchers implement a common set of functions also called
+<a href="basic_api.html">the Basic API</a>.
+The highest layer is implemented over it and is totally portable
+between the launchers.
+This way any script made over the Basic API could be run by any launcher.
 
 
 <a name="version"></a>
@@ -173,7 +137,7 @@ CGILua can be downloaded in source code from the following links: <p>
 <h2>What's new</h2>
 <p>
 <ul>
-  <li>[?/?/2003] Version 5.0 alpha released
+  <li>[?/?/2004] Version 5.0 alpha released
 </ul>
 
 
@@ -189,10 +153,14 @@ CGILua 5.0 uses <a href="http://www.lua.org">Lua 5.0</a>.
 <p>
 
 
+<a name="history"></a>
+<h2>History</h2>
+
+
 <p>
 <hr>
 <small>
-$Id: index.html,v 1.2 2003/10/01 13:48:57 tomas Exp $
+$Id: index.html,v 1.3 2004/03/25 18:54:57 tomas Exp $
 </small>
 
 </body>

@@ -1,0 +1,72 @@
+<html>
+
+<head>
+<title>CGILua - SAPI</title>
+<style type="text/css">
+ul { list-style-type: disc };
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<center>
+<table border=0 cellspacing=2 cellpadding=2>
+<tr><td align=center><a href="http://www.lua.org">
+<img border=0 alt="CGILua" src="cgi-128.gif"></a>
+<tr><td align=center><big><b>CGILua</b></big>
+<tr><td align=center valign=top>Building CGI scripts with Lua
+</table>
+</center>
+<p>
+
+<center><small>
+<a href="#over">overview</a> &middot;
+<a href="#download">download</a> &middot;
+<a href="config.html">install & config</a> &middot;
+<a href="scripts.html">scripts</a> &middot;
+<a href="upload.html">file upload</a> &middot;
+<a href="reference.html">reference</a> &middot;
+<a href="idx.html">index</a> 
+</small></center>
+<p>
+
+<hr>
+
+<h2>Server API</h2>
+<p>
+The Server API is a set of functions that encapsulate the diferences
+between the launchers.
+<p>
+Here is the list of functions:
+<ul>
+  <li> <b><code>send_content_type (string)</code></b> Send the
+    <code>Content-type</code> header to the client.  The given string
+    is of the form "type/subtype".  This function must be called before
+    any output.
+
+  <li> <b><code>redirect (string)</code></b> Send the <code>Location</code>
+    header to the client.  The given string should be a URL.
+
+  <li> <b><code>output (string)</code></b> Generate output.
+
+  <li> <b><code>error_log (string)</code></b> Generate error output.
+
+  <li> <b><code>get_post ([n])</code></b> Get a block of "POST data".
+    The optional parameter is the number of bytes to read (a default block
+    size is used instead).  This function returns the block as a Lua string.
+
+  <li> <b><code>variable (string)</code></b> Get the value of an environment
+    variable (<code>CONTENT_LENGTH</code>, <code>QUERY_STRING</code>,
+    <code>REMOTE_ADDR</code> etc.).
+</ul>
+
+
+<p>
+<hr>
+<small>
+$Id: sapi.html,v 1.1 2004/03/25 18:54:57 tomas Exp $
+</small>
+
+</body>
+</html>
+
