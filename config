@@ -18,10 +18,17 @@ LUAC= /usr/local/bin/luac
 # Lua distribution includes it at etc directory
 BIN2C= /usr/local/bin/bin2c
 
+# OS dependent
+#LIB_EXT= .dylib
+LIB_EXT= .so
+#LIB_OPTION= -dynamiclib #for MacOS X
+LIB_OPTION= -shared #for Linux
+
 # Compilation directives
 WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings
 INCS= -I/usr/local/include/lua5
 CFLAGS= $(WARN) $(INCS)
+# On FreeBSD systems, option `-ldl' should be removed
 LIBS= -L$(LIB_DIR) -llua -llualib -lm -ldl
 CC= gcc
 
@@ -37,4 +44,4 @@ CGILUA_USRLIBDIR= $(CGILUA_DIR)/usr/lib
 CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
 CGILUA_DOC= $(CGILUA_DIR)/doc
 
-# $Id: config,v 1.7 2004/05/12 11:41:22 tomas Exp $
+# $Id: config,v 1.8 2004/06/07 12:10:05 tomas Exp $
