@@ -1,22 +1,25 @@
-# $Id: Makefile,v 1.21 2004/11/05 15:05:59 tomas Exp $
+# $Id: Makefile,v 1.22 2004/11/08 16:00:29 tomas Exp $
 
 include ./config
 
 SRCS= Makefile config README
+DIST_DIR= $(PKG)
 
 
-dist: luafilesystem $(COMPAT_DIR)
-	mkdir -p $(PKG)
-	cp $(SRCS) $(PKG)
-	cd luafilesystem; export DIST_DIR=../$(PKG)/luafilesystem; make -e dist_dir
-	cd compat; export DIST_DIR=../$(PKG)/compat; make -e dist_dir
-	cd launcher; make $@
-	cd clmain; export COMPAT_DIR="../$(COMPAT_DIR)"; make -e $@
-	cd doc; make $@
-	cd test; make $@
-	tar -czf $(TAR_FILE) $(PKG)
-	zip -rq $(ZIP_FILE) $(PKG)/*
-	rm -rf $(PKG)
+dist: dist_dir
+	tar -czf $(TAR_FILE) $(DIST_DIR)
+	zip -rq $(ZIP_FILE) $(DIST_DIR)/*
+	rm -rf $(DIST_DIR)
+
+dist_dir: luafilesystem $(COMPAT_DIR)
+	mkdir -p $(DIST_DIR)
+	cp $(SRCS) $(DIST_DIR)
+	cd luafilesystem; export DIST_DIR=../$(DIST_DIR)/luafilesystem; make -e dist_dir
+	mkdir $(DIST_DIR)/compat; cp $(COMPAT_DIR)/compat* $(DIST_DIR)/compat
+	cd launcher; make dist
+	cd clmain; export COMPAT_DIR="../$(COMPAT_DIR)"; make -e dist
+	cd doc; make dist
+	cd test; make dist
 
 cgi fcgi mod: luafilesystem
 	cd luafilesystem; export COMPAT_DIR="../$(COMPAT_DIR)"; export LIB_EXT="$(LIB_EXT)"; export LIB_OPTION="$(LIB_OPTION)"; export LIBS="$(LIBS)"; make -e lib

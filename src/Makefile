@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.19 2004/10/29 15:36:30 tomas Exp $
+# $Id: Makefile,v 1.20 2004/11/08 16:00:29 tomas Exp $
 
 T= clmain
 
@@ -24,6 +24,5 @@ dist:
 	mkdir -p $(DIST_DIR)
 	cp Makefile $(DIST_DIR)
 	cp venv.lua $(DIST_DIR)
-	mkdir $(DIST_DIR)/conf
 	mkdir -p $(DIST_DIR)/cgilua
 	cp $(CGILUA_LUAS) $(DIST_DIR)/cgilua/
