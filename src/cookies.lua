@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cookies.lua,v 1.6 2004/04/08 15:36:12 tomas Exp $
+-- $Id: cookies.lua,v 1.7 2004/04/09 09:19:49 tomas Exp $
 --
 -- Cookies Library
 ----------------------------------------------------------------------------
@@ -44,7 +44,8 @@ end
 
 
 function set (name, value, options)
-  cgilua.header("Set-Cookie: "..build(name, value, options).."\n")
+  --cgilua.header("Set-Cookie: "..build(name, value, options).."\n")
+  cgilua.header("Set-Cookie", build(name, value, options))
 end
 
 
