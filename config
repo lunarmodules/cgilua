@@ -1,8 +1,6 @@
 # Installation directories
 # CGILua root directory
 CGILUA_DIR= /usr/local/cgilua
-# System's libraries directory (where Lua libraries are installed)
-LIB_DIR= /usr/local/cgilua
 # Apache root directory
 APACHE2_DIR= /usr/local/apache2
 CGI_DIR= $(APACHE2_DIR)/cgi-bin
@@ -31,8 +29,6 @@ MOD2_LUA= -DINCLUDE_MOD2
 DLLIB= -ldl
 WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings
 INCS= -I/usr/local/include/lua5
-CL_LIBS= -L$(LIB_DIR) -llua -llualib -lm $(DLLIB)
-LIBS= $(CL_LIBS)
 CFLAGS= $(WARN) $(INCS) $(MOD2_LUA)
 CC= gcc
 
@@ -42,12 +38,16 @@ PKG= cgilua-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 DIST_DIR= ../$(PKG)/$T
-CGILUA_LIBDIR= $(CGILUA_DIR)/lib
-CGILUA_CGILUADIR= $(CGILUA_LIBDIR)/cgilua
-CGILUA_CONFDIR= $(CGILUA_DIR)/conf
-CGILUA_USRLIBDIR= $(CGILUA_DIR)/usr/lib
-CGILUA_TMPDIR= $(CGILUA_DIR)/tmp
-CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
-CGILUA_DOC= $(CGILUA_DIR)/doc
+CGILUA_BINLIB_DIR= $(CGILUA_DIR)
+CGILUA_LIBDIR=     $(CGILUA_DIR)/lib
+CGILUA_CGILUADIR=  $(CGILUA_LIBDIR)/cgilua
+CGILUA_CONFDIR=    $(CGILUA_DIR)/conf
+CGILUA_USRLIBDIR=  $(CGILUA_DIR)/usr/lib
+CGILUA_TMPDIR=     $(CGILUA_DIR)/tmp
+CGILUA_CONF=       $(CGILUA_CONFDIR)/cgilua.conf
+CGILUA_DOC=        $(CGILUA_DIR)/doc
 
-# $Id: config,v 1.16 2004/07/29 15:27:28 tomas Exp $
+CL_LIBS= -L$(CGILUA_BINLIB_DIR) -llua -llualib -lm $(DLLIB)
+LIBS= $(CL_LIBS)
+
+# $Id: config,v 1.17 2004/08/06 16:23:37 tomas Exp $
