@@ -211,12 +211,6 @@ The following table shows where these files should be installed.
   </tr>
 </table>
 <p>
-The Apache 2 module defines some configuration directives that should
-be added to Apache's configuration file (typically at
-<code>apache2/conf/httpd.conf</code>)
-indicating where to find it's main script (<code>mod2.lua</code>).
-The directive <code>LuaMain</code> is used to indicate the complete path
-to this file.
 
 <h3>CGILua main installation</h3>
 <p>
@@ -233,7 +227,6 @@ The following table shows CGILua's root directory.
     <td><code>cgilua/</code></td>
     <td><code>main.lua</code></td>
   </tr>
-  <tr><td></td><td><code>mod2.lua</code></td></tr>
   <tr><td></td>
     <td><code>conf/</code></td>
     <td><code>cgilua.conf</code></td>
@@ -356,8 +349,6 @@ Lua Apache module has some configuration directives that must be used:
        with a file type).  Only the file types specified by the handler
        defined with <code>LuaHandler</code> will be processed by the module.
 
-  <li> <b><code>LuaMain <i>path</i></code></b><br>
-       Defines the path of the module's launcher script (<code>mod2.lua</code>).
 
 </ul>
 
@@ -365,7 +356,7 @@ Lua Apache module has some configuration directives that must be used:
 
 <hr>
 <small>
-$Id: config.html,v 1.7 2004/04/23 08:34:27 tomas Exp $
+$Id: config.html,v 1.8 2004/05/02 17:00:56 tomas Exp $
 </small>
 
 </body>

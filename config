@@ -10,6 +10,8 @@ CGI_DIR= $(APACHE2_DIR)/cgi-bin
 FCGI_DIR= $(APACHE2_DIR)/fcgilua
 # Lua Apache module directory
 MOD_DIR= $(CGILUA_DIR)
+MOD_DEFS= -DLUA_STATE_PER_PROCESS
+#MOD_DEFS= -DLUA_STATE_PER_REQUEST
 # Lua Compiler
 LUAC= /usr/local/bin/luac
 # Lua Binary converter (bin2c)
@@ -35,4 +37,4 @@ CGILUA_USRLIBDIR= $(CGILUA_DIR)/usr/lib
 CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
 CGILUA_DOC= $(CGILUA_DIR)/doc
 
-# $Id: config,v 1.5 2004/04/20 14:06:41 tomas Exp $
+# $Id: config,v 1.6 2004/05/02 17:00:56 tomas Exp $
