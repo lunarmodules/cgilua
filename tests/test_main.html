@@ -7,15 +7,15 @@
   </tr>
   <tr>
     <td>Lua script</td>
-    <td><a href="/cgi-bin/cgi/t/test_main.lua?field1=ab&field2=cd">cgi</a></td>
-    <td><a href="/fcgi/fastcgi/t/test_main.lua?field1=ab&field2=cd">fast-cgi</a></td>
+    <td><a href="/cgi-bin/cgi/t/test_main.lua?field1=ab&field2=cd&field1=ef">cgi</a></td>
+    <td><a href="/fcgi/fastcgi/t/test_main.lua?field1=ab&field2=cd&field1=ef">fast-cgi</a></td>
     <td><a href="/t/test_main.lua?field1=ab&field2=cd&field1=ef">modulo</a></td>
   </tr>
   <tr>
     <td>HTML template</td>
-    <td><a href="/cgi-bin/cgi/t/test_main.lp?field1=ab&field2=cd">cgi</a></td>
-    <td><a href="/fcgi/fastcgi/t/test_main.lp?field1=ab&field2=cd">fast-cgi</a></td>
-    <td><a href="/t/test_main.lp?field1=ab&field2=cd">modulo</a></td>
+    <td><a href="/cgi-bin/cgi/t/test_main.lp?field1=ab&field2=cd&field1=ef">cgi</a></td>
+    <td><a href="/fcgi/fastcgi/t/test_main.lp?field1=ab&field2=cd&field1=ef">fast-cgi</a></td>
+    <td><a href="/t/test_main.lp?field1=ab&field2=cd&field1=ef">modulo</a></td>
   </tr>
 
   <tr>
@@ -29,6 +29,10 @@
             <td colspan="4">
               field 1: <input type="text" name="field1"><br>
               field 2: <input type="text" name="field2"><br>
+              field 3:
+                <input type="checkbox" name="field3" value="op 1">op 1
+                <input type="checkbox" name="field3" value="op 2">op 2
+                <input type="checkbox" name="field3" value="op 3">op 3
             </td>
           </tr>
           <tr>
@@ -126,5 +130,5 @@
     <td><a href="/t/test_fs.lua">modulo</a></td>
   </tr>
 </table>
-<small>$Id: test_main.html,v 1.4 2004/05/26 17:46:33 tomas Exp $</small>
+<small>$Id: test_main.html,v 1.5 2004/05/28 10:21:03 tomas Exp $</small>
 </html>
