@@ -9,43 +9,47 @@ ul { list-style-type: disc };
 
 <body bgcolor="#FFFFFF">
 
-<hr>
-<h1>
-<a href="index.html">
+<center>
+<table border=0 cellspacing=2 cellpadding=2>
+<tr><td align=center><a href="http://www.keplerproject.org">
 <img border=0 alt="CGILua" src="cgi-128.gif"></a>
-Distributed libraries
-</H1>
+<tr><td align=center><big><b>CGILua 5.0</b></big>
+<tr><td align=center valign=top>Distributed libraries
+</table>
+</center>
+<p>
 
-<small><FONT FACE="Arial,Helvetica">
+<center><small>
+<a href="index.html">home</a> &middot;
 <a href="#cookies">cookies</a> &middot;
 <a href="#filesystem">file system</a> &middot;
 <a href="#prep">HTML pre-processing</a> &middot;
 <a href="#post">POST data processing</a> &middot;
 <a href="#urlcode">URL encoding</a>
-</font></small>
+</small></center>
 
 <hr>
 <a name="cookies"</a>
 <h2>Cookies</h2>
 
 <a name="get"></a>
-<h3><code>cookie.get (name)</code></h3>
+<h3><code>cookies.get (name)</code></h3>
 Gets the value of the named cookie
 
 <a name="set"></a>
-<h3><code>cookie.set (name, value[, options])</code></h3>
+<h3><code>cookies.set (name, value[, options])</code></h3>
 Sets the value of the named cookie.
 This function should be called before the HTTP header is sent.
 
 <a name="sethtml"></a>
-<h3><code>cookie.sethtml (name, value[, options])</code></h3>
+<h3><code>cookies.sethtml (name, value[, options])</code></h3>
 Sets the value of the named cookie.
 This function generates a <code>&lt;meta&gt;</code> HTML element
 so it should be called after the <code>&lt;head&gt;</code> HTML tag
 was produced and before the <code>&lt;body&gt;</code>.
 
 <a name="delete"></a>
-<h3><code>cookie.delete (name[, options])</code></h3>
+<h3><code>cookies.delete (name[, options])</code></h3>
 Deletes the value of the named cookie by setting its value to <code>xxx</code>.
 
 
@@ -113,7 +117,7 @@ URL for passing data/parameters to another script.
 
 <hr>
 <small>
-$Id: libraries.html,v 1.4 2004/05/12 11:41:22 tomas Exp $
+$Id: libraries.html,v 1.5 2004/05/12 18:37:53 tomas Exp $
 </small>
 
 </body>
