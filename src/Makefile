@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.13 2004/07/29 14:41:55 tomas Exp $
+# $Id: Makefile,v 1.14 2004/08/18 18:12:34 tomas Exp $
 
 T= clmain
 
 include ../config
 
 CGILUA_LUAS= lib/cgilua/cgilua.lua lib/cgilua/post.lua lib/cgilua/prep.lua lib/cgilua/readuntil.lua lib/cgilua/urlcode.lua
-LIB_LUAS= lib/lfs.lua lib/venv.lua
+LIB_LUAS= lib/compat-5.1.lua lib/venv.lua
 USR_LIB_LUAS= usr/lib/cookies.lua usr/lib/cl_ses.lua usr/lib/session.lua
 CONF_LUAS= conf/cgilua.conf conf/error.conf conf/session.conf
 MAIN= main.lua
@@ -17,7 +17,7 @@ cgiinstall fcgiinstall modinstall: $(LUAS)
 	mkdir -p $(CGILUA_DIR)
 	cp $(MAIN) $(CGILUA_DIR)
 	mkdir -p $(CGILUA_CONFDIR)
-	cp -n $(CONF_LUAS) $(CGILUA_CONFDIR)
+	cp $(CONF_LUAS) $(CGILUA_CONFDIR)
 	mkdir -p $(CGILUA_LIBDIR)
 	cp $(LIB_LUAS) $(CGILUA_LIBDIR)
 	mkdir -p $(CGILUA_CGILUADIR)
