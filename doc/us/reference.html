@@ -220,6 +220,25 @@ Returns nothing.
 Defines a function to be called before the script execution.<br>
 Returns nothing.
 
+<a name="buildplainhandler"></a>
+<h3><code>cgilua.buildplainhandler (type, subtype)</code></h3>
+Creates a <i>script handler</i> that sends the given header and the plain
+file requested.
+The <i>Content-type</i> header is formed by the two arguments;
+the created function will receive a <i>filename</i> as its only argument
+and will return the given filename untouched.<br>
+Returns a function.
+
+<a name="buildprocesshandler"></a>
+<h3><code>cgilua.buildprocesshandler (type, subtype)</code></h3>
+Creates a <i>script handler</i> that sends the given header and the processed
+file requested.
+The <i>Content-type</i> header is formed by the two arguments;
+the created function will receive a <i>filename</i> as its only argument
+and will return the given filename pre-processed by the function
+<a href="#includehtml">cgilua.includehtml</a>.<br>
+Returns a function.
+
 <a name="setlibdir"></a>
 <h3><code>cgilua.setlibdir (dir)</code></h3>
 Sets CGILua's default libraries directory.
@@ -309,6 +328,8 @@ Returns the decoded string.
 <a href="#addclosefunction">addclosefunction</a><br>
 <a href="#addopenfunction">addopenfunction</a><br>
 <a href="#addscripthandler">addscripthandler</a><br>
+<a href="#buildplainhandler">buildplainhandler</a><br>
+<a href="#buildprocesshandler">buildprocesshandler</a><br>
 <a href="#contentheader">contentheader</a><br>
 <a href="#doscript">doscript</a><br>
 <a href="#encodetable">encodetable (urlcode)</a><br>
@@ -348,7 +369,7 @@ Returns the decoded string.
 
 <hr>
 <small>
-$Id: reference.html,v 1.15 2004/11/30 15:13:03 tomas Exp $
+$Id: reference.html,v 1.16 2004/12/14 17:58:49 tomas Exp $
 </small>
 
 </body>
