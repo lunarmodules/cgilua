@@ -45,7 +45,8 @@ Sends the header to force a redirection to the given URL.
 
 <a name="redirect"></a>
 <h3><code>cgilua.redirect (url, args)</code></h3>
-Sends the header to force a redirection to the given URL.
+Sends the header to force a redirection to the given URL adding the parameters
+in table <tt>args</tt> to the new URL.
 
 <a name="header"></a>
 <h3><code>cgilua.header (header, value)</code></h3>
@@ -251,7 +252,7 @@ Resets CGILua's internal state.
 
 <hr>
 <small>
-$Id: reference.html,v 1.4 2004/04/27 17:10:17 tomas Exp $
+$Id: reference.html,v 1.5 2004/05/08 13:10:02 tomas Exp $
 </small>
 
 </body>
