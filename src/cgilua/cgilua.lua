@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.11 2004/11/22 17:32:38 tomas Exp $
+-- $Id: cgilua.lua,v 1.12 2004/11/23 10:44:18 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -30,13 +30,12 @@ prep.setcompatmode (true)
 -- Internal state variables.
 local default_errorhandler = debug.traceback
 local errorhandler = default_errorhandler
-local default_errorlog = function (msg)
+local default_erroroutput = function (msg)
+	-- Logging error
 	SAPI.Response.errorlog (msg)
 	SAPI.Response.errorlog (SAPI.Request.servervariable"REMOTE_ADDR")
 	SAPI.Response.errorlog (os.date())
-end
-local errorlog = default_errorlog
-local default_erroroutput = function (msg)
+	-- Building user message
 	SAPI.Response.contenttype ("text/html")
 	msg = string.gsub (string.gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
 	SAPI.Response.write (msg)
@@ -95,7 +94,7 @@ servervariable = SAPI.Request.servervariable
 ----------------------------------------------------------------------------
 -- Primitive error output function
 ----------------------------------------------------------------------------
-error_log = SAPI.Response.errorlog
+errorlog = SAPI.Response.errorlog
 
 ----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
@@ -371,19 +370,6 @@ function seterroroutput (f)
 end
 
 ---------------------------------------------------------------------------
--- Sets "errorlog" function
--- This function will be called to log the error message.
----------------------------------------------------------------------------
-function seterrorlog (f)
-	local tf = type(f)
-	if tf == "function" then
-		errorlog = f
-	else
-		error (format ("Invalid type: expected `function', got `%s'", tf))
-	end
-end
-
----------------------------------------------------------------------------
 -- Executes a function with an error handler.
 ---------------------------------------------------------------------------
 function pcall (f, ...)
@@ -391,7 +377,6 @@ function pcall (f, ...)
 		errorhandler))
 	if not result[1] then
 		erroroutput (result[2])
-		errorlog (result[2])
 	end
 	return unpack (result)
 end
@@ -462,7 +447,6 @@ local function reset ()
 	maxinput = default_maxinput
 	-- Error treatment
 	errorhandler = default_errorhandler
-	errorlog = default_errorlog
 	erroroutput = default_erroroutput
 	-- Handlers
 	script_handlers = {}
