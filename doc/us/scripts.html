@@ -1,0 +1,128 @@
+<html>
+
+<head>
+<title>CGILua 4.0: CGILua Scripts</title>
+<style type="text/css">
+ul { list-style-type: disc };
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<hr>
+<h1>
+<a href="index.html">
+<img border=0 alt="CGILua" src="cgi-128.gif"></a>
+CGILua scripts
+</H1>
+
+<FONT FACE="Arial,Helvetica">
+<a href="scripts.html#intro">introduction</a> &middot;
+<a href="scripts.html#lscripts">Lua scripts</a> &middot;
+<a href="templates.html">HTML templates</a> &middot;
+<a href="functions.html">CGILua functions</a> &middot;
+<a href="examples.html">examples</a>
+</font>
+
+<hr>
+
+<h2><a name=intro>Introduction</a></h2><p>
+
+<hr>
+
+<h2><a name=lscripts>Lua Scripts</a></h2><p>
+<p>Lua scripts are files containing valid sentences in the Lua language. This kind of 
+usage adopts a "traditional" form of programming, in which a script is strictly 
+limited to being a program.
+
+<p>When a document is created using a Lua script, two basic concepts of 
+CGI must be remembered: 
+
+<p><ol>
+<li>A script communicates with the server using the standard output 
+(<code>stdout</code>), and any communication with the server must be sent by this 
+channel. 
+
+<li>At the beginning of the script the type of document which is being sent 
+must be identified.
+</ol>
+
+<p>In practice, the first item means that everything which is to be sent to 
+the server must be sent using the Lua function 
+<a href="frame_secao4.html#write" target="bottom_frame" onClick="window.top.frames[1].frames[0].selanchor='write'; feedback( 4 )"">write</a> or 
+<a href="frame_secao4.html#print" target="bottom_frame" onClick="window.top.frames[1].frames[0].selanchor='print'; feedback( 4 )"">print</a>
+(see Lua Reference for more details). 
+Note especially that HTML tags must be sent this way.
+
+<p>The second item means that the CGI script must generate an HTTP header 
+line denoted "Content-type". For HTML documents this type corresponds exactly 
+to the type "text/html". <b>CGILua</b> has a specific function for
+outputing HTML HTTP headers, called <a href="frame_secao3.html#htmlheader" target="bottom_frame" onClick="window.top.frames[1].frames[0].selanchor='htmlheader'; feedback( 3 )"">cgilua.htmlheader</a>.
+
+<p>For example, an HTML document which displays the sentence "Hello World!" can 
+be generated with the following Lua script:
+
+
+
+
+<br>
+<br><table><tr><td bgcolor=#ffffee><pre><code>&nbsp;&nbsp;
+&nbsp;&nbsp;  cgilua.htmlheader()&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;html&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;head&gt;&lt;title&gt;Hello World&lt;/title&gt;&lt;/head&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;body&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;b&gt;Hello World!&lt;/b&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;/body&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;/html&gt;')&nbsp;&nbsp;</code></pre></td></tr></table>
+
+
+<p>It should be noted that the above example generates a "fixed" page: even 
+though the page is generated at execution time there is no "variable" 
+information. The very same document could be generated directly with HTML. 
+However, Lua scripts become especially useful when the document contains information 
+which is not known beforehand, and it is necessary to generate a "dynamic" 
+page.
+
+<p>Another easy example can be shown, this time using a Lua control 
+structure, variables, and the concatenation operator:
+
+
+
+
+<br>
+<br><table><tr><td bgcolor=#ffffee><pre><code>&nbsp;&nbsp;
+&nbsp;&nbsp;  cgilua.htmlheader()&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;html&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  &nbsp;&nbsp;
+&nbsp;&nbsp;  if cgi.language == 'english' then&nbsp;&nbsp;
+&nbsp;&nbsp;    greeting = 'Hello World!'&nbsp;&nbsp;
+&nbsp;&nbsp;  elseif cgi.language == 'portuguese' then&nbsp;&nbsp;
+&nbsp;&nbsp;    greeting = 'Olá Mundo!'&nbsp;&nbsp;
+&nbsp;&nbsp;  else&nbsp;&nbsp;
+&nbsp;&nbsp;    greeting = '[unknown language']'&nbsp;&nbsp;
+&nbsp;&nbsp;  end&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;head&gt;&lt;title&gt;'..greeting..'&lt;/title&gt;&lt;/head&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;body&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;b&gt;'..greeting..'&lt;/b&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;/body&gt;')&nbsp;&nbsp;
+&nbsp;&nbsp;  write('&lt;/html&gt;')&nbsp;&nbsp;</code></pre></td></tr></table>
+
+
+<p>The use of <code><i>cgi.language</code></i> indicates that a variable named "language" was 
+passed to the script as a parameter, coming from a form or from the URL used to 
+activate it. <b>CGILua</b> automatically decodes such variables. For a more detailed 
+description, see <a href="#forms">Forms</a> and <a href="frame_secao3.html#urls" target="bottom_frame" onClick="window.top.frames[1].frames[0].selanchor='urls'; feedback( 3 )"">Building URLs</a> 
+later in this section. Complete examples of Lua scripts can be found in 
+the section <a href="#examples">Examples</a>.
+
+
+<hr>
+<small>
+Last update:
+Thu Mar 21 10:18:00 EST 2002
+</small>
+
+</body>
+</html>
+

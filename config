@@ -1,0 +1,12 @@
+# $Id: config,v 1.1 2003/09/28 23:38:44 tomas Exp $
+
+VERSION= 5.0a
+PKG= cgilua-$(VERSION)
+
+# Installation directories
+CGI_DIR= /usr/local/apache2/cgi-bin
+CGILUA_DIR= /usr/local/apache2/$(PKG)
+CGILUA_LIBDIR= $(CGILUA_DIR)/lib
+
+# Compilation directives
+LIBS= -llua.5.0 -llualib.5.0 -lm -ldl

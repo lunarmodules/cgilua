@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: mainscript.lua,v 1.6 2003/08/12 11:13:26 tomas Exp $
+-- $Id: main.lua,v 1.1 2003/09/28 23:38:44 tomas Exp $
 --
 -- CGILua "main" script
 ----------------------------------------------------------------------------
@@ -7,36 +7,11 @@
 ----------------------------------------------------------------------------
 -- CGILua Libraries configuration
 ----------------------------------------------------------------------------
-
--- Redefine require e loadlib
-local original_lib_dir = lib_dir
-local original_loadlib = loadlib
-_G.loadlib = nil
-local nova_loadlib = function (packagename, funcname)
-	return original_loadlib (original_lib_dir..packagename, funcname)
-end
-local original_require = require
-_G.require = function (packagename)
-	-- packagename cannot contain some special punctuation characters.
-	assert (not (string.find (packagename, "[^%P%.%-]") or
-			string.find (packagename, "%.%.")),
-		"Package name cannot contain punctuation characters")
-
-	_G.loadlib = nova_loadlib
-	_G.LUA_PATH = original_lib_dir.."?.lua"
-	original_require (packagename)
-	_G.loadlib = nil
-end
-
 ----------------------------------------------------------------------------
 -- Load auxiliar functions defined in CGILua namespace (cgilua)
 ----------------------------------------------------------------------------
-local f_aux, err = loadfile (main_dir.."prep.lua")
-assert (f_aux, err)
-f_aux ()
-local f_aux, err = loadfile (main_dir.."auxiliar.lua")
-assert (f_aux, err)
-f_aux ()
+LUA_PATH = main_dir.."?.lua;"..lib_dir.."?.lua"
+require"cgilua"
 
 ----------------------------------------------------------------------------
 -- CGILua "security" configuration
@@ -68,6 +43,31 @@ cgilua.setmaxinput(1024 * 1024) -- 1 MB
 --
 cgilua.setmaxfilesize(500 * 1024) -- 500 KB
 
+--
+-- Redefine require and loadlib
+--
+local function redefine_require ()
+	local original_lib_dir = lib_dir
+	local original_loadlib = loadlib
+	_G.loadlib = nil
+	cgilua.loadlibrary = function (packagename, funcname)
+		return original_loadlib (original_lib_dir..packagename, funcname)
+	end
+	local original_require = require
+	_G.require = function (packagename)
+		-- packagename cannot contain some special punctuation characters.
+		assert (not (string.find (packagename, "[^%P%.%-]") or
+				string.find (packagename, "%.%.")),
+			"Package name cannot contain punctuation characters")
+	
+		_G.loadlib = nova_loadlib
+		_G.LUA_PATH = original_lib_dir.."?.lua"
+		original_require (packagename)
+		_G.loadlib = nil
+	end
+end
+
+
 ----------------------------------------------------------------------------
 -- Configure CGILua environment and execute the script
 ----------------------------------------------------------------------------
@@ -94,9 +94,6 @@ else
 	-- save the URL path to cgilua
 	cgilua.urlpath = os.getenv("SCRIPT_NAME")
 
-	-- change current directory to the script's "physical" dir
-	dir.chdir(cgilua.script_pdir)
-
 	-- parse the incoming request data
 	cgi = {}
 	if os.getenv("REQUEST_METHOD") == "POST" then
@@ -104,16 +101,21 @@ else
 	end
 	cgilua.parsequery(os.getenv("QUERY_STRING"),cgi)
 
-	-- load user library.
-	local f = loadfile (libscript)
-	if type (f) == "function" then
-		f ()
-	end
+	--LUA_PATH = lib_dir.."?"..lib_dir.."?.lua"
+	redefine_require ()
+
+	-- load application script.
+	cgilua.pcall (cgilua.doif, appscript)
+
+	-- change current directory to the script's "physical" dir
+	dir.chdir(cgilua.script_pdir)
 
 	-- set the script environment
-	cgilua.doenv(cgilua.script_pdir.."env.lua")
+	if type(userscriptname) == "string" then
+		cgilua.pcall (cgilua.doif, cgilua.script_pdir..userscriptname)
+	end
 
-	handler (cgilua.script_file)
+	cgilua.pcall (handler, cgilua.script_file)
 	cgilua.close()				-- "close" function
 end
 
