@@ -4,4 +4,13 @@
 <% end %>
 </table>
 
+<% if ap then %>
+  <p>
+  <table>
+  <% for i, v in pairs {ap.get_header()} do %>
+    <tr><td><%= i %><td>&nbsp;<td><%= v %></tr>
+  <% end %>
+  </table>
+<% end %>
+
 <p>
