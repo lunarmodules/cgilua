@@ -108,20 +108,14 @@ This configuration is listed below.<br>
 
 <p>
 In order to configure CGILua to run on every Tomcat application insert the above
-configuration to <code>"$(CATALINA_HOME)/conf/web.xml"</code>.
-</p>
+configuration to <code>"$(CATALINA_HOME)/conf/web.xml"</code>.<br>
 
-<p>
 Install LuaJava JNI library in a path included by the java system variable 
 <code>"java.library.path"</code>.<br>
 The most suitable path is <code>"$(JAVA_HOME)/jre/bin"</code>.<br>
 Make sure this is the JRE Tomcat is configured to use.<br>
-</p>
 
-<p>
-Install LuaJava JAR and Log4J in <code>"$(CATALINA_HOME)/common/lib"</code>
-</p>
+Install LuaJava, Log4J and cgilua jar files in <code>"$(CATALINA_HOME)/common/lib"</code><br>
 
-<p>
-Create a simple Tomcat application with a ".lua" file and "run" it.
+Create a simple Tomcat application with a ".lua" file and "run" it.<br>
 </p>
