@@ -2,16 +2,17 @@
 -- Main Lua script.
 -- This script does not depend on the launcher, only on the
 -- basic API.
--- $Id: t_main.lua,v 1.1 2004/03/25 19:01:39 tomas Exp $
+-- $Id: t_main.lua,v 1.2 2004/04/06 17:31:49 tomas Exp $
 ---------------------------------------------------------------------
 
-local cgilua_conf = "CGILUA_CONF"
-local cgilua_libdir = "CGILUA_LIBDIR"
+local cgilua_root = "CGILUA_DIR"
+local cgilua_conf = cgilua_root.."/conf/cgilua.conf"
+local cgilua_libdir = cgilua_root.."/lib"
 
 ---------------------------------------------------------------------
 -- Loading required libraries
 ---------------------------------------------------------------------
-LUA_PATH = cgilua_libdir.."/?;"..cgilua_libdir.."/?.lua"
+LUA_PATH = cgilua_libdir.."/?.lua;"..cgilua_libdir.."/?"
 require"dir"
 require"cgilua"
 
@@ -30,12 +31,12 @@ cgilua.removeglobals {
 cgilua.pcall (cgilua.doif, cgilua_conf)
 -- Define directory variables and build `cgi' table.
 cgi = {}
-cgilua.getparams (cgi)
+cgilua.pcall (cgilua.getparams, cgi)
 
 -- Loading application script (is this really necessary?)
 cgilua.pcall (cgilua.doif, appscript)
 -- Changing current directory to the script's "physical" dir
-dir.chdir (cgilua.script_pdir)
+cgilua.pcall (dir.chdir, cgilua.script_pdir)
 -- Loading script environment
 cgilua.pcall (cgilua.doif, userscriptname)
 -- Executing script
