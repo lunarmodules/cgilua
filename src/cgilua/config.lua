@@ -11,6 +11,6 @@ cgilua.addclosefunction (cgilua.cl_ses.close)
 -- Emulating old behavior loading file "env.lua" from the script's directory
 --[[
 cgilua.addopenfunction (function ()
-	assert (loadfile ("env.lua")) ()
+	cgilua.doif ("env.lua")
 end)
 --]]
