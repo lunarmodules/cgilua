@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2004/03/25 19:01:39 tomas Exp $
+# $Id: Makefile,v 1.3 2004/04/06 17:18:36 tomas Exp $
 
 T= weblib
 
@@ -6,17 +6,17 @@ include ../config
 
 #DIST_DIR=../$(PKG)/$T
 
-LIBS= cgilua.lua post.lua prep.lua readuntil.lua urlcode.lua
+LIBS= cgilua.lua post.lua prep.lua readuntil.lua urlcode.lua sandbox.lua
 CONF= cgilua.conf
 T_CONF= t_cgilua.conf
 MAIN= main.lua
 T_MAIN= t_main.lua
 LUAS= $(MAIN) $(CONF) $(LIBS)
-SRCS= $(T_MAIN) $(T_CONF) cgilua.lua post.lua prep.lua readuntil.lua urlcode.lua
+SRCS= $(T_MAIN) $(T_CONF) cgilua.lua post.lua prep.lua readuntil.lua urlcode.lua sandbox.lua
 
-all so dylib cgi fcgi mod cgimac fcgimac modmac: $(LUAS)
+cgi fcgi mod cgimac fcgimac modmac: $(LUAS)
 
-install cgiinstall fcgiinstall modinstall: $(LUAS)
+cgiinstall fcgiinstall modinstall: $(LUAS)
 	mkdir -p $(CGILUA_DIR)
 	cp $(MAIN) $(CGILUA_DIR)
 	mkdir -p $(CGILUA_CONFDIR)
@@ -26,10 +26,10 @@ install cgiinstall fcgiinstall modinstall: $(LUAS)
 	mkdir -p $(CGILUA_USRLIBDIR)
 
 $(CONF): $(T_CONF)
-	sed -e "s|CGILUA_USRLIBDIR|$(CGILUA_USRLIBDIR)|" < $(T_CONF) > $@
+	sed -e "s|CGILUA_DIR|$(CGILUA_DIR)|" < $(T_CONF) > $@
 
 $(MAIN): $(T_MAIN)
-	sed -e "s|CGILUA_LIBDIR|$(CGILUA_LIBDIR)|" -e "s|CGILUA_CONF|$(CGILUA_CONF)|" < $(T_MAIN) > $@
+	sed -e "s|CGILUA_DIR|$(CGILUA_DIR)|" < $(T_MAIN) > $@
 
 clean:
 	rm -f $(MAIN) $(CONF)
