@@ -35,7 +35,7 @@ function idx (table, field) return _G[table][field] end
 local pack = {}
 for p, s in pairs (package.loaded) do
 	local n = pack_name(p)
-	if _G[n] then
+	if _G[n] and _G[n]._NAME then
 		pack[n] = true
 		table.insert (pack, n)
 	end
