@@ -2,6 +2,7 @@
 <head><title>Embeded Lua Test</title></head>
 
 <body>
+cgi = {
 <?lua
 for i,v in pairs (cgi) do
 	if type(v) == "table" then
@@ -16,6 +17,7 @@ for i,v in pairs (cgi) do
 <%
 end
 %>
+}
 <br>
 Remote address: <% = cgilua.servervariable"REMOTE_ADDR"%>
 <br>
@@ -24,5 +26,5 @@ lfcgi = <% = tostring(lfcgi) %> <br>
 <%= (ap and ap.handler()) or "" %> <br>
 
 </body>
-<small>$Id: test_main.lp,v 1.3 2004/06/15 15:26:53 tomas Exp $</small>
+<small>$Id: test_main.lp,v 1.4 2004/09/17 15:04:55 tomas Exp $</small>
 </html>
