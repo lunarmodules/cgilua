@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2004/03/25 18:58:07 tomas Exp $
+# $Id: Makefile,v 1.3 2004/03/25 19:03:42 tomas Exp $
 
 include ./config
 
@@ -8,7 +8,7 @@ SRCS= Makefile config
 all so dylib install clean cgi cgiinstall cgimac fcgi fcgiinstall fcgimac mod modinstall modmac:
 	cd libdir; make $@
 	cd launcher; make $@
-	cd weblib; make $@
+	cd clmain; make $@
 	cd doc; make $@
 
 dist:
@@ -16,7 +16,7 @@ dist:
 	cp $(SRCS) $(PKG)
 	cd libdir; make $@
 	cd launcher; make $@
-	cd weblib; make $@
+	cd clmain; make $@
 	cd doc; make $@
 	cd test; make $@
 	tar -czf $(TAR_FILE) $(PKG)

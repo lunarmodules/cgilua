@@ -1,4 +1,6 @@
--- $Id: readuntil.lua,v 1.1 2003/09/28 23:38:45 tomas Exp $
+----------------------------------------------------------------------------
+-- $Id: readuntil.lua,v 1.2 2004/03/25 19:01:39 tomas Exp $
+----------------------------------------------------------------------------
 
 local strsub, strfind, strlen = string.sub, string.find, string.len
 
@@ -8,7 +10,7 @@ function iterate (inp)
 		local dellen = strlen(del) 
 		local i, e
 		while true do
-			i, e = strfind(current, del)
+			i, e = strfind(current, del, 1, 1)
 			if i then break end
 			local new = inp()
 			if not new then break end
@@ -16,7 +18,7 @@ function iterate (inp)
 				local endcurrent = strsub(current, -dellen+1)
 				local border = endcurrent .. strsub(new, 1, dellen-1)
 				if strlen(current) < dellen or strlen(new) < dellen or
-					 strfind(border, del) then
+					 strfind(border, del, 1, 1) then
 					-- move last part of `current' to new block
 					current = strsub(current, 1, -dellen)
 					new = endcurrent .. new

@@ -1,9 +1,10 @@
+----------------------------------------------------------------------------
+-- $Id: prep.lua,v 1.4 2004/03/25 19:01:39 tomas Exp $
+----------------------------------------------------------------------------
 
 local format = string.format
-local gfind = string.gfind
 local gsub = string.gsub
 local find = string.find
-local strlen = string.len
 local strsub = string.sub
 
 local concat = table.concat
@@ -33,6 +34,7 @@ function translate (s)
     s = gsub(s, "$|(.-)|%$", "<?lua = %1 ?>")
     s = gsub(s, "<!%-%-$$(.-)$$%-%->", "<?lua %1 ?>")
   end
+  s = gsub(s, "<%%(.-)%%>", "<?lua %1 ?>")
   local res = {}
   local start = 1   -- start of untranslated part in `s'
   while true do
