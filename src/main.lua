@@ -2,18 +2,16 @@
 -- Main Lua script.
 -- This script does not depend on the launcher, only on the
 -- basic API.
--- $Id: t_main.lua,v 1.9 2004/07/19 19:30:20 tomas Exp $
+-- $Id: main.lua,v 1.4 2004/07/29 14:41:55 tomas Exp $
 ---------------------------------------------------------------------
 
-local cgilua_root = "CGILUA_DIR"
-local cgilua_conf = cgilua_root.."/conf/cgilua.conf"
-local cgilua_libdir = cgilua_root.."/lib/cgilua"
+local cgilua_conf = CGILuaRoot().."/conf/cgilua.conf"
+local cgilua_libdir = CGILuaRoot().."/lib/cgilua"
 
 ---------------------------------------------------------------------
 -- Loading required libraries
 ---------------------------------------------------------------------
 LUA_PATH = cgilua_libdir.."/?.lua;"..cgilua_libdir.."/?"
-require"luafilesystem"
 require"cgilua"
 
 ---------------------------------------------------------------------
