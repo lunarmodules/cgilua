@@ -12,7 +12,7 @@ function color () i = math.mod (i + 1, 3) return colors[i + 1] end
 
 function pack_name (p) return string.gsub (p, "^([^.]+).-", "%1") end
 
-function idx (table, field) return _G[table][field] or "" end
+function idx (t, f) return _G[t][f] or _G[t]["_"..f] or "" end
 ?>
 <html>
 <head><title>CGILua installation overview</title></head>
@@ -50,10 +50,10 @@ table.sort (pack, function (x, y)
 end)
 for _, p in ipairs (pack) do bg = color() ?>
   <tr>
-    <td bgcolor = "<%= bg %>"><%= idx(p,"_NAME") %>
-    <td bgcolor = "<%= bg %>"><%= idx(p,"_COPYRIGHT") %>
-    <td bgcolor = "<%= bg %>"><%= idx(p,"_VERSION") %>
-    <td bgcolor = "<%= bg %>"><%= idx(p,"_DESCRIPTION") %>
+    <td bgcolor = "<%= bg %>"><%= idx(p,"NAME") %>
+    <td bgcolor = "<%= bg %>"><small><%= idx(p,"COPYRIGHT") %></small>
+    <td bgcolor = "<%= bg %>"><%= idx(p,"VERSION") %>
+    <td bgcolor = "<%= bg %>"><small><%= idx(p,"DESCRIPTION") %></small>
   </tr>
 <?lua end ?>
 </table>
