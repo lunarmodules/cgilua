@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: mainscript.lua,v 1.1 2003/04/07 15:53:52 tomas Exp $
+-- $Id: mainscript.lua,v 1.2 2003/04/11 11:22:44 tomas Exp $
 --
 -- CGILua "main" script
 ----------------------------------------------------------------------------
@@ -7,17 +7,37 @@
 ----------------------------------------------------------------------------
 -- Load auxiliar functions defined in CGILua namespace (cgilua)
 ----------------------------------------------------------------------------
-local aux = CL_map.main_dir.."auxiliar.lua"
-assert(dofile(aux), "Error loading '"..aux.."'")
+local aux = main_dir.."auxiliar.lua"
+local f_aux, err = loadfile (aux)
+assert (f_aux, err)
+f_aux()
 
 ----------------------------------------------------------------------------
 -- CGILua Libraries configuration
 ----------------------------------------------------------------------------
 
+-- Redefine require
+local original_lib_dir = lib_dir
+local original_loadlib = loadlib
+_G.loadlib = nil
+local original_require = require
+setfenv (1, _G)
+_G.require = function (packagename)
+	-- packagename cannot contain some special punctuation characters.
+	assert (not (string.find (packagename, "[^%P%.%-]") or
+			string.find (packagename, "%.%.")),
+		"Package name cannot contain punctuation characters")
+
+	_G.loadlib = original_loadlib
+	_G.LUA_PATH = original_lib_dir
+	original_require (packagename)
+	_G.loadlib = nil
+end
+
 --
 -- Set CGILua's default libraries directory
 --
-cgilua.setlibdir(CL_map.main_dir)
+cgilua.setlibdir(main_dir)
 
 --
 -- Authorized libraries
@@ -95,7 +115,7 @@ cgilua.setauthlibs(authorizedLibs)
 --
 -- copy 'map' information to CGILua namespace
 --
-cgilua.script_path = CL_map.script_path
+cgilua.script_path = script_path
 
 --
 -- remove globals not to be accessed by CGILua scripts
@@ -103,7 +123,7 @@ cgilua.script_path = CL_map.script_path
 cgilua.removeglobals{
 
   -- functions to be removed from the environment
-  "loadlib","unloadlib","callfromlib", "execute",
+  --"loadlib","unloadlib","callfromlib", "execute",
 
   -- other data to be removed
   "CL_map",
@@ -133,30 +153,30 @@ cgilua.script_pdir = cgilua.splitpath(cgilua.script_path)
 -- check if CGILua handles this script type
 local type = cgilua.getscripttype(cgilua.script_path)
 if type ~= "lua" and type ~= "html" then
-  cgilua.redirect(cgilua.mkabsoluteurl(getenv("PATH_INFO")))
+  cgilua.redirect(cgilua.mkabsoluteurl(os.getenv("PATH_INFO")))
 else
   -- get the 'virtual' path of the script (PATH_INFO)
-  cgilua.script_vpath = getenv("PATH_INFO")
+  cgilua.script_vpath = os.getenv("PATH_INFO")
 
   -- get the 'virtual' directory of the script
   --  (used to create URLs to scripts in the same 'virtual' directory)
-  cgilua.script_vdir = cgilua.splitpath(getenv("PATH_INFO"))
+  cgilua.script_vdir = cgilua.splitpath(os.getenv("PATH_INFO"))
 
   -- save the URL path to cgilua
-  cgilua.urlpath = getenv("SCRIPT_NAME")
+  cgilua.urlpath = os.getenv("SCRIPT_NAME")
 
   -- change current directory to the script's "physical" dir
-  chdir(cgilua.script_pdir)
+  dir.chdir(cgilua.script_pdir)
 
   -- set the script environment
   cgilua.doenv(cgilua.script_pdir.."env.lua")
 
   -- parse the incoming request data
   cgi = {}
-  if getenv("REQUEST_METHOD") == "POST" then
+  if os.getenv("REQUEST_METHOD") == "POST" then
     cgilua.parsepostdata(cgi)
   end
-  cgilua.parsequery(getenv("QUERY_STRING"),cgi)
+  cgilua.parsequery(os.getenv("QUERY_STRING"),cgi)
 
   --
   -- execute/preprocess the script

@@ -1,24 +1,43 @@
 ----------------------------------------------------------------------------
--- $Id: auxiliar.lua,v 1.1 2003/04/07 15:53:52 tomas Exp $
+-- $Id: auxiliar.lua,v 1.2 2003/04/11 11:22:44 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
 
 local Public, Private = {}, {}
-
 cgilua = Public
+
+local dofile = dofile
+local error = error
+local _G = _G
+local io = io
+local loadfile = loadfile
+local os = os
+local table = table
+local type = type
+local string = string
+setfenv (1, { __fenv = 1 })
 
 ----------------------------------------------------------------------------
 -- Auxiliar functions defined in C
 ----------------------------------------------------------------------------
-Public.httpheader = CL_httpheader
-CL_httpheader = nil
+--Public.httpheader = CL_httpheader
+--CL_httpheader = nil
+function Public.httpheader (header)
+	io.write (header)
+end
 
-Public.contentheader = CL_contentheader
-CL_contentheader = nil
+--Public.contentheader = CL_contentheader
+--CL_contentheader = nil
+function Public.contentheader (type, subtype)
+	io.write (string.format ("Content-type: %s/%s\n\n", type, subtype))
+end
 
-Public.locationheader = CL_locationheader
-CL_locationheader = nil
+--Public.locationheader = CL_locationheader
+--CL_locationheader = nil
+function Public.locationheader (url)
+	io.write (string.format ("Location: %s\n\n", url))
+end
 
 ----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
@@ -27,21 +46,21 @@ CL_locationheader = nil
 --  each of its arguments (strings or numbers) to file _OUTPUT (a file
 --  handle initialized with the file descriptor for stdout)
 ----------------------------------------------------------------------------
-Public.put = write
+Public.put = io.write
 
 ----------------------------------------------------------------------------
 -- Remove globals not allowed in CGILua scripts
 ----------------------------------------------------------------------------
 function Public.removeglobals (notallowed)
-  for i=1,getn(notallowed) do
+  for i=1,table.getn(notallowed) do
     local g = notallowed[i]
-    if type(getglobal(g)) == "function" then
-      setglobal(g, function()
-                     error("Function '"..%g..
+    if type(_G[g]) == "function" then
+      _G[g] = function()
+                     error("Function '"..g..
                            "' is not allowed in CGILua scripts.")
-                   end)
+                   end
     else
-      setglobal(g, nil)
+      _G[g] = nil
     end
   end
 end
@@ -55,13 +74,23 @@ end
 --  a string describing this error is also returned.
 ----------------------------------------------------------------------------
 function Public.loadfile (filename)
-  local res,err = dofile(filename)
-  if not res and err == "file error" then
-      local res, strerr = readfrom(filename)
-      return nil, err, strerr
-  else
-    return res, err
-  end
+  --local res,err = dofile(filename)
+  --if not res and err == "file error" then
+      --local res, strerr = io.readfrom(filename)
+      --return nil, err, strerr
+  --else
+    --return res, err
+  --end
+	local f, err = io.open(filename)
+	if not f then	-- no file (or unreadable file)
+		return nil, err
+	end
+	f:close()
+	local res = loadfile(filename)
+	if not res then
+		error(string.format("Cannot execute '%s'. Exiting.",filename))
+	end
+	return res() or true  -- run file
 end
 
 ----------------------------------------------------------------------------
@@ -70,9 +99,9 @@ end
 --  does not return
 ----------------------------------------------------------------------------
 function Public.doscript (filename)
-  local res,err,strerr = %Public.loadfile(filename)
+  local res,err,strerr = Public.loadfile(filename)
   if not res then
-    _ALERT(format("Cannot execute script '%s'. Exiting.\n%s",filename,(strerr or "")))
+    error(string.format("Cannot execute script '%s'. Exiting.\n%s",filename,(strerr or "")))
   end
 end
 
@@ -82,10 +111,22 @@ end
 --  is called and this function does not return
 ----------------------------------------------------------------------------
 function Public.doenv (filename)
-  local res,err = dofile(filename)
-  if not res and err ~= "file error" then
-    error(format("Cannot execute '%s'. Exiting.",filename))
-  end
+	--local res,err = dofile (filename)
+	--if not res and err ~= "file error" then
+		--error(string.format("Cannot execute '%s'. Exiting.",filename))
+	--end
+	--local f = loadfile (filename)
+	--if f then
+		--f()
+	--end
+	local f = io.open(filename)
+	if not f then return end    -- no file (or unreadable file)
+	f:close()
+	local res = loadfile(filename)
+	if not res then
+		error(string.format("Cannot execute '%s'. Exiting.",filename))
+	end
+	res()  -- run file
 end
 
 ---------------------------------------------------------------------------
@@ -93,10 +134,10 @@ end
 ---------------------------------------------------------------------------
 function Public.setlibdir(libdir)
   -- can only be set once (by CGILua's mainscript)
-  if %Private.libdir then
+  if Private.libdir then
     error("The default 'libraries directory' cannot be redefined")
   end
-  %Private.libdir = libdir
+  Private.libdir = libdir
 end
 
 ---------------------------------------------------------------------------
@@ -104,18 +145,19 @@ end
 ---------------------------------------------------------------------------
 function Public.setauthlibs(authlibs)
   -- can only be set once (by CGILua's mainscript)
-  if %Private.authorizedLibs then
+  if Private.authorizedLibs then
     error("Authorized libraries information cannot be redefined")
   end
-  %Private.authorizedLibs = authlibs
+  Private.authorizedLibs = authlibs
 end
 
 ---------------------------------------------------------------------------
 -- Load an authorized CGILua extension (dynamic library and/or lua file)
 ----------------------------------------------------------------------------
 
+--[[
 function Public.loadlibrary (lib)
-  local libdesc = %Private.authorizedLibs[lib]
+  local libdesc = Private.authorizedLibs[lib]
   if not libdesc then
     error("Error loading '"..lib.."': not an authorized library.")
   end
@@ -126,19 +168,19 @@ function Public.loadlibrary (lib)
 
     -- load dynamic library, if defined
     if libdesc.dyn then
-      local libhandle, err = %loadlib(libdesc.dyn.libname,
-                                      (libdesc.dyn.libdir or %Private.libdir))
+      local libhandle, err = loadlib(libdesc.dyn.libname,
+                                      (libdesc.dyn.libdir or Private.libdir))
       if not libhandle then
         error(format("Error loading library '%s': cannot load '%s'.\n%s",
                      lib,libdesc.dyn.libname,err))
       end
-      %callfromlib(libhandle, libdesc.dyn.init)
+      callfromlib(libhandle, libdesc.dyn.init)
     end
 
     -- load (do) lua file, if defined
     if libdesc.lua then
-      local libpath = (libdesc.lua.libdir or %Private.libdir)..libdesc.lua.libname
-      local res,err,strerr = %Public.loadfile(libpath)
+      local libpath = (libdesc.lua.libdir or Private.libdir)..libdesc.lua.libname
+      local res,err,strerr = Public.loadfile(libpath)
       if not res then
         error(format("Error loading library '%s': cannot execute '%s'.\n%s",
                        lib,libpath,(strerr or "")))
@@ -146,16 +188,17 @@ function Public.loadlibrary (lib)
     end
   end
 end  
+--]]
 
 ---------------------------------------------------------------------------
 -- Set the maximum "total" input size allowed (in bytes)
 ---------------------------------------------------------------------------
 function Public.setmaxinput(nbytes)
   -- can only be set once (by CGILua's mainscript)
-  if %Private.maxinput then
+  if Private.maxinput then
     error("Maximum input size redefinition is not allowed")
   end
-  %Private.maxinput = nbytes
+  Private.maxinput = nbytes
 end
 
 ---------------------------------------------------------------------------
@@ -163,7 +206,7 @@ end
 --   (can be redefined by a script but "maxinputsize" is checked first)
 ---------------------------------------------------------------------------
 function Public.setmaxfilesize(nbytes)
-  %Private.maxfilesize = nbytes
+  Private.maxfilesize = nbytes
 end
 
 ----------------------------------------------------------------------------
@@ -171,7 +214,7 @@ end
 --  currently 'open' HTML document. 
 ----------------------------------------------------------------------------
 function Public.includehtml (filename)
-  %Public.loadlibrary("preprocess")
+  Public.loadlibrary("preprocess")
   if not readfrom(filename) then
     _ALERT("Error opening file '"..filename.."', preprocessing aborted")
     return
@@ -190,18 +233,18 @@ end
 --   preprocessed HTML )
 ----------------------------------------------------------------------------
 function Public.preprocess (filename)
-  %Public.contentheader("text","html")
-  %Public.includehtml(filename)
+  Public.contentheader("text","html")
+  Public.includehtml(filename)
 end
 
 ----------------------------------------------------------------------------
 -- Decode an URL-encoded string (see RFC 2396)
 ----------------------------------------------------------------------------
 function Public.unescape (str)
-  local dstr = gsub(gsub(gsub(str,"+"," "),
+  local dstr = string.gsub(string.gsub(string.gsub(str,"+"," "),
                          "%%(%x%x)",
                          function(hex) 
-                           return strchar(tonumber(hex,16))
+                           return string.char(tonumber(hex,16))
                          end),
                      "\r\n","\n")
   return dstr
@@ -239,10 +282,10 @@ end
 ----------------------------------------------------------------------------
 function Public.parsequery (query, args)
   if type(query) == "string" then
-    local insertfield, unescape = %Public.insertfield, %Public.unescape
-    gsub(query,"([^&=]+)=([^&=]*)&?",
+    local insertfield, unescape = Public.insertfield, Public.unescape
+    string.gsub(query,"([^&=]+)=([^&=]*)&?",
        	      function(key,val)
-		%insertfield(%args,%unescape(key),%unescape(val))
+		insertfield(args,unescape(key),unescape(val))
 	      end)
   end
 end
@@ -257,10 +300,10 @@ function Public.encodetable (args)
   end
   local strp = ""
   for key,val in args do
-    strp = strp.."&"..%Public.escape(key).."="..%Public.escape(val)
+    strp = strp.."&"..Public.escape(key).."="..Public.escape(val)
   end
   -- remove first & 
-  return strsub(strp,2)
+  return string.sub(strp,2)
 end
 
 ----------------------------------------------------------------------------
@@ -271,12 +314,12 @@ function Public.mkurlpath (script, args)
   -- URL-encode the parameters to be passed do the script
   local params = ""
   if args then
-    params = "?"..%Public.encodetable(args)
+    params = "?"..Public.encodetable(args)
   end
-  if strsub(script,1,1) == "/" then
-    return %Public.urlpath .. script .. params
+  if string.sub(script,1,1) == "/" then
+    return Public.urlpath .. script .. params
   else
-    return %Public.urlpath .. %Public.script_vdir .. script .. params
+    return Public.urlpath .. Public.script_vdir .. script .. params
   end
 end
 
@@ -284,9 +327,9 @@ end
 -- Create an absolute URL containing the given URL path
 ----------------------------------------------------------------------------
 function Public.mkabsoluteurl (path)
-  return format("http://%s:%s%s",
-		getenv("SERVER_NAME"),
-		getenv("SERVER_PORT"),
+  return string.format("http://%s:%s%s",
+		os.getenv("SERVER_NAME"),
+		os.getenv("SERVER_PORT"),
 		path)
 end
 
@@ -294,15 +337,15 @@ end
 -- Create an HTTP header redirecting the browser to another URL
 ----------------------------------------------------------------------------
 function Public.redirect (url, args)
-  if strfind(url,"http:") then
+  if string.find(url,"http:") then
     local params=""
     if args then
-      params = "?"..%Public.encodetable(args)
+      params = "?"..Public.encodetable(args)
     end
-    %Public.locationheader(url..params)
+    Public.locationheader(url..params)
   else
-    local abs_url = %Public.mkabsoluteurl(%Public.mkurlpath(url,args))
-    %Public.locationheader(abs_url)
+    local abs_url = Public.mkabsoluteurl(Public.mkurlpath(url,args))
+    Public.locationheader(abs_url)
   end
 end
 
@@ -310,14 +353,14 @@ end
 -- Output an HTML header
 ----------------------------------------------------------------------------
 function Public.htmlheader ()
-  %Public.contentheader("text","html")
+  Public.contentheader("text","html")
 end
 
 ----------------------------------------------------------------------------
 -- Extract the "directory" and "file" parts of a path
 ----------------------------------------------------------------------------
 function Public.splitpath (path)
-  local _,_,dir,file = strfind(path,"^(.-)([^:/\\]*)$")
+  local _,_,dir,file = string.find(path,"^(.-)([^:/\\]*)$")
   return dir,file
 end
 
@@ -327,11 +370,11 @@ end
 -- The possible results are "lua", "html" and "other"
 ----------------------------------------------------------------------------
 function Public.getscripttype (path)
-  local _,file = %Public.splitpath(path)
-  file = strlower(file)
-  if strfind(file,"%.html?$") then
+  local _,file = Public.splitpath(path)
+  file = string.lower(file)
+  if string.find(file,"%.html?$") then
     return "html"
-  elseif strfind(file,"%.lua$") then
+  elseif string.find(file,"%.lua$") then
     return "lua"
   else
     return "other"
@@ -345,10 +388,10 @@ function Public.discardinput (inputsize)
   local blocklen = 8192
   local s
   while inputsize > 0 do
-    blocklen = min(blocklen, inputsize)
-    s = read(blocklen)
+    blocklen = math.min(blocklen, inputsize)
+    s = io.read(blocklen)
     if s == nil then break end
-    inputsize = inputsize - strlen(s)
+    inputsize = inputsize - string.len(s)
   end
 end
 
@@ -363,24 +406,24 @@ end
 function Public.parsepostdata (args)
 
   -- get the "total" size of the incoming data
-  local inputsize = tonumber(getenv("CONTENT_LENGTH"))
-  if inputsize > %Private.maxinput then
+  local inputsize = tonumber(os.getenv("CONTENT_LENGTH"))
+  if inputsize > Private.maxinput then
     -- some Web Servers (like IIS) require that all the incoming data is read 
-    %Public.discardinput(inputsize)
+    Public.discardinput(inputsize)
     error(format("Total size of incoming data (%d KB) exceeds configured maximum (%d KB)",
-	         inputsize /1024, %Private.maxinput / 1024))
+	         inputsize /1024, Private.maxinput / 1024))
   end
 
   -- process the incoming data according to its content type
-  local contenttype = getenv("CONTENT_TYPE")
+  local contenttype = os.getenv("CONTENT_TYPE")
   if not contenttype then
     error("Undefined Media Type") 
   end
-  if strfind(contenttype, "x%-www%-form%-urlencoded") then
-    %Public.parsequery(read(inputsize),args)
-  elseif strfind(contenttype, "multipart/form%-data") then
-    %Public.loadlibrary("upload")
-    upl_formupload(inputsize, %Private.maxfilesize, args)
+  if string.find(contenttype, "x%-www%-form%-urlencoded") then
+    Public.parsequery(read(inputsize),args)
+  elseif string.find(contenttype, "multipart/form%-data") then
+    Public.loadlibrary("upload")
+    upl_formupload(inputsize, Private.maxfilesize, args)
   else
     error("Unsupported Media Type: "..contenttype)
   end
@@ -393,14 +436,14 @@ end
 ---------------------------------------------------------------------------
 function Public.setclosefunction(f)
   if type(f) == "function" then
-    %Private.closefunction = f
+    Private.closefunction = f
   else
-    error(format("Invalid type: expected 'function' got %s", type(f)))
+    error(string.format("Invalid type: expected 'function' got %s", type(f)))
   end
 end
 
 function Public.close()
-  if %Private.closefunction then
-    %Private.closefunction()
+  if Private.closefunction then
+    Private.closefunction()
   end
 end
