@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.13 2004/07/13 06:18:01 tomas Exp $
+-- $Id: cgilua.lua,v 1.14 2004/07/19 19:31:21 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -251,8 +251,13 @@ function getparams (args)
 	-- Define variables.
 	script_pdir, script_file = splitpath (script_path or servervariable"PATH_TRANSLATED")
 	script_vpath = servervariable"PATH_INFO"
-	script_vdir = splitpath (servervariable"PATH_INFO")
-	urlpath = servervariable"SCRIPT_NAME"
+	if script_vpath and script_vpath ~= "" then
+		script_vdir = splitpath (servervariable"PATH_INFO")
+		urlpath = servervariable"SCRIPT_NAME"
+	else
+		script_vdir = splitpath (servervariable"SCRIPT_NAME")
+		urlpath = ""
+	end
 	-- Fill in args table.
 	if servervariable"REQUEST_METHOD" == "POST" then
 		post.parsedata {
