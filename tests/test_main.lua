@@ -1,4 +1,4 @@
--- $Id: test_main.lua,v 1.9 2005/02/11 14:39:21 tomas Exp $
+-- $Id: test_main.lua,v 1.10 2005/03/22 10:10:51 tomas Exp $
 if ap then handler = ap.handler() end
 cgilua.htmlheader()
 cgilua.put[[
@@ -38,18 +38,12 @@ assert (status == true, err)
 
 -- Checking require
 local status, err = pcall (function () require"unknown_module" end)
---cgilua.put(tostring(status)..": "..tostring(err).."<br>\n")
 assert (status == false, "<tt>unknown_module</tt> loaded!")
-local status, err = pcall (function () package.path="." require"test_main" end)
---cgilua.put(tostring(err).."<br>\n")
-assert (status == false, "<i>package.path</i> was changed!")
-local status, err = pcall (function () package.path="." require"cgilua.cookies" end)
-cgilua.put("== "..tostring(status).." == "..tostring(err).." ==")
-assert (status == true, "<i>package.path</i> was changed!")
+assert (package == nil, "Access to <tt>package</tt> table allowed!")
 
 cgilua.put[[
 <p>
 </body>
-<small>$Id: test_main.lua,v 1.9 2005/02/11 14:39:21 tomas Exp $</small>
+<small>$Id: test_main.lua,v 1.10 2005/03/22 10:10:51 tomas Exp $</small>
 </html>
 ]]

@@ -1,8 +1,10 @@
 <?lua
 -- Tries to load known libraries
-for _, t in ipairs { "lxp", "luasql.postgres", "luasql.mysql", "luasql.oci8", "luasql.sqlite", "luasql.odbc", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", } do
+for _, t in ipairs { "lxp", "luasql.postgres", "luasql.mysql", "luasql.oci8", "luasql.sqlite", "luasql.odbc", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", "zip", "stable", } do
 	pcall (require, t)
 end
+
+libraries = { "lxp", "luasql", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", "zip", "stable", }
 
 local colors = { "#999999", "#CCCCCC", "#FFFFFF", }
 local i = 0
@@ -33,9 +35,10 @@ function idx (table, field) return _G[table][field] or "" end
   </tr>
 <?lua
 local pack = {}
-for p, s in pairs (package.loaded) do
+for i, p in ipairs (libraries) do
+	local s = _G[p]
 	local n = pack_name(p)
-	if _G[n] and _G[n]._NAME then
+	if type(_G[n]) == "table" and _G[n]._NAME then
 		pack[n] = true
 		table.insert (pack, n)
 	end
@@ -54,5 +57,6 @@ for _, p in ipairs (pack) do bg = color() ?>
   </tr>
 <?lua end ?>
 </table>
+
 </body>
 </html>
