@@ -31,7 +31,8 @@ MOD2_LUA= -DINCLUDE_MOD2
 DLLIB= -ldl
 WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings
 INCS= -I/usr/local/include/lua5
-LIBS= -L$(LIB_DIR) -llua -llualib -lm $(DLLIB)
+CL_LIBS= -L$(LIB_DIR) -llua -llualib -lm $(DLLIB)
+LIBS= $(CL_LIBS)
 CFLAGS= $(WARN) $(INCS) $(MOD2_LUA)
 CC= gcc
 
@@ -47,4 +48,4 @@ CGILUA_USRLIBDIR= $(CGILUA_DIR)/usr/lib
 CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
 CGILUA_DOC= $(CGILUA_DIR)/doc
 
-# $Id: config,v 1.10 2004/06/08 17:09:24 tomas Exp $
+# $Id: config,v 1.11 2004/06/11 18:30:26 tomas Exp $
