@@ -1,7 +1,7 @@
 # Installation directories
 # CGILua root directory
 CGILUA_DIR= /usr/local/cgilua
-# System's libraries directory
+# System's libraries directory (where Lua libraries are installed)
 LIB_DIR= /usr/local/lib
 # Apache root directory
 APACHE2_DIR= /usr/local/apache2
@@ -12,7 +12,7 @@ FCGI_DIR= $(APACHE2_DIR)/fcgilua
 MOD_DIR= $(CGILUA_DIR)
 # Lua Compiler
 LUAC= /usr/local/bin/luac
-# Binary converter (bin2c)
+# Lua Binary converter (bin2c)
 # Lua distribution includes it at etc directory
 BIN2C= /usr/local/bin/bin2c
 
@@ -20,7 +20,7 @@ BIN2C= /usr/local/bin/bin2c
 WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings
 INCS= -I/usr/local/include/lua5
 CFLAGS= $(WARN) $(INCS)
-LIBS= -llua -llualib -lm -ldl
+LIBS= -L$(LIB_DIR) -llua -llualib -lm -ldl
 CC= gcc
 
 #########################################################
@@ -35,4 +35,4 @@ CGILUA_USRLIBDIR= $(CGILUA_DIR)/usr/lib
 CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
 CGILUA_DOC= $(CGILUA_DIR)/doc
 
-# $Id: config,v 1.4 2004/04/19 18:48:11 tomas Exp $
+# $Id: config,v 1.5 2004/04/20 14:06:41 tomas Exp $
