@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 2004/06/08 12:50:06 tomas Exp $
+# $Id: Makefile,v 1.5 2004/11/08 16:39:51 tomas Exp $
 
 T= test
 
@@ -13,6 +13,6 @@ clean cgi fcgi mod:
 
 cgiinstall fcgiinstall modinstall:
 
-dist:
+dist dist_dir:
 	mkdir -p $(DIST_DIR)
 	cp $(SRCS) Makefile $(DIST_DIR)

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2004/06/08 12:50:06 tomas Exp $
+# $Id: Makefile,v 1.6 2004/11/08 16:39:51 tomas Exp $
 
 T= doc
 
@@ -15,6 +15,6 @@ cgiinstall fcgiinstall modinstall:
 	mkdir -p $(CGILUA_DOC)
 	cp $(SRCS) $(CGILUA_DOC)
 
-dist:
+dist dist_dir:
 	mkdir -p $(DIST_DIR)
 	cp $(SRCS) Makefile $(DIST_DIR)

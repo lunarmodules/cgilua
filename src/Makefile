@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.20 2004/11/08 16:00:29 tomas Exp $
+# $Id: Makefile,v 1.21 2004/11/08 16:39:51 tomas Exp $
 
 T= clmain
 
@@ -20,7 +20,7 @@ cgiinstall fcgiinstall modinstall: $(LUAS)
 
 clean:
 
-dist:
+dist dist_dir:
 	mkdir -p $(DIST_DIR)
 	cp Makefile $(DIST_DIR)
 	cp venv.lua $(DIST_DIR)
