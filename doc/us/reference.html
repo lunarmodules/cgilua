@@ -23,7 +23,7 @@ ul { list-style-type: disc };
 <a href="index.html">home</a> &middot;
 <a href="#headers">headers</a> &middot;
 <a href="#contents">contents</a> &middot;
-<a href="#prep">pre-processing</a> &middot;
+<a href="#lp">lua-pages</a> &middot;
 <a href="#variables">variables</a> &middot;
 <a href="#error_handling">error handling</a> &middot;
 <a href="#behavior">behavior</a> &middot;
@@ -98,22 +98,22 @@ Returns nothing.
 
 
 <hr>
-<a name="prep"</a>
-<h2>Pre-processing</h2>
+<a name="lp"</a>
+<h2>Lua Pages</h2>
 
-<a name="includehtml"></a>
-<h3><code>cgilua.includehtml (filename)</code></h3>
+<a name="include"></a>
+<h3><code>cgilua.lp.include (filename)</code></h3>
 Pre-processes the given HTML file and sends the result to the client.<br>
 Returns nothing.
 
-<a name="preprocess"></a>
-<h3><code>cgilua.preprocess (filename)</code></h3>
-Equivalent to <a href="includehtml"><code>includehtml</code></a> but
+<a name="handlelp"></a>
+<h3><code>cgilua.handlelp (filename)</code></h3>
+Equivalent to <a href="include"><code>lp.include</code></a> but
 sends the HTML header before the pre-processed file.<br>
 Returns nothing.
 
 <a name="setcompatmode"></a>
-<h3><code>cgilua.prep.setcompatmode (boolean)</code></h3>
+<h3><code>cgilua.lp.setcompatmode (boolean)</code></h3>
 Turns on or off the compatibility mode.
 Turning it on will make the translator understands the old
 <i>expression fields</i> and <i>code fields</i>
@@ -121,13 +121,13 @@ structures, now obsolete.<br>
 Returns nothing.
 
 <a name="setoutfunc"></a>
-<h3><code>cgilua.prep.setoutfunc (outfuncname)</code></h3>
+<h3><code>cgilua.lp.setoutfunc (outfuncname)</code></h3>
 Defines the output function.
 The translator will write calls to the function with the given name.<br>
 Returns nothing.
 
 <a name="translate"></a>
-<h3><code>cgilua.prep.translate (string)</code></h3>
+<h3><code>cgilua.lp.translate (string)</code></h3>
 Creates a string with Lua code that reproduces the given string executing
 the Lua chunks or expressions inside it.<br>
 Returns a string with the resulting code.
@@ -207,7 +207,7 @@ Returns nothing.
 Defines a function to pre-process a certain type of files.
 The default configuration uses
 <code>cgilua.doscript</code> to process Lua scripts (<tt>.lua</tt> files) and
-<code>cgilua.preprocess</code> to process HTML templates (<tt>.lp</tt> files).<br>
+<code>cgilua.handlelp</code> to process Lua pages (<tt>.lp</tt> files).<br>
 Returns nothing.
 
 <a name="addclosefunction"></a>
@@ -236,7 +236,7 @@ file requested.
 The <i>Content-type</i> header is formed by the two arguments;
 the created function will receive a <i>filename</i> as its only argument
 and will return the given filename pre-processed by the function
-<a href="#includehtml">cgilua.includehtml</a>.<br>
+<a href="#include">cgilua.lp.include</a>.<br>
 Returns a function.
 
 <a name="setlibdir"></a>
@@ -337,15 +337,15 @@ Returns the decoded string.
 <a href="#escape">escape (urlcode)</a><br>
 <a href="#header">header</a><br>
 <a href="#htmlheader">htmlheader</a><br>
-<a href="#includehtml">includehtml</a><br>
+<a href="#include">include (lp)</a><br>
 <a href="#insertfield">insertfield (urlcode)</a><br>
 <a href="#locationheader">locationheader</a><br>
 <a href="#mkabsoluteurl">mkabsoluteurl</a><br>
 <a href="#mkurlpath">mkurlpath</a><br>
 <a href="#pack">pack</a><br>
 <a href="#parsequery">parsequery (urlcode)</a><br>
-<a href="#preprocess">preprocess</a><br>
-<a href="#prep">prep</a><br>
+<a href="#handlelp">handlelp</a><br>
+<a href="#lp">lp</a><br>
 <a href="#put">put</a><br>
 <a href="#redirect">redirect</a><br>
 <a href="#script_file">script_file</a><br>
@@ -354,13 +354,13 @@ Returns the decoded string.
 <a href="#script_vdir">script_vdir</a><br>
 <a href="#script_vpath">script_vpath</a><br>
 <a href="#servervariable">servervariable</a><br>
-<a href="#setcompatmode">setcompatmode (prep)</a><br>
+<a href="#setcompatmode">setcompatmode (lp)</a><br>
 <a href="#seterrorhandler">seterrorhandler</a><br>
 <a href="#seterroroutput">seterroroutput</a><br>
 <a href="#setlibdir">setlibdir</a><br>
 <a href="#setmaxfilesize">setmaxfilesize</a><br>
 <a href="#setmaxinput">setmaxinput</a><br>
-<a href="#setoutfunc">setoutfunc (prep)</a><br>
+<a href="#setoutfunc">setoutfunc (lp)</a><br>
 <a href="#splitpath">splitpath</a><br>
 <a href="#urlcode">urlcode</a><br>
 <a href="#unescape">unescape (urlcode)</a><br>
@@ -369,7 +369,7 @@ Returns the decoded string.
 
 <hr>
 <small>
-$Id: reference.html,v 1.18 2004/12/15 15:11:48 tomas Exp $
+$Id: reference.html,v 1.19 2005/02/11 14:32:33 tomas Exp $
 </small>
 
 </body>

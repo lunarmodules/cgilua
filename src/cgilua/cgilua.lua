@@ -1,11 +1,11 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.16 2005/02/01 15:04:15 carregal Exp $
+-- $Id: cgilua.lua,v 1.17 2005/02/11 14:32:32 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
 
 require"cgilua.urlcode"
-require"cgilua.prep"
+require"cgilua.lp"
 require"cgilua.post"
 require"lfs"
 
@@ -21,11 +21,11 @@ local SAPI = SAPI
 local lfs = lfs
 local urlcode = cgilua.urlcode
 local post = cgilua.post
-local prep = cgilua.prep
-local translate = prep.translate
+local lp = cgilua.lp
+local translate = lp.translate
 
-prep.setoutfunc ("SAPI.Response.write")
-prep.setcompatmode (true)
+lp.setoutfunc ("SAPI.Response.write")
+lp.setcompatmode (true)
 
 -- Internal state variables.
 local default_errorhandler = debug.traceback
@@ -187,7 +187,7 @@ end
 -- Preprocess and include the content of a mixed HTML file into the 
 --  currently 'open' HTML document. 
 ----------------------------------------------------------------------------
-function includehtml (filename)
+function lp.include (filename)
 	local fh = assert (_open (filename))
 	local prog = fh:read("*a")
 	fh:close()
@@ -207,9 +207,9 @@ end
 --   HTML document ( a 'Content-type' header is inserted before the
 --   preprocessed HTML )
 ----------------------------------------------------------------------------
-function preprocess (filename)
+function handlelp (filename)
 	htmlheader ()
-	includehtml (filename)
+	lp.include (filename)
 end
 
 ----------------------------------------------------------------------------
@@ -233,7 +233,7 @@ end
 function buildprocesshandler (type, subtype)
 	return function (filename)
 		contentheader (type, subtype)
-		includehtml (filename)
+		lp.include (filename)
 	end
 end
 
@@ -486,7 +486,7 @@ end
 function main ()
 	-- Default values
 	addscripthandler ("lua", doscript)
-	addscripthandler ("lp", preprocess)
+	addscripthandler ("lp", handlelp)
 	-- Configuring CGILua (trying to load cgilua/conf.lua)
 	pcall (_G.require, "cgilua.config")
 	-- Cleaning environment

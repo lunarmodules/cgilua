@@ -1,10 +1,10 @@
-# $Id: Makefile,v 1.28 2005/01/28 15:55:15 tomas Exp $
+# $Id: Makefile,v 1.29 2005/02/11 14:32:32 tomas Exp $
 
 T= clmain
 
 include ../config
 
-CGILUA_LUAS= cgilua/cgilua.lua cgilua/cookies.lua cgilua/post.lua cgilua/prep.lua cgilua/readuntil.lua cgilua/serialize.lua cgilua/session.lua cgilua/urlcode.lua
+CGILUA_LUAS= cgilua/cgilua.lua cgilua/cookies.lua cgilua/post.lua cgilua/lp.lua cgilua/readuntil.lua cgilua/serialize.lua cgilua/session.lua cgilua/urlcode.lua
 CONFIG_FILE= config.lua
 LIB_LUAS= venv.lua stable.lua
 COMPAT= $(COMPAT_DIR)/compat-5.1.lua
