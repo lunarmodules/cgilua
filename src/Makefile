@@ -1,12 +1,12 @@
-# $Id: Makefile,v 1.17 2004/08/30 11:00:45 tomas Exp $
+# $Id: Makefile,v 1.18 2004/10/13 20:07:58 tomas Exp $
 
 T= clmain
 
 include ../config
 
-CGILUA_LUAS= cgilua/cgilua.lua cgilua/cl_ses.lua cgilua/cookies.lua cgilua/post.lua cgilua/prep.lua cgilua/readuntil.lua cgilua/serialize.lua cgilua/session.lua cgilua/urlcode.lua
+CGILUA_LUAS= cgilua/cgilua.lua cgilua/cl_ses.lua cgilua/conf.lua cgilua/cookies.lua cgilua/post.lua cgilua/prep.lua cgilua/readuntil.lua cgilua/serialize.lua cgilua/session.lua cgilua/urlcode.lua
 LIB_LUAS= compat-5.1.lua venv.lua
-CONF_LUAS= conf/cgilua.conf conf/error.conf conf/session.conf
+#CONF_LUAS= conf/cgilua.conf conf/error.conf conf/session.conf
 LUAS= $(CONF_LUAS) $(LIB_LUAS) $(CGILUA_LUAS)
 
 cgi fcgi mod: $(LUAS)
@@ -26,6 +26,6 @@ dist:
 	cp Makefile $(DIST_DIR)
 	cp $(LIB_LUAS) $(DIST_DIR)
 	mkdir $(DIST_DIR)/conf
-	cp $(CONF_LUAS) $(DIST_DIR)/conf/
+	#cp $(CONF_LUAS) $(DIST_DIR)/conf/
 	mkdir -p $(DIST_DIR)/cgilua
 	cp $(CGILUA_LUAS) $(DIST_DIR)/cgilua/

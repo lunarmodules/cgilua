@@ -38,10 +38,10 @@ TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 DIST_DIR= ../$(PKG)/$T
 CGILUA_DIR=        $(LUA_DIR)/cgilua
-CGILUA_TMPDIR=     $(CGILUA_DIR)/tmp
+CGILUA_TMPDIR=     /tmp/cgilua
 CGILUA_DOC=        $(CGILUA_DIR)/doc
 
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.22 2004/09/29 18:22:11 tomas Exp $
+# $Id: config,v 1.23 2004/10/13 20:07:58 tomas Exp $
