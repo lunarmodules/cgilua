@@ -42,11 +42,12 @@ PKG= cgilua-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 DIST_DIR= ../$(PKG)/$T
-CGILUA_LIBDIR= $(CGILUA_DIR)/lib/cgilua
+CGILUA_LIBDIR= $(CGILUA_DIR)/lib
+CGILUA_CGILUADIR= $(CGILUA_LIBDIR)/cgilua
 CGILUA_CONFDIR= $(CGILUA_DIR)/conf
 CGILUA_USRLIBDIR= $(CGILUA_DIR)/usr/lib
 CGILUA_TMPDIR= $(CGILUA_DIR)/tmp
 CGILUA_CONF= $(CGILUA_CONFDIR)/cgilua.conf
 CGILUA_DOC= $(CGILUA_DIR)/doc
 
-# $Id: config,v 1.14 2004/07/19 19:30:20 tomas Exp $
+# $Id: config,v 1.15 2004/07/29 14:52:28 tomas Exp $
