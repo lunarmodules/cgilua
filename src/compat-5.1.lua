@@ -1,17 +1,17 @@
-pack = {}
-pack.path = LUA_PATH or os.getenv("LUA_PATH") or
+package = {}
+package.path = LUA_PATH or os.getenv("LUA_PATH") or
              ("./?.lua;" ..
               "/usr/local/share/lua/5.0/?.lua;" ..
               "/usr/local/share/lua/5.0/?/init.lua" )
  
-pack.cpath = os.getenv("LUA_CPATH") or
+package.cpath = os.getenv("LUA_CPATH") or
              "./?.so;" ..
              "/usr/local/lib/lua/5.0/?.so;" ..
              "/usr/local/lib/lua/5.0/lib?.so"
 
-pack.loaded = {}
+package.loaded = {}
 
-pack.preload = {}
+package.preload = {}
 
 
 --
@@ -34,19 +34,19 @@ end
 -- new require
 --
 function _G.require (name)
-  if not pack.loaded[name] then
-    pack.loaded[name] = true
-    local f = pack.preload[name]
+  if not package.loaded[name] then
+    package.loaded[name] = true
+    local f = package.preload[name]
     if not f then
       local filename = string.gsub(name, "%.", "/")
-      local fullname = search(pack.cpath, filename)
+      local fullname = search(package.cpath, filename)
       if fullname then
         local openfunc = "luaopen_" .. string.gsub(name, "%.", "")
         f = assert(loadlib(fullname, openfunc))
       else
-        fullname = search(pack.path, filename)
+        fullname = search(package.path, filename)
         if not fullname then
-          error("cannot find "..name.." in path "..pack.path, 2)
+          error("cannot find "..name.." in path "..package.path, 2)
         end
         f = assert(loadfile(fullname))
       end
@@ -55,9 +55,9 @@ function _G.require (name)
     arg = { name }
     local res = f(name)
 	arg = old_arg
-    if res then pack.loaded[name] = res end
+    if res then package.loaded[name] = res end
   end
-  return pack.loaded[name]
+  return package.loaded[name]
 end
 
 
@@ -99,6 +99,6 @@ function _G.module (name)
     ns._NAME = name
     ns._PACK = string.gsub(name, "[^.]*$", "")
   end
-  _G.pack.loaded[name] = ns
+  _G.package.loaded[name] = ns
   setfenv(2, ns)
 end
