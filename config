@@ -32,7 +32,7 @@ CFLAGS= $(WARN) $(INCS) $(CGILUA_DEFS)
 CC= gcc
 
 #########################################################
-VERSION= 5.0b
+VERSION= 5.0b2
 PKG= cgilua-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
@@ -46,4 +46,4 @@ COMPAT_DIR= compat
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.28 2004/12/14 13:40:36 tomas Exp $
+# $Id: config,v 1.29 2004/12/22 19:23:43 tuler Exp $
