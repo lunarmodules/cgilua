@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.9 2004/11/03 10:12:11 tomas Exp $
+-- $Id: cgilua.lua,v 1.10 2004/11/10 16:14:45 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -480,7 +480,7 @@ function main ()
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", preprocess)
 	-- Configuring CGILua (trying to load cgilua/conf.lua)
-	pcall (_G.require, "cgilua.conf")
+	pcall (_G.require, "cgilua.config")
 	-- Cleaning environment
 	removeglobals {
 		"os.execute",
