@@ -1,84 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
-
 <head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
 <title>CGILua 5.0: SAPI</title>
 <style type="text/css">
 ul { list-style-type: disc };
 </style>
 </head>
-
 <body bgcolor="#FFFFFF">
-
 <center>
-<table border=0 cellspacing=2 cellpadding=2>
-<tr><td align=center><a href="http://www.keplerproject.org">
-<img border=0 alt="CGILua" src="cgi-128.gif"></a>
-<tr><td align=center><big><b>CGILua 5.0</b></big>
-<tr><td align=center valign=top>Server API
+<table border="0" cellspacing="2" cellpadding="2">
+<tr>
+<td align="center"><a href="http://www.keplerproject.org"><img
+border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
+</tr>
+
+<tr>
+<td align="center"><big><b>CGILua 5.0</b></big> </td>
+</tr>
+
+<tr>
+<td align="center" valign="top">Server API</td>
+</tr>
 </table>
 </center>
-<p>
 
-<center><small>
-<a href="index.html#over">overview</a> &middot;
-<a href="index.html#download">download</a> &middot;
-<a href="config.html">install & config</a> &middot;
-<a href="scripts.html">scripts</a> &middot;
-<a href="reference.html">reference</a> &middot;
-<a href="libraries.html">libraries</a>
-</small></center>
+<center><small><a href="index.html#over">overview</a> &middot; <a
+href="index.html#download">download</a> &middot; <a href=
+"config.html">install &amp; config</a> &middot; <a href=
+"scripts.html">scripts</a> &middot; <a href=
+"reference.html">reference</a> &middot; <a href=
+"libraries.html">libraries</a></small></center>
 
 <hr>
 <h2>Server API</h2>
-<p>
-The Server API is a set of functions that encapsulate the diferences
-between the launchers.
-The functions are grouped into two groups:
-SAPI.Request and SAPI.Response.
-<p>
-Here is the list of functions:
+
+<p>The Server API is a set of functions that encapsulate the
+diferences between the launchers. The functions are grouped into
+two groups: SAPI.Request and SAPI.Response.</p>
+
+<p>Here is the list of functions:</p>
+
 <ul>
-  <li> <b><code>SAPI.Response.contenttype (string)</code></b> Sends the
-    <code>Content-type</code> header to the client.  The given string
-    is of the form "type/subtype".  This function must be called before
-    any output is generated.
+<li><b><code>SAPI.Response.contenttype (string)</code></b> Sends
+the <code>Content-type</code> header to the client. The given
+string is of the form "type/subtype". This function must be called
+before any output is generated.</li>
 
-  <li> <b><code>SAPI.Response.redirect (string)</code></b> Sends the
-    <code>Location</code> header to the client.
-    The given string should be a URL.
+<li><b><code>SAPI.Response.redirect (string)</code></b> Sends the
+<code>Location</code> header to the client. The given string should
+be a URL.</li>
 
-  <li> <b><code>SAPI.Response.header (header, value)</code></b> Sends a
-    generic header to the client.  The first argument must be the header
-    name, such as "Set-Cookie".  The second argument should be its value.
-    This function should not be used to replace the <code>contenttype</code>
-    nor the <code>redirect</code> functions.
+<li><b><code>SAPI.Response.header (header, value)</code></b> Sends
+a generic header to the client. The first argument must be the
+header name, such as "Set-Cookie". The second argument should be
+its value. This function should not be used to replace the
+<code>contenttype</code> nor the <code>redirect</code>
+functions.</li>
 
-  <li> <b><code>SAPI.Response.write (string)</code></b> Generates output.
+<li><b><code>SAPI.Response.write (string)</code></b> Generates
+output.</li>
 
-  <li> <b><code>SAPI.Response.errorlog (string)</code></b> Generates
-    error output.
+<li><b><code>SAPI.Response.errorlog (string)</code></b> Generates
+error output.</li>
 </ul>
 
 <ul>
-  <li> <b><code>SAPI.Request.getpostdata ([n])</code></b> Gets a block
-    of "POST data".
-    The optional parameter is the number of bytes to read (a default block
-    size is used instead).  This function returns the block as a Lua string.
+<li><b><code>SAPI.Request.getpostdata ([n])</code></b> Gets a block
+of "POST data". The optional parameter is the number of bytes to
+read (a default block size is used instead). This function returns
+the block as a Lua string.</li>
 
-  <li> <b><code>SAPI.Request.servervariable (string)</code></b> Gets the
-    value of an environment variable (<code>CONTENT_LENGTH</code>,
-    <code>QUERY_STRING</code>,
-    <code>REMOTE_ADDR</code> etc.).
-    The argument must be a CGI variable.
+<li><b><code>SAPI.Request.servervariable (string)</code></b> Gets
+the value of an environment variable (<code>CONTENT_LENGTH</code>,
+<code>QUERY_STRING</code>, <code>REMOTE_ADDR</code> etc.). The
+argument must be a CGI variable.</li>
 </ul>
 
-
-<p>
 <hr>
-<small>
-$Id: sapi.html,v 1.9 2004/10/27 17:17:24 tomas Exp $
-</small>
-
+<small>$Id: sapi.html,v 1.10 2004/11/22 17:16:03 carregal Exp $</small>
 </body>
 </html>
 

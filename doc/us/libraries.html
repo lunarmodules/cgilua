@@ -1,155 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
-
 <head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
 <title>CGILua 5.0: Distributed libraries</title>
 <style type="text/css">
 ul { list-style-type: disc };
 </style>
 </head>
-
 <body bgcolor="#FFFFFF">
-
 <center>
-<table border=0 cellspacing=2 cellpadding=2>
-<tr><td align=center><a href="http://www.keplerproject.org">
-<img border=0 alt="CGILua" src="cgi-128.gif"></a>
-<tr><td align=center><big><b>CGILua 5.0</b></big>
-<tr><td align=center valign=top>Distributed libraries
+<table border="0" cellspacing="2" cellpadding="2">
+<tr>
+<td align="center"><a href="http://www.keplerproject.org"><img
+border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
+</tr>
+
+<tr>
+<td align="center"><big><b>CGILua 5.0</b></big> </td>
+</tr>
+
+<tr>
+<td align="center" valign="top">Distributed libraries</td>
+</tr>
 </table>
 </center>
-<p>
 
-<center><small>
-<a href="index.html">home</a> &middot;
-<a href="#cookies">cookies</a> &middot;
-<a href="#filesystem">file system</a> &middot;
-<a href="#prep">HTML pre-processing</a> &middot;
-<a href="#post">POST data processing</a> &middot;
-<a href="#urlcode">URL encoding</a>
-</small></center>
+<p></p>
+
+<center><small><a href="index.html">home</a> &middot; <a href=
+"#cookies">cookies</a> &middot; <a href="#filesystem">file
+system</a> &middot; <a href="#prep">HTML pre-processing</a>
+&middot; <a href="#post">POST data processing</a> &middot; <a href=
+"#urlcode">URL encoding</a></small></center>
 
 <hr>
-<a name="cookies"</a>
+<a name="cookies"></a> 
+
 <h2>Cookies</h2>
 
-<a name="get"></a>
+<a name="get"></a> 
+
 <h3><code>cookies.get (name)</code></h3>
-Gets the value of the named cookie
 
-<a name="set"></a>
+Gets the value of the named cookie <a name="set"></a> 
+
 <h3><code>cookies.set (name, value[, options])</code></h3>
-Sets the value of the named cookie.
-This function should be called before the HTTP header is sent.
 
-<a name="sethtml"></a>
+Sets the value of the named cookie. This function should be called
+before the HTTP header is sent. <a name="sethtml"></a> 
+
 <h3><code>cookies.sethtml (name, value[, options])</code></h3>
-Sets the value of the named cookie.
-This function generates a <code>&lt;meta&gt;</code> HTML element
-so it should be called after the <code>&lt;head&gt;</code> HTML tag
-was produced and before the <code>&lt;body&gt;</code>.
 
-<a name="delete"></a>
+Sets the value of the named cookie. This function generates a
+<code>&lt;meta&gt;</code> HTML element so it should be called after
+the <code>&lt;head&gt;</code> HTML tag was produced and before the
+<code>&lt;body&gt;</code>. <a name="delete"></a> 
+
 <h3><code>cookies.delete (name[, options])</code></h3>
-Deletes the value of the named cookie by setting its value to <code>xxx</code>.
 
+Deletes the value of the named cookie by setting its value to
+<code>xxx</code>. 
 
 <hr>
-<a name="filesystem"></a>
+<a name="filesystem"></a> 
+
 <h2>File System</h2>
 
-<a name="chdir"></a>
+<a name="chdir"></a> 
+
 <h3><code>filesystem.chdir (path)</code></h3>
-Changes the current working directory.
 
-<a name="getcwd"></a>
+Changes the current working directory. <a name="getcwd"></a> 
+
 <h3><code>filesystem.currentdir ()</code></h3>
-Returns the current working directory or <code>nil</code> plus an error string.
 
-<a name="dir"></a>
+Returns the current working directory or <code>nil</code> plus an
+error string. <a name="dir"></a> 
+
 <h3><code>filesystem.dir (path)</code></h3>
-Lua iterator over the entries of a given directory.
 
-<a name="lock"></a>
-<h3><code>filesystem.lock (filehandle, mode[, start[, length]])</code></h3>
-Locks a file or a part of it.
-This function works on <em>open files</em>;
-the file handle should be specified as the first argument.
-The string <code>mode</code> could be either <code>r</code> (for a read/shared
-lock) or <code>w</code> (for a write/exclusive lock).
-The optional arguments <code>start</code> and <code>length</code> can be
-used to specify a starting point and its length;
-both should be numbers.
-This function returns a boolean indicating if the operation was successful;
-in case of error, it returns <code>false</code> plus a string describing the
-error.
+Lua iterator over the entries of a given directory. <a name=
+"lock"></a> 
 
-<a name="unlock"></a>
-<h3><code>filesystem.unlock (filehandle[, start[, length]])</code></h3>
-Unlocks a file or a part of it.
-This function works on <em>open files</em>;
-the file handle should be specified as the first argument.
-The optional arguments <code>start</code> and <code>length</code> can be
-used to specify a starting point and its length;
-both should be numbers.
-This function returns a boolean indicating if the operation was successful;
-in case of error, it returns <code>false</code> plus a string describing the
-error.
+<h3><code>filesystem.lock (filehandle, mode[, start[,
+length]])</code></h3>
 
+Locks a file or a part of it. This function works on <em>open
+files</em>; the file handle should be specified as the first
+argument. The string <code>mode</code> could be either
+<code>r</code> (for a read/shared lock) or <code>w</code> (for a
+write/exclusive lock). The optional arguments <code>start</code>
+and <code>length</code> can be used to specify a starting point and
+its length; both should be numbers. This function returns a boolean
+indicating if the operation was successful; in case of error, it
+returns <code>false</code> plus a string describing the error. <a
+name="unlock"></a> 
+
+<h3><code>filesystem.unlock (filehandle[, start[,
+length]])</code></h3>
+
+Unlocks a file or a part of it. This function works on <em>open
+files</em>; the file handle should be specified as the first
+argument. The optional arguments <code>start</code> and
+<code>length</code> can be used to specify a starting point and its
+length; both should be numbers. This function returns a boolean
+indicating if the operation was successful; in case of error, it
+returns <code>false</code> plus a string describing the error. 
 
 <hr>
-<a name="prep"</a>
+<a name="prep"></a> 
+
 <h2>Pre-processing</h2>
 
-<a name="translate"></a>
+<a name="translate"></a> 
+
 <h3><code>translate (string)</code></h3>
-Creates a string with Lua code that reproduces the given string executing
-the Lua chunks or expressions inside it.
 
-<a name="setcompatmode"></a>
+Creates a string with Lua code that reproduces the given string
+executing the Lua chunks or expressions inside it. <a name=
+"setcompatmode"></a> 
+
 <h3><code>setcompatmode (boolean)</code></h3>
-Turns on or off the compatibility mode.
-Turning it on will make the translator understands the old
-<i>expression fields</i> and <i>code fields</i>
-structures, now obsolete.
 
-<a name="setoutfunc"></a>
+Turns on or off the compatibility mode. Turning it on will make the
+translator understands the old <i>expression fields</i> and <i>code
+fields</i> structures, now obsolete. <a name="setoutfunc"></a> 
+
 <h3><code>setoutfunc (string)</code></h3>
-Defines the output function.
-The translator will write calls to the function with the given name.
 
+Defines the output function. The translator will write calls to the
+function with the given name. 
 
 <hr>
-<a name="urlcode"></a>
+<a name="urlcode"></a> 
+
 <h2>URL-encode</h2>
 
-<a name="url_unescape"></a>
+<a name="url_unescape"></a> 
+
 <h3><code>url_unescape (str)</code></h3>
-Decode an URL-encoded string following RFC-2396.
 
-<a name="url_escape"></a>
+Decode an URL-encoded string following RFC-2396. <a name=
+"url_escape"></a> 
+
 <h3><code>url_escape (str)</code></h3>
-URL-encode a string following RFC-2396.
 
-<a name="url_insertfield"></a>
+URL-encode a string following RFC-2396. <a name=
+"url_insertfield"></a> 
+
 <h3><code>url_insertfield (args, name, value)</code></h3>
-Insert a (name=value) pair into table args.
 
-<a name="url_parsequery"></a>
+Insert a (name=value) pair into table args. <a name=
+"url_parsequery"></a> 
+
 <h3><code>url_parsequery (query, args)</code></h3>
-Parse URL-encoded request data
-(the query part of the script URL or URL-encoded POST data).
-Each decoded (name=value) pair is inserted into table args.
 
-<a name="url_encodetable"></a>
+Parse URL-encoded request data (the query part of the script URL or
+URL-encoded POST data). Each decoded (name=value) pair is inserted
+into table args. <a name="url_encodetable"></a> 
+
 <h3><code>url_encodetable (args)</code></h3>
-URL-encode the elements of a table creating a string to be used in an
-URL for passing data/parameters to another script.
+
+URL-encode the elements of a table creating a string to be used in
+an URL for passing data/parameters to another script. 
 
 <hr>
-<small>
-$Id: libraries.html,v 1.7 2004/05/26 17:36:27 tomas Exp $
-</small>
-
+<small>$Id: libraries.html,v 1.7 2004/05/26 17:36:27 tomas Exp
+$</small>
 </body>
 </html>
 

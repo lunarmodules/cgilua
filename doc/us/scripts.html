@@ -1,73 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
-
 <head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
 <title>CGILua 5.0: Scripts</title>
 <style type="text/css">
 ul { list-style-type: disc };
 </style>
 </head>
-
 <body bgcolor="#FFFFFF">
-
 <center>
-<table border=0 cellspacing=2 cellpadding=2>
-<tr><td align=center><a href="http://www.keplerproject.org">
-<img border=0 alt="CGILua" src="cgi-128.gif"></a>
-<tr><td align=center><big><b>CGILua 5.0</b></big>
-<tr><td align=center valign=top>Scripts
+<table border="0" cellspacing="2" cellpadding="2">
+<tr>
+<td align="center"><a href="http://www.keplerproject.org"><img
+border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
+</tr>
+
+<tr>
+<td align="center"><big><b>CGILua 5.0</b></big> </td>
+</tr>
+
+<tr>
+<td align="center" valign="top">Scripts</td>
+</tr>
 </table>
 </center>
-<p>
 
-<center><small>
-<a href="index.html">home</a> &middot;
-<a href="#introduction">introduction</a> &middot;
-<a href="#scripts">Lua scripts</a> &middot;
-<a href="#templates">HTML templates</a> &middot;
-<a href="#parameters">parameters</a> &middot;
-<a href="reference.html">reference guide</a> &middot;
-<a href="examples.html">examples</a>
-</small></center>
+<center><small><a href="index.html">home</a> &middot; <a href=
+"#introduction">introduction</a> &middot; <a href="#scripts">Lua
+scripts</a> &middot; <a href="#templates">HTML templates</a>
+&middot; <a href="#parameters">parameters</a> &middot; <a href=
+"reference.html">reference guide</a> &middot; <a href=
+"examples.html">examples</a></small></center>
 
 <hr>
+<a name="intoduction"></a> 
 
-<a name="intoduction"></a>
 <h2>Introduction</h2>
-<p>
-This page describes the way of scripting with CGILua.
-There are basically two ways: using <a href="#scripts">Lua scripts</a> or
-<a href="#templates">HTML templates</a>.
-HTML templates provide speed while Lua scripts provide power.
-<p>
-Also, CGILua decodes all information provided by the client such as
-URL parameters and file uploads.
-All this information is available as a Lua table called <code>cgi</code>.
 
+<p>This page describes the way of scripting with CGILua. There are
+basically two ways: using <a href="#scripts">Lua scripts</a> or <a
+href="#templates">HTML templates</a>. HTML templates provide speed
+while Lua scripts provide power.</p>
 
-<a name="scripts"></a>
+<p>Also, CGILua decodes all information provided by the client such
+as URL parameters and file uploads. All this information is
+available as a Lua table called <code>cgi</code>. <a name=
+"scripts"></a></p>
+
 <h2>Lua Scripts</h2>
-<p>
-Lua scripts are files containing valid sentences in the Lua language.
-This kind of 
-usage adopts a "traditional" form of programming,
-in which a script is strictly limited to being a program.
-<p>
-As a script is used to generate a document (a HTML document, mostly)
-it must follow an order to produce its output,
-first sending the correct header
-and next sending the actual document.
-<p>
-CGILua offers some functions to do these tasks.
-The most common is
-<a href="reference.html#htmlheader"><code>cgilua.htmlheader</code></a>
-that produce the header for a HTML document
-(see <a href="reference.html#headers">Headers</a> for a complete list).
-The function used to send the document's contents is
-<a href="reference.html#put"><code>cgilua.put</code></a>.
 
-<p>
-For example, a HTML document which displays the sentence "Hello World!" can 
-be generated with the following Lua script:
+<p>Lua scripts are files containing valid sentences in the Lua
+language. This kind of usage adopts a "traditional" form of
+programming, in which a script is strictly limited to being a
+program.</p>
+
+<p>As a script is used to generate a document (a HTML document,
+mostly) it must follow an order to produce its output, first
+sending the correct header and next sending the actual
+document.</p>
+
+<p>CGILua offers some functions to do these tasks. The most common
+is <a href=
+"reference.html#htmlheader"><code>cgilua.htmlheader</code></a> that
+produce the header for a HTML document (see <a href=
+"reference.html#headers">Headers</a> for a complete list). The
+function used to send the document's contents is <a href=
+"reference.html#put"><code>cgilua.put</code></a>.</p>
+
+<p>For example, a HTML document which displays the sentence "Hello
+World!" can be generated with the following Lua script:</p>
 
 <pre>
 cgilua.htmlheader()
@@ -81,30 +82,27 @@ cgilua.put([[
 ]])
 </pre>
 
+<p>It should be noted that the above example generates a "fixed"
+page: even though the page is generated at execution time there is
+no "variable" information. The very same document could be
+generated directly with HTML. However, Lua scripts become
+especially useful when the document contains information which is
+not known beforehand, and it is necessary to generate a "dynamic"
+page.</p>
 
-<p>
-It should be noted that the above example generates a "fixed" page: even 
-though the page is generated at execution time there is no "variable" 
-information.
-The very same document could be generated directly with HTML. 
-However, Lua scripts become especially useful when the document
-contains information which is not known beforehand,
-and it is necessary to generate a "dynamic" page.
-
-<p>
-Another easy example can be shown, this time using a Lua control 
-structure, variables, and the concatenation operator:
+<p>Another easy example can be shown, this time using a Lua control
+structure, variables, and the concatenation operator:</p>
 
 <pre>
-cgilua.htmlheader()&nbsp;&nbsp;
-cgilua.put('&lt;html&gt;')&nbsp;&nbsp;
+cgilua.htmlheader()  
+cgilua.put('&lt;html&gt;')  
 
 if cgi.language == 'english' then
-	greeting = 'Hello World!'
+    greeting = 'Hello World!'
 elseif cgi.language == 'portuguese' then
-	greeting = 'Olá Mundo!'
+    greeting = 'Ol&aacute; Mundo!'
 else
-	greeting = '[unknown language]'
+    greeting = '[unknown language]'
 end
 
 cgilua.put('&lt;head&gt;&lt;title&gt;'..greeting..'&lt;/title&gt;&lt;/head&gt;')
@@ -114,59 +112,58 @@ cgilua.put('&lt;/body&gt;')
 cgilua.put('&lt;/html&gt;')
 </pre>
 
+<p>The use of <code><i>cgi.language</i></code> indicates that a
+variable named "language" was passed to the script as a CGI
+parameter, coming from a form or from the URL used to activate it.
+CGILua automatically decodes such variables. <a name=
+"templates"></a></p>
 
-<p>
-The use of <code><i>cgi.language</code></i> indicates that a variable
-named "language" was passed to the script as a CGI parameter,
-coming from a form or from the URL used to activate it.
-CGILua automatically decodes such variables.
-
-
-<a name="templates"></a>
 <h2>HTML Templates</h2>
-<p>
-A HTML Template is a HTML file which will be processed by
-CGILua before the HTTP server sends it to the client.
-CGILua does not process HTML but it searches some special
-marks that include Lua code into the file.
-After all those marks are processed, the resulting file
-is sent to the client.
-<p>
-This is the simple way to make a dynamic page
-because there is no need to send the HTTP header.
-But there are some restrictions and sometimes a Lua script
-will have to be used.
-<p>
-The primitive mark is of the form:
-<code><pre>
-&lt;?lua
+
+<p>A HTML Template is a HTML file which will be processed by CGILua
+before the HTTP server sends it to the client. CGILua does not
+process HTML but it searches some special marks that include Lua
+code into the file. After all those marks are processed, the
+resulting file is sent to the client.</p>
+
+<p>This is the simple way to make a dynamic page because there is
+no need to send the HTTP header. But there are some restrictions
+and sometimes a Lua script will have to be used.</p>
+
+<p>The primitive mark is of the form:</p>
+
+<pre>
+<code>&lt;?lua
 <i>Lua chunk</i>
 ?&gt;
-</pre></code>
+</code>
+</pre>
 
-There are also some facilities accepted:
+There are also some facilities accepted: 
+
 <ul>
-  <li> <code>&lt;?lua= <i>Lua expression</i> ?&gt;</code>
+<li><code>&lt;?lua= <i>Lua expression</i> ?&gt;</code></li>
 
-  <li> <code>&lt;% <i>Lua chunk</i> %&gt;</code>
+<li><code>&lt;% <i>Lua chunk</i> %&gt;</code></li>
 
-  <li> <code>&lt;%= <i>Lua expression</i> %&gt;</code>
+<li><code>&lt;%= <i>Lua expression</i> %&gt;</code></li>
 </ul>
-Note that the ending mark
-could not appear inside a Lua chunk or Lua expression even inside quotes.
-The HTML pre-processor just makes global substitutions searching for
-a pair of marks and building the corresponding Lua code to achieve
-the same result.
-<p>
-The example on the previous section could be written
-using a HTML template:
-<code><pre>
-&lt;html&gt;
+
+Note that the ending mark could not appear inside a Lua chunk or
+Lua expression even inside quotes. The HTML pre-processor just
+makes global substitutions searching for a pair of marks and
+building the corresponding Lua code to achieve the same result. 
+
+<p>The example on the previous section could be written using a
+HTML template:</p>
+
+<pre>
+<code>&lt;html&gt;
 &lt;?lua
 if cgi.language == 'english' then
         greeting = 'Hello World!'
 elseif cgi.language == 'portuguese' then
-        greeting = 'Olá Mundo!'
+        greeting = 'Ol&aacute; Mundo!'
 else
         greeting = '[unknown language]'
 end
@@ -176,51 +173,46 @@ end
 &lt;b&gt;&lt;%= greeting %&gt;&lt;/b&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-</pre></code>
+</code>
+</pre>
 
-<p>
-HTML templates have a default
-<code>.lp</code>
-extension.
+<p>HTML templates have a default <code>.lp</code> extension. <a
+name="parameters"></a></p>
 
+<h2>Receiving parameters: the <code>cgi</code> table</h2>
 
-<a name="parameters"></a>
-<h2>Receiving parameters: the <code>cgi<code> table</h2>
-<p>
-CGILua has a unified way of accessing data passed to the
-script despite the use of the query string or POST method.
-Both ways, all parameters will be provided inside the
-<b>cgi table</b>.
-<p>
-Almost all types of parameters will be given as strings.
-Even if the value of a parameter is a number,
-it will be converted to its string representation.
-<p>
-There are only two exceptions when the value will be a table.
-The first case is of a file upload.
-The table will have the following fields:
+<p>CGILua has a unified way of accessing data passed to the script
+despite the use of the query string or POST method. Both ways, all
+parameters will be provided inside the <b>cgi table</b>.</p>
+
+<p>Almost all types of parameters will be given as strings. Even if
+the value of a parameter is a number, it will be converted to its
+string representation.</p>
+
+<p>There are only two exceptions when the value will be a table.
+The first case is of a file upload. The table will have the
+following fields:</p>
+
 <ul>
-  <li> <b>filename</b> the file name as given by the client.
-  <li> <b>filesize</b> the file size in bytes.
-  <li> <b>file</b> the temporary file handle.  The file must be
-    copied because CGILua's will remove it after the script ends.
+<li><b>filename</b> the file name as given by the client.</li>
+
+<li><b>filesize</b> the file size in bytes.</li>
+
+<li><b>file</b> the temporary file handle. The file must be copied
+because CGILua's will remove it after the script ends.</li>
 </ul>
-<p>
-The other case of a value which type is a table occurs when there is
-more than one value associated with the same parameter name.
-This is the case of a selection list with multiple values;
-it also occurs when the form (of the referrer) had two or more
-elements with the same <code>name</code> attribute.
-All values will be inserted in a table in the order in which they
-are treated (the keys of the table will be numbers).
 
+<p>The other case of a value which type is a table occurs when
+there is more than one value associated with the same parameter
+name. This is the case of a selection list with multiple values; it
+also occurs when the form (of the referrer) had two or more
+elements with the same <code>name</code> attribute. All values will
+be inserted in a table in the order in which they are treated (the
+keys of the table will be numbers).</p>
 
-<p>
 <hr>
-<small>
-$Id: scripts.html,v 1.10 2004/06/22 10:30:52 tomas Exp $
-</small>
-
+<small>$Id: scripts.html,v 1.10 2004/06/22 10:30:52 tomas Exp
+$</small>
 </body>
 </html>
 
