@@ -25,21 +25,32 @@ border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
 </table>
 </center>
 
-<center><small><a href="index.html#over">overview</a> &middot; <a
-href="index.html#download">download</a> &middot; <a href=
-"config.html">install &amp; config</a> &middot; <a href=
-"scripts.html">scripts</a> &middot; <a href=
-"reference.html">reference</a> &middot; <a href=
-"libraries.html">libraries</a></small></center>
+<center>
+<small>
+<a href="index.html">Home</a> &middot;
+<a href="index.html#download">Download</a> &middot;
+<a href="config.html">Install &amp; Config</a> &middot;
+<a href="scripts.html">Scripts</a> &middot;
+<a href="reference.html">Reference</a> &middot;
+<a href="libraries.html">Libraries</a>
+</small>
+</center>
 
 <hr>
 <h2>Server API</h2>
 
-<p>The Server API is a set of functions that encapsulate the
-diferences between the launchers. The functions are grouped into
-two groups: SAPI.Request and SAPI.Response.</p>
+<p>The Server API is a set of functions that encapsulate the web server and the
+used launcher. The functions are grouped into two groups:
+SAPI.Request and SAPI.Response.</p>
 
-<p>Here is the list of functions:</p>
+<p>The Server API allows the abstraction of a series of details and makes CGILua
+a lot more portable, since porting it means writing a SAPI Launcher for the
+target platform.</p>
+
+<p>CGILua currently supports Apache, Microsoft IIS, Tomcat and Xavante as web
+servers, and CGI, FastCGI, mod_lua, ISAPI and Servlets as Launchers.</p>
+
+<p>Here is the list of SAPI functions:</p>
 
 <ul>
 <li><b><code>SAPI.Response.contenttype (string)</code></b> Sends
@@ -78,7 +89,7 @@ argument must be a CGI variable.</li>
 </ul>
 
 <hr>
-<small>$Id: sapi.html,v 1.10 2004/11/22 17:16:03 carregal Exp $</small>
+<small>$Id: sapi.html,v 1.11 2004/12/14 14:26:08 carregal Exp $</small>
 </body>
 </html>
 

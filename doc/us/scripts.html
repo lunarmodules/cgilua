@@ -25,46 +25,48 @@ border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
 </table>
 </center>
 
-<center><small><a href="index.html">home</a> &middot; <a href=
-"#introduction">introduction</a> &middot; <a href="#scripts">Lua
-scripts</a> &middot; <a href="#templates">HTML templates</a>
-&middot; <a href="#parameters">parameters</a> &middot; <a href=
-"reference.html">reference guide</a> &middot; <a href=
-"examples.html">examples</a></small></center>
+<center>
+<small>
+<a href="index.html">Home</a> &middot;
+<a href="#introduction">Introduction</a> &middot;
+<a href="#scripts">Lua Scripts</a> &middot;
+<a href="#templates">Lua Pages</a> &middot;
+<a href="#parameters">Parameters</a> &middot;
+<a href="reference.html">Reference Guide</a> &middot;
+<a href="examples.html">Examples</a>
+</small>
+</center>
 
 <hr>
 <a name="intoduction"></a> 
-
 <h2>Introduction</h2>
 
-<p>This page describes the way of scripting with CGILua. There are
-basically two ways: using <a href="#scripts">Lua scripts</a> or <a
-href="#templates">HTML templates</a>. HTML templates provide speed
-while Lua scripts provide power.</p>
+<p>This page describes the workings of CGILua scripting. There are
+two ways to CGILua scripting: using <a href="#scripts">Lua scripts</a> or <a
+href="#templates">Lua Pages</a>. Lua scripts provide expression power while
+Lua Pages provide design independence.</p>
 
-<p>Also, CGILua decodes all information provided by the client such
-as URL parameters and file uploads. All this information is
-available as a Lua table called <code>cgi</code>. <a name=
-"scripts"></a></p>
+<p>CGILua decodes all information provided by the web client such
+as URL parameters, form fields and file uploads. All this information is
+available as a Lua table called <code>cgi</code>.</p>
 
+<a name="scripts"></a>
 <h2>Lua Scripts</h2>
 
-<p>Lua scripts are files containing valid sentences in the Lua
+<p>Lua scripts are text files containing valid sentences in the Lua
 language. This kind of usage adopts a "traditional" form of
-programming, in which a script is strictly limited to being a
-program.</p>
+programming, where a program is responsible for the entire generation of the
+resulting page.</p>
 
-<p>As a script is used to generate a document (a HTML document,
-mostly) it must follow an order to produce its output, first
-sending the correct header and next sending the actual
-document.</p>
+<p>To generate a valid web document (HTML, XML, WML, CSS etc) the script
+must follow an order to produce its output, first sending the correct header
+and then sending the actual document contents.</p>
 
-<p>CGILua offers some functions to do these tasks. The most common
-is <a href=
-"reference.html#htmlheader"><code>cgilua.htmlheader</code></a> that
+<p>CGILua offers some functions to ease these tasks. The most common
+is <a href="reference.html#htmlheader"><code>cgilua.htmlheader</code></a> that
 produce the header for a HTML document (see <a href=
 "reference.html#headers">Headers</a> for a complete list). The
-function used to send the document's contents is <a href=
+function used to send the document's contents (or part of it) is <a href=
 "reference.html#put"><code>cgilua.put</code></a>.</p>
 
 <p>For example, a HTML document which displays the sentence "Hello
@@ -85,7 +87,7 @@ cgilua.put([[
 <p>It should be noted that the above example generates a "fixed"
 page: even though the page is generated at execution time there is
 no "variable" information. The very same document could be
-generated directly with HTML. However, Lua scripts become
+generated directly with a simple HTML file. However, Lua scripts become
 especially useful when the document contains information which is
 not known beforehand, and it is necessary to generate a "dynamic"
 page.</p>
@@ -114,23 +116,25 @@ cgilua.put('&lt;/html&gt;')
 
 <p>The use of <code><i>cgi.language</i></code> indicates that a
 variable named "language" was passed to the script as a CGI
-parameter, coming from a form or from the URL used to activate it.
-CGILua automatically decodes such variables. <a name=
-"templates"></a></p>
+parameter, coming from a HTML form field (via POST) or from the URL used to
+activate it (via GET). CGILua automatically decodes such variables.</p>
 
-<h2>HTML Templates</h2>
+<a name="templates"></a>
+<h2>Lua Pages</h2>
 
-<p>A HTML Template is a HTML file which will be processed by CGILua
+<p>A Lua Page is a text template file which will be processed by CGILua
 before the HTTP server sends it to the client. CGILua does not
-process HTML but it searches some special marks that include Lua
-code into the file. After all those marks are processed, the
+process the text itself but it searches some special markups that include Lua
+code into the file. After all those markups are processed, the
 resulting file is sent to the client.</p>
 
-<p>This is the simple way to make a dynamic page because there is
-no need to send the HTTP header. But there are some restrictions
-and sometimes a Lua script will have to be used.</p>
+<p>Lua Pages have a default <code>.lp</code> extension. They are a simpler
+way to make a dynamic page because there is no need to send the HTTP header,
+usually Lua Pages are HTML pages so CGILua sends the HTML header automatically.
+But there are some restrictions on the use of Lua Pages and and sometimes
+a Lua Script will have to be used.</p>
 
-<p>The primitive mark is of the form:</p>
+<p>The fundamental markups is:</p>
 
 <pre>
 <code>&lt;?lua
@@ -139,7 +143,7 @@ and sometimes a Lua script will have to be used.</p>
 </code>
 </pre>
 
-There are also some facilities accepted: 
+There are also some alternatives accepted: 
 
 <ul>
 <li><code>&lt;?lua= <i>Lua expression</i> ?&gt;</code></li>
@@ -150,12 +154,13 @@ There are also some facilities accepted:
 </ul>
 
 Note that the ending mark could not appear inside a Lua chunk or
-Lua expression even inside quotes. The HTML pre-processor just
-makes global substitutions searching for a pair of marks and
-building the corresponding Lua code to achieve the same result. 
+Lua expression even inside quotes. CGILua pre-processor just
+makes global substitutions searching for a pair of markups and
+building the corresponding Lua code to achieve the same result as the equivalent
+Lua Script. 
 
 <p>The example on the previous section could be written using a
-HTML template:</p>
+Lua Page:</p>
 
 <pre>
 <code>&lt;html&gt;
@@ -176,21 +181,23 @@ end
 </code>
 </pre>
 
-<p>HTML templates have a default <code>.lp</code> extension. <a
-name="parameters"></a></p>
+<p>As on other template languages, it's considered a best practice to not use
+explicit Lua logic on Lua Pages, the recommended aproach is to use only
+function calls that returns chunks of the page</p>
 
+<a name="parameters"></a>
 <h2>Receiving parameters: the <code>cgi</code> table</h2>
 
-<p>CGILua has a unified way of accessing data passed to the script
-despite the use of the query string or POST method. Both ways, all
-parameters will be provided inside the <b>cgi table</b>.</p>
+<p>CGILua has an unified way of accessing data passed to the script
+despite the HTTP method used (GET or POST). No matter which method was used on
+the client, all parameters will be provided inside the <b>cgi table</b>.</p>
 
-<p>Almost all types of parameters will be given as strings. Even if
+<p>Almost all types of parameters will be available as strings. Even if
 the value of a parameter is a number, it will be converted to its
 string representation.</p>
 
-<p>There are only two exceptions when the value will be a table.
-The first case is of a file upload. The table will have the
+<p>There are only two exceptions where the value will be a Lua table.
+The first case occurs on file uploads, where the table will have the
 following fields:</p>
 
 <ul>
@@ -202,13 +209,13 @@ following fields:</p>
 because CGILua's will remove it after the script ends.</li>
 </ul>
 
-<p>The other case of a value which type is a table occurs when
+<p>The other case that uses Lua tables occurs when
 there is more than one value associated with the same parameter
-name. This is the case of a selection list with multiple values; it
+name. This happens in the case of a selection list with multiple values; but it
 also occurs when the form (of the referrer) had two or more
-elements with the same <code>name</code> attribute. All values will
-be inserted in a table in the order in which they are treated (the
-keys of the table will be numbers).</p>
+elements with the same <code>name</code> attribute (maybe because one was on a
+form and another was in the query string). All values will be inserted
+in an indexed table in the order in which they are treated.</p>
 
 <hr>
 <small>$Id: scripts.html,v 1.10 2004/06/22 10:30:52 tomas Exp
