@@ -1,5 +1,5 @@
-_G.LUA_PATH = LUA_PATH or os.getenv("LUA_PATH") or "/usr/local/share/lua/5.0"
-_G.LUA_LIBPATH = LUA_LIBPATH or os.getenv("LUA_LIBPATH") or "/usr/local/lib/lua/5.0"
+_G._PATH = _PATH or os.getenv("LUA_PATH") or "/usr/local/share/lua/5.0"
+_G._CPATH = _CPATH or os.getenv("LUA_CPATH") or "/usr/local/lib/lua/5.0"
 
 
 local function search (path, name)
@@ -19,7 +19,7 @@ function _G.require (name)
   if not _LOADED[name] then
     _LOADED[name] = true
     local filename = string.gsub(name, "%.", "/")
-    local fullname = search(LUA_PATH, filename)
+    local fullname = search(_PATH, filename)
     if fullname then
       local f = assert(loadfile(fullname))
       local old_arg = arg
@@ -29,14 +29,14 @@ function _G.require (name)
       if res then _LOADED[name] = res end
     else
       -- should try C libraries?
-      fullname = search(LUA_LIBPATH, filename)
+      fullname = search(_CPATH, filename)
       if fullname then
         local lastname = string.gsub(filename, "^.*%/([^/]+)$", "%1")
         local f = assert(loadlib(fullname, "luaopen_"..lastname))
         local res = f(name)
         if res then _LOADED[name] = res end
       else
-        error("cannot find "..name.." in path "..LUA_PATH.." nor in path "..LUA_LIBPATH, 2)
+        error("cannot find "..name.." in path ".._PATH.." nor in path ".._CPATH, 2)
       end
     end
   end

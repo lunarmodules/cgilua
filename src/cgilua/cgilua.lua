@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.2 2004/08/30 11:00:15 tomas Exp $
+-- $Id: cgilua.lua,v 1.3 2004/09/01 03:22:46 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -42,8 +42,8 @@ local default_maxfilesize = 512 * 1024
 local maxfilesize = default_maxfilesize
 local default_maxinput = 1024 * 1024
 local maxinput = default_maxinput
-local lua_path = LUA_PATH
-local lua_libpath = LUA_LIBPATH
+local lua_path = _PATH
+local lua_libpath = _CPATH
 
 package ("cgilua", arg and arg[1])
 
@@ -126,8 +126,8 @@ _G.require = function (packagename)
 	-- packagename cannot contain some special punctuation characters
 	assert (not strfind (packagename, "%.%."),
 		"Package name cannot contain `..'")
-	_G.LUA_PATH = lua_path
-	_G.LUA_LIBPATH = lua_libpath
+	_G._PATH = lua_path
+	_G._CPATH = lua_libpath
 	_G.loadlib = _loadlib
 	local ret = pack (_require (packagename))
 	_G.loadlib = nil
@@ -328,7 +328,7 @@ function handle (path)
 end
 
 ---------------------------------------------------------------------------
--- Set LUA_PATH used by scripts by providing the user libraries directory.
+-- Set _PATH used by scripts by providing the user libraries directory.
 -- @param newlibdir String with a full path.
 ---------------------------------------------------------------------------
 function setlibdir(newlibdir)
