@@ -1,4 +1,4 @@
--- $Id: test_main.lua,v 1.8 2004/11/22 17:33:45 tomas Exp $
+-- $Id: test_main.lua,v 1.9 2005/02/11 14:39:21 tomas Exp $
 if ap then handler = ap.handler() end
 cgilua.htmlheader()
 cgilua.put[[
@@ -22,6 +22,7 @@ end
 cgilua.put "}<br>\n"
 cgilua.put ("Remote address: "..cgilua.servervariable"REMOTE_ADDR")
 cgilua.put "<br>\n"
+cgilua.put ("Is persistent = "..tostring (SAPI.Info.ispersistent).."<br>\n")
 cgilua.put ("ap="..tostring(ap).."<br>\n")
 cgilua.put ("lfcgi="..tostring(lfcgi).."<br>\n")
 if handler then cgilua.put (tostring(handler).."<br>\n") end
@@ -43,11 +44,12 @@ local status, err = pcall (function () package.path="." require"test_main" end)
 --cgilua.put(tostring(err).."<br>\n")
 assert (status == false, "<i>package.path</i> was changed!")
 local status, err = pcall (function () package.path="." require"cgilua.cookies" end)
+cgilua.put("== "..tostring(status).." == "..tostring(err).." ==")
 assert (status == true, "<i>package.path</i> was changed!")
 
 cgilua.put[[
 <p>
 </body>
-<small>$Id: test_main.lua,v 1.8 2004/11/22 17:33:45 tomas Exp $</small>
+<small>$Id: test_main.lua,v 1.9 2005/02/11 14:39:21 tomas Exp $</small>
 </html>
 ]]
