@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.4 2004/04/06 17:26:54 tomas Exp $
+-- $Id: cgilua.lua,v 1.5 2004/04/08 15:36:12 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -10,6 +10,8 @@ require"post"
 
 local Public = {
 	script_path = false,
+	escape = url_escape,
+	unescape = url_unescape,
 }
 cgilua = Public
 setmetatable (Public, {
@@ -23,7 +25,7 @@ local gsub, format, strfind, strlower, strsub = string.gsub, string.format, stri
 local open = io.open
 local getn = table.getn
 local traceback = debug.traceback
-local url_encodetable, url_escape, url_insertfield, url_parsequery, url_unescape = url_encodetable, url_escape, url_insertfield, url_parsequery, url_unescape
+local url_encodetable, url_insertfield, url_parsequery = url_encodetable, url_insertfield, url_parsequery
 local ap = ap
 local post = post
 local translate = HTMLPreProcessor.translate
@@ -40,6 +42,8 @@ setfenv (1, Public)
 ----------------------------------------------------------------------------
 -- Header functions
 ----------------------------------------------------------------------------
+header = HTTP_Response.header
+
 function contentheader (type, subtype)
 	HTTP_Response.contenttype (type..'/'..subtype)
 end

@@ -1,12 +1,21 @@
 ----------------------------------------------------------------------------
--- $Id: cookies.lua,v 1.5 2004/03/25 19:01:39 tomas Exp $
+-- $Id: cookies.lua,v 1.6 2004/04/08 15:36:12 tomas Exp $
 --
 -- Cookies Library
 ----------------------------------------------------------------------------
 
-local Public = {}
+local error = error
+local format, gsub, strfind = string.format, string.gsub, string.find
+local date = os.date
+local cgilua = cgilua
 
-cookie = Public
+local Public = {}
+cookies = Public
+setmetatable (Public, {
+	__index = function (t,n) error("Error reading undefined variable "..n, 2) end,
+})
+
+setfenv (1, Public)
 
 local function optional (what, name)
   if name ~= nil and name ~= "" then
@@ -34,29 +43,29 @@ local function build (name, value, options)
 end
 
 
-function Public.set (name, value, options)
-  cgilua.httpheader("Set-Cookie: "..build(name, value, options).."\n")
+function set (name, value, options)
+  cgilua.header("Set-Cookie: "..build(name, value, options).."\n")
 end
 
 
-function Public.sethtml (name, value, options)
+function sethtml (name, value, options)
   cgilua.put(format('<meta http-equiv="Set-Cookie" content="%s">', 
                 build(name, value, options)))
 end
 
 
-function Public.get (name)
-  local cookies = os.getenv("HTTP_COOKIE") or ""
+function get (name)
+  local cookies = cgilua.servervariable"HTTP_COOKIE" or ""
   cookies = ";" .. cookies .. ";"
-  cookies = string.gsub(cookies, "%s*;%s*", ";")   -- remove extra spaces
+  cookies = gsub(cookies, "%s*;%s*", ";")   -- remove extra spaces
   local pattern = ";" .. name .. "=(.-);"
-  local _, __, value = string.find(cookies, pattern)
+  local _, __, value = strfind(cookies, pattern)
   return value and cgilua.unescape(value)
 end
 
 
-function Public.delete (name, options)
+function delete (name, options)
   options = options or {}
   options.expires = 1
-  Public.set(name, "xxx", options)
+  set(name, "xxx", options)
 end
