@@ -1,10 +1,11 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.1 2004/08/27 16:02:17 tomas Exp $
+-- $Id: session.lua,v 1.2 2004/08/30 10:59:01 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"lfs"
+require"cgilua.serialize"
 
 local assert, loadfile, pairs, type = assert, loadfile, pairs, type
 local format, strfind, strrep, strsub = string.format, string.find, string.rep, string.sub
@@ -17,46 +18,6 @@ local root_dir = nil
 local counter = 0
 
 package ("session", arg and arg[1])
-
-----------------------------------------------------------------------------
--- Serializes a session table.
--- @param tab Table representing the session.
--- @param outf Function used to generate the output.
-----------------------------------------------------------------------------
-local function serialize_table (tab, outf)
-	outf ("{")
-	for i, v in pairs (tab) do
-		-- serialize the key
-		outf ("[")
-		local t = type(i)
-		if t == "number" or t == "boolean" then
-			outf (i)
-		elseif t == "string" then
-			outf (format ("%q", i))
-		end
-		outf ("]")
-
-		outf ("=")
-		-- serialize the value
-		local t = type (v)
-		local val, fmt
-		if t == "string" then
-			fmt = "%q,"
-			val = v
-		elseif t == "number" then
-			fmt = "%d,"
-			val = v
-		elseif t == "boolean" then
-			fmt = v and "true," or "false,"
-		elseif t == "table" then
-			fmt = ","
-			val = ""
-			serialize_table (v, outf)
-		end
-		outf (format (fmt, val))
-	end
-	outf ("}\n")
-end
 
 ----------------------------------------------------------------------------
 -- Creates a new identifier.
@@ -130,7 +91,7 @@ function save (id, data)
 	assert (check_id (id))
 	local fh = assert (open (filename (id), "w+"))
 	fh:write "return "
-	serialize_table (data, function (s) fh:write(s) end)
+	serialize.serialize_table (data, function (s) fh:write(s) end)
 	fh:close()
 end
 
