@@ -112,8 +112,8 @@ configuration to <code>"$(CATALINA_HOME)/conf/web.xml"</code>.<br>
 
 Install LuaJava JNI library in a path included by the java system variable 
 <code>"java.library.path"</code>.<br>
-The most suitable path is <code>"$(JAVA_HOME)/jre/bin"</code>.<br>
-Make sure this is the JRE Tomcat is configured to use.<br>
+Usually the most suitable paths are <code>"$(JAVA_HOME)/jre/bin"</code> and <code>"$(CATALINA_HOME)/bin"</code>.<br>
+Make sure Tomcat if configured to use the specified JRE.<br>
 
 Install LuaJava, Log4J and cgilua jar files in <code>"$(CATALINA_HOME)/common/lib"</code><br>
 
