@@ -2,7 +2,7 @@
 -- Main Lua script.
 -- This script does not depend on the launcher, only on the
 -- basic API.
--- $Id: main.lua,v 1.4 2004/07/29 14:41:55 tomas Exp $
+-- $Id: main.lua,v 1.5 2004/07/29 15:02:49 tomas Exp $
 ---------------------------------------------------------------------
 
 local cgilua_conf = CGILuaRoot().."/conf/cgilua.conf"
@@ -31,8 +31,8 @@ cgilua.pcall (cgilua.doif, cgilua_conf)
 cgi = {}
 cgilua.pcall (cgilua.getparams, cgi)
 -- Changing current directory to the script's "physical" dir
-local curr_dir = luafilesystem.currentdir()
-cgilua.pcall (luafilesystem.chdir, cgilua.script_pdir)
+local curr_dir = lfs.currentdir()
+cgilua.pcall (lfs.chdir, cgilua.script_pdir)
 -- Opening function
 cgilua.pcall (cgilua._open)
 -- Executing script
@@ -41,7 +41,7 @@ local result = { cgilua.pcall (cgilua.handle, cgilua.script_file) }
 cgilua.pcall (cgilua.close)
 -- Cleanup
 cgilua.reset ()
-cgilua.pcall (luafilesystem.chdir, curr_dir)
+cgilua.pcall (lfs.chdir, curr_dir)
 
 table.remove (result, 1)
 return unpack (result)
