@@ -1,7 +1,22 @@
-_G._PATH = _PATH or os.getenv("LUA_PATH") or "/usr/local/share/lua/5.0"
-_G._CPATH = _CPATH or os.getenv("LUA_CPATH") or "/usr/local/lib/lua/5.0"
+pack = {}
+pack.path = LUA_PATH or os.getenv("LUA_PATH") or
+             ("./?.lua;" ..
+              "/usr/local/share/lua/5.0/?.lua;" ..
+              "/usr/local/share/lua/5.0/?/init.lua" )
+ 
+pack.cpath = os.getenv("LUA_CPATH") or
+             "./?.so;" ..
+             "/usr/local/lib/lua/5.0/?.so;" ..
+             "/usr/local/lib/lua/5.0/lib?.so"
+
+pack.loaded = {}
+
+pack.preload = {}
 
 
+--
+-- looks for a file `name' in given path
+--
 local function search (path, name)
   for c in string.gfind(path, "[^;]+") do
     c = string.gsub(c, "%?", name)
@@ -15,35 +30,40 @@ local function search (path, name)
 end
 
 
+--
+-- new require
+--
 function _G.require (name)
-  if not _LOADED[name] then
-    _LOADED[name] = true
-    local filename = string.gsub(name, "%.", "/")
-    local fullname = search(_PATH, filename)
-    if fullname then
-      local f = assert(loadfile(fullname))
-      local old_arg = arg
-      arg = { name }
-      local res = f(name)
-      arg = old_arg
-      if res then _LOADED[name] = res end
-    else
-      -- should try C libraries?
-      fullname = search(_CPATH, filename)
+  if not pack.loaded[name] then
+    pack.loaded[name] = true
+    local f = pack.preload[name]
+    if not f then
+      local filename = string.gsub(name, "%.", "/")
+      local fullname = search(pack.cpath, filename)
       if fullname then
-        local lastname = string.gsub(filename, "^.*%/([^/]+)$", "%1")
-        local f = assert(loadlib(fullname, "luaopen_"..lastname))
-        local res = f(name)
-        if res then _LOADED[name] = res end
+        local openfunc = "luaopen_" .. string.gsub(name, "%.", "")
+        f = assert(loadlib(fullname, openfunc))
       else
-        error("cannot find "..name.." in path ".._PATH.." nor in path ".._CPATH, 2)
+        fullname = search(pack.path, filename)
+        if not fullname then
+          error("cannot find "..name.." in path "..pack.path, 2)
+        end
+        f = assert(loadfile(fullname))
       end
     end
+    local old_arg = arg
+    arg = { name }
+    local res = f(name)
+	arg = old_arg
+    if res then pack.loaded[name] = res end
   end
-  return _LOADED[name]
+  return pack.loaded[name]
 end
 
 
+--
+-- auxiliar function to read "nested globals"
+--
 local function getfield (t, f)
   for w in string.gfind(f, "[%w_]+") do
     if not t then return nil end
@@ -53,6 +73,9 @@ local function getfield (t, f)
 end
 
 
+--
+-- auxiliar function to write "nested globals"
+--
 local function setfield (t, f, v)
   for w in string.gfind(f, "([%w_]+)%.") do
     t[w] = t[w] or {}   -- create table if absent
@@ -63,15 +86,19 @@ local function setfield (t, f, v)
 end
 
 
-function _G.package (name, aname)
+--
+-- new module function
+--
+function _G.module (name)
   local _G = getfenv(0)       -- simulate C function environment
-  name = aname or name
   local ns = getfield(_G, name)         -- search for namespace
   if not ns then
-    ns = {}                   -- create new namespace
+    ns = {}                             -- create new namespace
     setmetatable(ns, {__index = _G})
     setfield(_G, name, ns)
+    ns._NAME = name
+    ns._PACK = string.gsub(name, "[^.]*$", "")
   end
-  _G._LOADED[name] = ns
+  _G.pack.loaded[name] = ns
   setfenv(2, ns)
 end

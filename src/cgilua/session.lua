@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.3 2004/09/01 02:55:11 tomas Exp $
+-- $Id: session.lua,v 1.4 2004/09/14 11:02:58 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"lfs"
@@ -17,7 +17,7 @@ local dir = lfs.dir
 local root_dir = nil
 local counter = 0
 
-package ("session", arg and arg[1])
+module (arg and arg[1])
 
 ----------------------------------------------------------------------------
 -- Creates a new identifier.
@@ -91,7 +91,7 @@ function save (id, data)
 	assert (check_id (id))
 	local fh = assert (open (filename (id), "w+"))
 	fh:write "return "
-	serialize.table (data, function (s) fh:write(s) end)
+	tabledump (data, function (s) fh:write(s) end)
 	fh:close()
 end
 

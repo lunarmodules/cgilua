@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.3 2004/09/01 03:22:46 tomas Exp $
+-- $Id: cgilua.lua,v 1.4 2004/09/14 11:02:58 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ local maxinput = default_maxinput
 local lua_path = _PATH
 local lua_libpath = _CPATH
 
-package ("cgilua", arg and arg[1])
+module (arg and arg[1])
 
 script_path = false
 
@@ -117,7 +117,7 @@ end
 ----------------------------------------------------------------------------
 -- Pack results of a function call
 ----------------------------------------------------------------------------
-function pack (...) return arg end
+function _pack (...) return arg end
 
 ----------------------------------------------------------------------------
 -- Redefine require.
@@ -126,10 +126,10 @@ _G.require = function (packagename)
 	-- packagename cannot contain some special punctuation characters
 	assert (not strfind (packagename, "%.%."),
 		"Package name cannot contain `..'")
-	_G._PATH = lua_path
-	_G._CPATH = lua_libpath
+	--_G._PATH = lua_path
+	--_G._CPATH = lua_libpath
 	_G.loadlib = _loadlib
-	local ret = pack (_require (packagename))
+	local ret = _pack (_require (packagename))
 	_G.loadlib = nil
 	return unpack (ret)
 end
@@ -383,7 +383,7 @@ end
 -- Executes a function with an error handler.
 ---------------------------------------------------------------------------
 function pcall (f, ...)
-	local result = pack (xpcall (function () return f(unpack(arg)) end,
+	local result = _pack (xpcall (function () return f(unpack(arg)) end,
 		errorhandler))
 	if not result[1] then
 		erroroutput (result[2])
@@ -491,7 +491,7 @@ function main (cgilua_conf)
 	-- Opening function
 	pcall (open)
 	-- Executing script
-	local result = pack (pcall (handle, script_file))
+	local result = _pack (pcall (handle, script_file))
 	-- Closing function
 	pcall (close)
 	-- Cleanup

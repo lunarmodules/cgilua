@@ -1,11 +1,11 @@
 ----------------------------------------------------------------------------
--- $Id: urlcode.lua,v 1.1 2004/08/27 15:50:33 tomas Exp $
+-- $Id: urlcode.lua,v 1.2 2004/09/14 11:02:58 tomas Exp $
 ----------------------------------------------------------------------------
 
 local next, tonumber, type = next, tonumber, type
 local string = string
 
-package("urlcode", arg and arg[1])
+module (arg and arg[1])
 
 ----------------------------------------------------------------------------
 -- Decode an URL-encoded string (see RFC 2396)

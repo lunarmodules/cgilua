@@ -1,10 +1,10 @@
 ----------------------------------------------------------------------------
--- $Id: readuntil.lua,v 1.1 2004/08/27 15:50:33 tomas Exp $
+-- $Id: readuntil.lua,v 1.2 2004/09/14 11:02:58 tomas Exp $
 ----------------------------------------------------------------------------
 
 local strsub, strfind, strlen = string.sub, string.find, string.len
 
-package ("readuntil", arg and arg[1])
+module (arg and arg[1])
 
 function iterate (inp)
 	local current = ""

@@ -14,7 +14,7 @@
 --		args = params,
 --	}
 ----------------------------------------------------------------------------
--- $Id: post.lua,v 1.2 2004/08/30 11:00:15 tomas Exp $
+-- $Id: post.lua,v 1.3 2004/09/14 11:02:58 tomas Exp $
 ----------------------------------------------------------------------------
 
 local readuntil = require"cgilua.readuntil"
@@ -39,7 +39,7 @@ local discardinput = nil  -- discard all remaining input
 local readuntil = nil     -- read until delimiter
 local read = nil          -- basic read function
 
-package("post", arg and arg[1])
+module (arg and arg[1])
 
 ----------------------------------------------------------------------------
 -- Extract the boundary string from CONTENT_TYPE metavariable

@@ -2,17 +2,17 @@
 -- Serialize tables.
 -- It works only for tables without cycles and without functions or
 -- userdata inside it.
--- $Id: serialize.lua,v 1.2 2004/09/01 02:55:11 tomas Exp $
+-- $Id: serialize.lua,v 1.3 2004/09/14 11:02:58 tomas Exp $
 ----------------------------------------------------------------------------
 
 local ipairs, pairs, type = ipairs, pairs, type
 local format = string.format
 local sort, tinsert = table.sort, table.insert
 
-package ("serialize", arg and arg[1])
+--module (arg and arg[1])
 
 ----------------------------------------------------------------------------
-value = nil
+local value = nil
 
 ----------------------------------------------------------------------------
 -- Serializes a table.
@@ -21,7 +21,7 @@ value = nil
 -- @param ind String with indentation pattern.
 -- @param pre String with indentation prefix.
 ----------------------------------------------------------------------------
-function table (tab, outf, ind, pre)
+function tabledump (tab, outf, ind, pre)
 	local sep_n, sep, _n = ",\n", ", ", "\n"
 	if (not ind) or (ind == "") then ind = ""; sep_n = ", "; _n = "" end
 	if not pre then pre = "" end
@@ -103,7 +103,7 @@ value = function (v, outf, ind, pre)
 	elseif t == "boolean" then
 		outf (tostring(v))
 	elseif t == "table" then
-		table (v, outf, ind, pre)
+		tabledump (v, outf, ind, pre)
 	else
 		outf (format ("%q", tostring(v)))
 	end

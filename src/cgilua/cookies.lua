@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cookies.lua,v 1.2 2004/08/30 11:00:15 tomas Exp $
+-- $Id: cookies.lua,v 1.3 2004/09/14 11:02:58 tomas Exp $
 --
 -- Cookies Library
 ----------------------------------------------------------------------------
@@ -11,7 +11,7 @@ local escape, unescape = cgilua.urlcode.escape, cgilua.urlcode.unescape
 local header, write = HTTP_Response.header, HTTP_Response.write
 local servervariable = HTTP_Request.servervariable
 
-package ("cookies", arg and arg[1])
+module (arg and arg[1])
 
 local function optional (what, name)
   if name ~= nil and name ~= "" then

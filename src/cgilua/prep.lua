@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: prep.lua,v 1.1 2004/08/27 15:50:33 tomas Exp $
+-- $Id: prep.lua,v 1.2 2004/09/14 11:02:58 tomas Exp $
 ----------------------------------------------------------------------------
 
 local format = string.format
@@ -10,7 +10,7 @@ local strsub = string.sub
 local concat = table.concat
 local tinsert = table.insert
 
-package ("HTMLPreProcessor", arg and arg[1])
+module (arg and arg[1])
 
 -- function to do output
 local outfunc = "io.write"
