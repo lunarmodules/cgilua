@@ -1,55 +1,57 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
 <head>
-<meta name="generator" content="HTML Tidy, see www.w3.org">
-<title>CGILua 5.0</title>
-<style type="text/css">
+  <meta name="generator" content="HTML Tidy, see www.w3.org">
+  <title>CGILua 5.0</title>
+  <style type="text/css">
   ul { list-style-type: disc };
-</style>
+  </style>
 </head>
-<body bgcolor="#FFFFFF">
+<body style="background-color: rgb(255, 255, 255);">
 <center>
-<table border="0" cellspacing="2" cellpadding="2">
-<tr>
-<td align="center"><a href="http://www.keplerproject.org"><img
-border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
-</tr>
-
-<tr>
-<td align="center"><big><b>CGILua 5.0</b></big> </td>
-</tr>
-
-<tr>
-<td align="center" valign="top">Building CGI scripts with Lua</td>
-</tr>
+<table border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td align="center"><a href="http://www.keplerproject.org"><img
+ alt="CGILua" src="cgi-128.gif" border="0"></a> </td>
+    </tr>
+    <tr>
+      <td align="center"><big><b>CGILua
+5.0</b></big> </td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">Building
+web scripts with Lua</td>
+    </tr>
+  </tbody>
 </table>
 </center>
-
-<p></p>
-
 <center>
-<small>
-<a href="#over">overview</a> &middot;
-<a href="#download">download</a> &middot;
-<a href="config.html">install &amp; config</a> &middot;
-<a href="scripts.html">scripting</a> &middot;
-<a href="reference.html">reference</a> &middot;
+<small><a href="#over">overview</a>
+&middot;
+<a href="#download">download</a>
+&middot;
+<a href="config.html">install
+&amp; config</a> &middot;
+<a href="scripts.html">scripts</a>
+&middot;
+<a href="reference.html">reference</a>
+&middot;
 <a href="libraries.html">libraries</a>
-</small>
-</center>
-
-<p></p>
-
+&middot;
+<a href="sapi.html">SAPI</a>
+</small></center>
 <hr>
 <h2>Contents</h2>
-
 <ul>
-  <li><a href="#over">Overview</a></li>
+  <li><a href="#over">Overview<br>
+    </a></li>
   <li><a href="#version">Current Version</a></li>
   <li><a href="#download">Download</a></li>
   <li><a href="#new">What's new</a></li>
-  <li><a href="#incompatibility">Incompatibility with previous versions</a></li>
-  <li><a href="config.html">Installation and configuration</a> 
+  <li><a href="#incompatibility">Incompatibility with previous
+versions</a></li>
+  <li><a href="config.html">Installation and configuration</a>
     <ul>
       <li><a href="config.html#build">Build</a></li>
       <li><a href="config.html#pre-installation">Pre-installation</a></li>
@@ -57,28 +59,28 @@ border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
       <li><a href="config.html#config">Configuration</a></li>
     </ul>
   </li>
-  <li><a href="scripts.html">CGILua scripts</a> 
+  <li><a href="scripts.html">CGILua scripts</a>
     <ul>
       <li><a href="scripts.html#scripts">Lua Scripts</a></li>
-      <li><a href="scripts.html#templates">HTML Templates</a></li>
-      <li><a href="scripts.html#parameteres">Receiving parameters: the <code>cgi</code> table</a></li>
+      <li><a href="scripts.html#templates">Lua Pages</a></li>
+      <li><a href="scripts.html#parameteres">Receiving parameters</a></li>
     </ul>
   </li>
-  <li><a href="reference.html">CGILua reference</a> 
+  <li><a href="reference.html">CGILua reference</a>
     <ul>
       <li><a href="reference.html#headers">Headers</a></li>
       <li><a href="reference.html#contents">Content generation</a></li>
-      <li><a href="reference.html#prep">Pre-processing HTML</a></li>
+      <li><a href="reference.html#prep">Pre-processing templates</a></li>
       <li><a href="reference.html#variables">CGILua's variables</a></li>
       <li><a href="reference.html#error_treatment">Error treatment</a></li>
       <li><a href="reference.html#behavior">CGILua behavior</a></li>
-      <li><a href="reference.html#auxiliar">Auxiliar functions</a></li>
+      <li><a href="reference.html#auxiliar">Auxiliary functions</a></li>
       <li><a href="reference.html#urlcode">URL encoding functions</a></li>
       <li><a href="reference.html#internals">Internal functions</a></li>
       <li><a href="reference.html#index">Alphabetic index</a></li>
     </ul>
   </li>
-  <li><a href="libraries.html">Distributed libraries</a> 
+  <li><a href="libraries.html">Distributed libraries</a>
     <ul>
       <li><a href="libraries.html#cookies">Cookies</a></li>
       <li><a href="libraries.html#serialize">Serialize</a></li>
@@ -89,137 +91,129 @@ border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
   <li><a href="#credits">Credits</a></li>
   <li><a href="#contact">Contact us</a></li>
 </ul>
-
-<a name="over"></a> 
-
+<a name="over"></a>
 <h2>Overview</h2>
-
-<p>CGILua is a tool for creating dynamic HTML pages and
+<p>CGILua is a tool for creating
+dynamic web pages and
 manipulating input data from forms. It is simple but powerful,
 allowing complex tasks to be carried out with minimum effort.
 Typical applications that can be developed with CGILua include, for
-instance, WWW information systems based on external data
-(databases) and WWW gateways to existing systems.</p>
-
-<p>CGILua uses the interpreted language <a href=
-"http://www.lua.org">Lua</a> as a server-side scripting language
-for creating dynamic Web pages. Both pure <a href=
-"scripts.html#scripts">Lua scripts</a> and <a href=
-"scripts.html#templates">HTML templates</a> are supported by
+instance, web based information systems accessing external data
+(databases) and gateways to existing systems.</p>
+<p>CGILua uses the interpreted
+language <a href="http://www.lua.org">Lua</a>
+as a server-side scripting language
+for creating dynamic Web pages. Both pure <a
+ href="scripts.html#scripts">Lua Scripts</a>
+and <a href="scripts.html#templates">Lua Pages</a> are supported by
 CGILua. A Lua script is essentially a Lua program that creates the
-contents of a HTML page and sends it to the HTTP server. A HTML
-template is a conventional HTML file that embeds Lua code by using
-some special marks.</p>
-
-<p>Lua scripts and HTML templates are equally easy to use, and
+whole contents of a web page and returns it to the web server. A Lua
+page is a conventional markup text (HTML, XML etc) file that embeds Lua
+code using
+some special tags.</p>
+<p>Lua scripts and Lua pages
+are equally easy to use, and
 choosing one of them basically depends on the characteristics of a
-specific page. While HTML templates are convenient for creating
-graphically sophisticated pages, probably with the help of a HTML
+specific page. While Lua pages are more convenient for the separation
+of content and format, where the format is usually manipulated with the
+help of a HTML
 editor, Lua scripts are more adequate for creating pages that are
 simple in terms of its HTML structure, but require a significative
-amount of internal processing. By also allowing these two methods
+amount of internal processing.</p>
+<p>Allowing these two methods
 to be intermixed, CGILua provides Web applications developers with
 great flexibility when both requirements are present. For a
 detailed description of both scripting methods and some examples of
-their use see <a href="scripts.html">CGILua scripts</a>.</p>
-
-<p>CGILua comes in five versions: Java Servlet, ISAPI module,
+their use see <a href="scripts.html">CGILua
+scripts</a>.</p>
+<p>CGILua can use
+Java Servlet, ISAPI module,
 Apache module, FastCGI and traditional CGI. CGILua's architecture
-is divided in two layers. The lowest one is represented by the
-launchers: The launchers implement a common set of functions also
-called <a href="sapi.html">the Server API</a>. The highest layer is
-implemented over it and is totally portable between the launchers.
-This way any script made over the Server API could be run by any
+is divided in two layers. The lower level one is represented by the
+Server API (<a href="sapi.html">SAPI</a>) and the higher level is
+represented by the CGILua API itself. The high level layer is
+implemented using only SAPI and is totally portable between the
+launchers.
+This way any CGILua script or CGILua page could be run by any
 launcher.</p>
-
-<p>CGILua is free software and uses the same <a href=
-"license.html">license</a> as Lua 5.0. <a name="version"></a></p>
-
+<p>CGILua is free software and
+uses the same <a href="license.html">license</a>
+as Lua 5.0. <a name="version"></a></p>
 <h2>Current version</h2>
-
-<p>Current version is 5.0 alpha 4. <a name="download"></a></p>
-
+<p>Current version is 5.0 beta.
+<a name="download"></a></p>
 <h2>Download</h2>
-
-<p>CGILua can be downloaded in source code from the
+<p>CGILua can be downloaded in
+source code from the
 <a href="http://luaforge.net/project/showfiles.php?group_id=5">LuaForge</a>
 page</p>
-
-<a name="new"></a> 
-
+<a name="new"></a>
 <h2>What's new</h2>
-
 <ul>
-<li>[?/?/2004] Version 5.0 alpha 4 released</li>
-
-<li>[8/Jun/2004] Version 5.0 alpha 3 released</li>
-
-<li>[21/Apr/2004] Version 5.0 alpha released</li>
+  <li>[15/Dec/2004] Version 5.0 beta released</li>
+  <li>[8/Jun/2004] Version 5.0
+alpha 3 released</li>
+  <li>[21/Apr/2004] Version 5.0
+alpha released</li>
 </ul>
-
-<a name="incompatibility"></a> 
-
-<h2>Incompatibility with previous versions</h2>
-
+<a name="incompatibility"></a>
+<h2>Incompatibility with previous
+versions</h2>
 <ul>
-<li>CGILua 5.0 uses <a href="http://www.lua.org">Lua 5.0</a>.</li>
-
-<li><code>cgi</code> table can has table values. See <a href=
-"scripts.html#parameters">Receiving parameters</a> for a more
+  <li>CGILua 5.0 uses <a href="http://www.lua.org">Lua 5.0</a>.</li>
+  <li><code>The cgi</code>
+table now allows table values. See <a href="scripts.html#parameters">Receiving
+parameters</a>
+for a more
 detailed explanation.</li>
-
-<li>HTML templates marks are incompatible. See <a href=
-"scripts.html#templates">HTML Templates</a> for a more detailed
+  <li>The template tags are
+incompatible. See <a href="scripts.html#templates">Lua pages</a>
+for a more detailed
 explanation.</li>
-
-<li>The use of <b><code>getenv</code></b> to obtain CGI variables
-should be replaced by <a href=
-"reference.html#servervariable"><b><code>cgilua.servervariable</code></b></a>.</li>
+  <li>The use of <b><code>getenv</code></b>
+to obtain CGI variables
+should be replaced by <a href="reference.html#servervariable"><b><code>cgilua.servervariable</code></b></a>.</li>
 </ul>
-
-<a name="credits"></a> 
-
+<a name="credits"></a>
 <h2>Credits</h2>
-
 <h4>CGILua 5.0</h4>
-
-<p>CGILua 5.0 was completely redesigned by Roberto Ierusalimschy,
-Andr&eacute; Carregal and Tom&aacute;s Guisasola as part of the <a
-href="http://www.keplerproject.org">Kepler Project</a>. The
+<p>CGILua 5.0 was completely
+redesigned by Roberto Ierusalimschy,
+Andr&eacute; Carregal and Tom&aacute;s Guisasola as part of the
+<a href="http://www.keplerproject.org">Kepler
+Project</a>. The
 implementation is compatible with Lua 5.0 and was coded by
 Tom&aacute;s Guisasola with invaluable contributions by Ana
 L&uacute;cia de Moura. CGILua 5.0 development was sponsored by <a
-href="http://www.fabricadigital.com.br">F&aacute;brica Digital</a>
+ href="http://www.fabricadigital.com.br">F&aacute;brica
+Digital</a>
 and CNPq.</p>
-
 <h4>CGILua 4.0</h4>
-
-<p>Ana L&uacute;cia de Moura adapted CGILua to Lua 4.0,
+<p>Ana L&uacute;cia de Moura
+adapted CGILua to Lua 4.0,
 reimplemented some code and added a few improvements but this
 version was not officially distributed.</p>
-
 <h4>CGILua 3.x</h4>
-
-<p>CGILua was born as the evolution of an early system developed by
-Renato Ferreira Borges and Andr&eacute; Cl&iacute;nio at <a href=
-"http://www.tecgraf.puc-rio.br">TeCGraf</a>. At time there were no
-CGI tools, everything were done with shell scripts!</p>
-
-<p>However, the main contribution was done by Anna Hester, who
+<p>CGILua was born as the
+evolution of an early system developed by
+Renato Ferreira Borges and Andr&eacute; Cl&iacute;nio at <a
+ href="http://www.tecgraf.puc-rio.br">TeCGraf</a>.
+At the time there were no
+CGI tools, everything was done with shell scripts!</p>
+<p>However, the main contribution
+was done by Anna Hester, who
 consolidated the whole tool and developed a consistent distribution
-with versions 3.1 and 3.2 (the number was an effort to accomplish
-Lua version number). This version was widely used by a great
+with versions 3.1 and 3.2 (the number was an effort to follow
+Lua version numbers). This version was widely used on a great
 variety of systems. <a name="contact"></a></p>
-
 <h2>Contact us</h2>
-
-<p>For more information please <a href=
-"mailto:info-NO-SPAM-THANKS@keplerproject.org">contact us</a>.
+<p>For more information please <a
+ href="mailto:info-NO-SPAM-THANKS@keplerproject.org">contact
+us</a>.
 Comments are welcome!</p>
-
 <hr>
-<small>$Id: index.html,v 1.19 2004/11/17 14:14:16 tomas Exp
+<small>$Id: index.html,v 1.19
+2004/11/17 14:14:16 tomas Exp
 $</small>
 </body>
 </html>
-
