@@ -14,7 +14,7 @@ LUAC= /usr/local/bin/luac
 # Lua distribution includes it at etc directory
 BIN2C= /usr/local/bin/bin2c
 # Lua 5.1 package compatibility
-COMPAT_DIR= compat
+COMPAT_DIR= ../compat
 # Lua paths
 LUA_PATH= $(LUA_DIR)/?.lua;$(LUA_DIR)/?/?.lua
 LUA_CPATH= $(LUA_LIBDIR)/?$(LIB_EXT);$(LUA_LIBDIR)/lib?$(LIB_EXT)
@@ -51,4 +51,4 @@ CGILUA_DOC=        $(CGILUA_DIR)/doc
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.30 2005/01/18 16:11:11 tomas Exp $
+# $Id: config,v 1.31 2005/01/28 15:54:18 tomas Exp $
