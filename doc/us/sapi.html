@@ -50,6 +50,12 @@ Here is the list of functions:
     <code>Location</code> header to the client.
     The given string should be a URL.
 
+  <li> <b><code>HTTP_Response.header (header, value)</code></b> Sends a
+    generic header to the client.  The first argument must be the header
+    name, such as "Set-Cookie".  The second argument should be its value.
+    This function should not be used to replace the <code>contenttype</code>
+    nor the <code>redirect</code> functions.
+
   <li> <b><code>HTTP_Response.write (string)</code></b> Generates output.
 
   <li> <b><code>HTTP_Response.errorlog (string)</code></b> Generates
@@ -73,7 +79,7 @@ Here is the list of functions:
 <p>
 <hr>
 <small>
-$Id: sapi.html,v 1.2 2004/03/26 14:13:26 tomas Exp $
+$Id: sapi.html,v 1.3 2004/04/09 09:21:01 tomas Exp $
 </small>
 
 </body>
