@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2004/05/26 17:34:04 tomas Exp $
+# $Id: Makefile,v 1.8 2004/06/08 12:50:06 tomas Exp $
 
 T= clmain
 
@@ -14,7 +14,7 @@ T_MAIN= t_main.lua
 LUAS= $(MAIN) $(CONF) $(LIBS)
 SRCS= $(T_MAIN) $(T_CONF) cgilua.lua cookies.lua post.lua prep.lua readuntil.lua urlcode.lua venv.lua
 
-cgi fcgi mod cgimac fcgimac modmac: $(LUAS)
+cgi fcgi mod: $(LUAS)
 
 cgiinstall fcgiinstall modinstall: $(LUAS)
 	mkdir -p $(CGILUA_DIR)

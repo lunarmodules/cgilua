@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2004/05/10 07:39:33 tomas Exp $
+# $Id: Makefile,v 1.8 2004/06/08 12:50:06 tomas Exp $
 
 include ./config
 
@@ -17,7 +17,7 @@ dist:
 	zip -lrq $(ZIP_FILE) $(PKG)/*
 	rm -rf $(PKG)
 
-clean cgi cgiinstall cgimac fcgi fcgiinstall fcgimac mod modinstall modmac:
+clean cgi cgiinstall fcgi fcgiinstall mod modinstall:
 	cd libfilesystem; make $@
 	cd launcher; make $@
 	cd clmain; make $@

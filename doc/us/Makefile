@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 2004/04/21 15:12:25 tomas Exp $
+# $Id: Makefile,v 1.5 2004/06/08 12:50:06 tomas Exp $
 
 T= doc
 
@@ -9,7 +9,7 @@ V= 1.0a
 
 SRCS= sapi.html cgi-128.gif config.html index.html libraries.html license.html reference.html scripts.html
 
-clean cgi fcgi mod cgimac fcgimac modmac:
+clean cgi fcgi mod:
 
 cgiinstall fcgiinstall modinstall:
 	mkdir -p $(CGILUA_DOC)
