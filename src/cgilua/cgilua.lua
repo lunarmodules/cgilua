@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.10 2004/11/10 16:14:45 tomas Exp $
+-- $Id: cgilua.lua,v 1.11 2004/11/22 17:32:38 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -46,8 +46,8 @@ local default_maxfilesize = 512 * 1024
 local maxfilesize = default_maxfilesize
 local default_maxinput = 1024 * 1024
 local maxinput = default_maxinput
-local lua_path = _PATH
-local lua_libpath = _CPATH
+local lua_path = package.path
+local lua_cpath = package.cpath
 
 module (arg and arg[1])
 
@@ -135,6 +135,8 @@ _G.require = function (packagename)
 	assert (not strfind (packagename, "%.%."),
 		"Package name cannot contain `..'")
 	_G.loadlib = _loadlib
+	_G.package.path = lua_path
+	_G.package.cpath = lua_cpath
 	local ret = pack (_require (packagename))
 	_G.loadlib = nil
 	return unpack (ret)
@@ -171,16 +173,12 @@ end
 -- Set the maximum "total" input size allowed (in bytes)
 ---------------------------------------------------------------------------
 function setmaxinput(nbytes)
-	-- can only be set once (by CGILua's mainscript)
-	if maxinput then
-		error("Maximum input size redefinition is not allowed")
-	end
 	maxinput = nbytes
 end
 
 ---------------------------------------------------------------------------
 -- Set the maximum size for an "uploaded" file (in bytes)
---   (can be redefined by a script but "maxinputsize" is checked first)
+-- Might be less or equal than maxinput.
 ---------------------------------------------------------------------------
 function setmaxfilesize(nbytes)
 	maxfilesize = nbytes

@@ -14,7 +14,7 @@
 --		args = params,
 --	}
 ----------------------------------------------------------------------------
--- $Id: post.lua,v 1.4 2004/10/13 09:34:07 tomas Exp $
+-- $Id: post.lua,v 1.5 2004/11/22 17:32:39 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.readuntil"
@@ -245,32 +245,11 @@ local function init (defs)
 	end
 	content_type = defs.content_type
 	if defs.maxinput then
-		setmaxinput (defs.maxinput)
+		maxinput = defs.maxinput
 	end
 	if defs.maxfilesize then
-		setmaxfilesize (defs.maxfilesize)
+		maxfilesize = defs.maxfilesize
 	end
-end
-
----------------------------------------------------------------------------
--- Set the maximum "total" input size allowed (in bytes)
----------------------------------------------------------------------------
-function setmaxinput(nbytes)
-  -- can only be set once
---[[
-  if maxinput then
-    error("Maximum input size redefinition is not allowed")
-  end
---]]
-  maxinput = nbytes
-end
-
----------------------------------------------------------------------------
--- Set the maximum size for an "uploaded" file (in bytes)
---   (can be redefined by a script but "maxinputsize" is checked first)
----------------------------------------------------------------------------
-function setmaxfilesize(nbytes)
-  maxfilesize = nbytes
 end
 
 ----------------------------------------------------------------------------
