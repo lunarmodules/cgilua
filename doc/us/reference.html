@@ -29,7 +29,6 @@ ul { list-style-type: disc };
 <a href="#behavior">behavior</a> &middot;
 <a href="#auxiliar">auxiliar</a> &middot;
 <a href="#urlcode">encoding</a> &middot;
-<a href="#internals">internals</a> &middot;
 <a href="#index">index</a>
 </small></center>
 
@@ -249,6 +248,12 @@ Returns nothing.
 <a name="auxiliar"></a>
 <h2>Auxiliar functions</h2>
 
+<a name="doscript"></a>
+<h3><code>cgilua.doscript (path)</code></h3>
+Executes the given file.
+Raises an error if it occurs.
+In case of success, returns the values returned by the execution.
+
 <a name="pack"></a>
 <h3><code>cgilua.pack (...)</code></h3>
 Returns a new table with all its arguments stored in it.
@@ -299,127 +304,29 @@ Returns nothing.
 Returns the decoded string.
 
 
-<hr>
-<a name="internals"></a>
-<h2>Internal functions</h2>
-
-<a name="doif"></a>
-<h3><code>cgilua.doif (path)</code></h3>
-Executes the given file if there is no "file error".
-If an error occurs, returns <code>nil</code> followed by the error message.<br>
-In case of success, returns the values returned by the execution.
-
-<a name="doscript"></a>
-<h3><code>cgilua.doscript (path)</code></h3>
-Executes the given file.
-Raises an error if it occurs.
-In case of success, returns the values returned by the execution.
-
-<a name="getparams"></a>
-<h3><code>cgilua.getparams (args)</code></h3>
-Defines CGILua's variables and assigns all parameters to the given table.<br>
-Returns nothing.
-
-<a name="getscripthandler"></a>
-<h3><code>cgilua.getscripthandler (path)</code></h3>
-Gets the handler defined to process the given path.<br>
-Returns the handler (a function).
-
-<a name="handle"></a>
-<h3><code>cgilua.handle (path)</code></h3>
-Executes a script (given its full path) according to the defined handlers.<br>
-Returns the result of the execution of the script.
-
-<a name="main"></a>
-<h3><code>cgilua.main ()</code></h3>
-Processes the incoming request.
-It is the main function,
-responsible for setting defaults,
-loading the configuration file,
-removing the disallowed globals,
-creating the <tt>cgi</tt> table (processing <i>POST data</i> if necessary),
-executing the script on its own directory
-and resetting everything for a new request.<br>
-Returns nothing.
-
-<a name="pcall"></a>
-<h3><code>cgilua.pcall (func, ...)</code></h3>
-Executes a function using the CGILua's error functions.<br>
-Returns the result of the calling.
-
-<a name="post"></a>
-<a name="parsedata"></a>
-<h3><code>cgilua.post.parsedata (defs)</code></h3>
-Parse the POST REQUEST incoming data according to its "content type",
-as defined by the metavariable CONTENT_TYPE (RFC CGI).
-An error is issued if the "total" size of the incoming data
-(defined by the metavariable CONTENT_LENGTH) exceeds the maximum input size
-allowed.<br>
-The argument is a table with some information needed to do the job:
-<code>read</code>, the function which could read the data;
-<code>discardinput</code>, the (optional) function to discard the rest of the
-input;
-<code>content_type</code>, the request's content-type;
-<code>content_length</code>, the request's content-length;
-<code>maxinput</code>, the maximum input size allowed;
-<code>maxfilesize</code>, the maximum file size allowed;
-<code>args</code>, a table in which to store the parameters obtained.<br>
-Returns nothing.
-
-<a name="readuntil"></a>
-<a name="iterate"></a>
-<h3><code>cgilua.readuntil.iterate (inpfunc)</code></h3>
-Creates a function which reads until a delimiter in blocks.
-The <i>readuntil</i> created function receives a string with the delimiter
-and an output function each time it is called.<br>
-<code>iterate</code> returns a <i>readuntil</i> function;
-the created function returns the string read
-(from the last call until the given delimiter).
-
-<a name="removeglobals"></a>
-<h3><code>cgilua.removeglobals (notallowed)</code></h3>
-Removes the variables listed in table <code>notallowed</code>.<br>
-Returns nothing.
-
-<a name="reset"></a>
-<h3><code>cgilua.reset ()</code></h3>
-Resets CGILua's internal state.<br>
-Returns nothing.
-
-
 <a name="index"></a>
 <h2>Alphabetic Index</h2>
 <a href="#addclosefunction">addclosefunction</a><br>
 <a href="#addopenfunction">addopenfunction</a><br>
 <a href="#addscripthandler">addscripthandler</a><br>
 <a href="#contentheader">contentheader</a><br>
-<a href="#doif">doif</a><br>
 <a href="#doscript">doscript</a><br>
 <a href="#encodetable">encodetable (urlcode)</a><br>
 <a href="#errorlog">errorlog</a><br>
 <a href="#escape">escape (urlcode)</a><br>
-<a href="#getscripthandler">getscripthandler</a><br>
-<a href="#handle">handle</a><br>
 <a href="#header">header</a><br>
 <a href="#htmlheader">htmlheader</a><br>
 <a href="#includehtml">includehtml</a><br>
 <a href="#insertfield">insertfield (urlcode)</a><br>
-<a href="#iterate">iterate (readuntil)</a><br>
 <a href="#locationheader">locationheader</a><br>
-<a href="#main">main</a><br>
 <a href="#mkabsoluteurl">mkabsoluteurl</a><br>
 <a href="#mkurlpath">mkurlpath</a><br>
 <a href="#pack">pack</a><br>
 <a href="#parsequery">parsequery (urlcode)</a><br>
-<a href="#pcall">pcall</a><br>
-<a href="#post">post</a><br>
-<a href="#parsedata">parsedata (post)</a><br>
 <a href="#preprocess">preprocess</a><br>
 <a href="#prep">prep</a><br>
 <a href="#put">put</a><br>
-<a href="#readuntil">readuntil</a><br>
 <a href="#redirect">redirect</a><br>
-<a href="#removeglobals">removeglobals</a><br>
 <a href="#script_file">script_file</a><br>
 <a href="#script_path">script_path</a><br>
 <a href="#script_pdir">script_pdir</a><br>
@@ -441,7 +348,7 @@ Returns nothing.
 
 <hr>
 <small>
-$Id: reference.html,v 1.13 2004/11/23 10:44:18 tomas Exp $
+$Id: reference.html,v 1.14 2004/11/26 13:08:21 tomas Exp $
 </small>
 
 </body>
