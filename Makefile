@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2004/06/08 12:50:06 tomas Exp $
+# $Id: Makefile,v 1.9 2004/06/09 18:39:55 tomas Exp $
 
 include ./config
 
@@ -14,7 +14,7 @@ dist:
 	cd doc; make $@
 	cd test; make $@
 	tar -czf $(TAR_FILE) $(PKG)
-	zip -lrq $(ZIP_FILE) $(PKG)/*
+	zip -rq $(ZIP_FILE) $(PKG)/*
 	rm -rf $(PKG)
 
 clean cgi cgiinstall fcgi fcgiinstall mod modinstall:
