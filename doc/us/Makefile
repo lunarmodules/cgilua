@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 2004/04/06 17:18:36 tomas Exp $
+# $Id: Makefile,v 1.4 2004/04/21 15:12:25 tomas Exp $
 
 T= doc
 
@@ -7,7 +7,7 @@ include ../config
 V= 1.0a
 #DIST_DIR=../$(PKG)/$T
 
-SRCS= sapi.html cgi-128.gif config.html index.html libraries.html reference.html scripts.html
+SRCS= sapi.html cgi-128.gif config.html index.html libraries.html license.html reference.html scripts.html
 
 clean cgi fcgi mod cgimac fcgimac modmac:
 

@@ -1,8 +1,8 @@
-# $Id: Makefile,v 1.4 2004/04/06 17:18:36 tomas Exp $
+# $Id: Makefile,v 1.5 2004/04/21 15:12:25 tomas Exp $
 
 include ./config
 
-SRCS= Makefile config
+SRCS= Makefile config README
 
 
 dist:
