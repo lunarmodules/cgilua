@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2004/04/21 15:12:25 tomas Exp $
+# $Id: Makefile,v 1.6 2004/05/09 21:48:04 tomas Exp $
 
 include ./config
 
@@ -8,7 +8,7 @@ SRCS= Makefile config README
 dist:
 	mkdir -p $(PKG)
 	cp $(SRCS) $(PKG)
-	cd libdir; make $@
+	cd libfs; make $@
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
@@ -18,7 +18,7 @@ dist:
 	rm -rf $(PKG)
 
 clean cgi cgiinstall cgimac fcgi fcgiinstall fcgimac mod modinstall modmac:
-	cd libdir; make $@
+	cd libfs; make $@
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
