@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.1 2003/09/28 23:38:44 tomas Exp $
+-- $Id: cgilua.lua,v 1.2 2003/09/29 20:51:02 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -291,6 +291,7 @@ end
 --  is called and this function does not return
 ----------------------------------------------------------------------------
 function Public.doif (filename)
+	if not filename then return end    -- no file
 	local f = open(filename)
 	if not f then return end    -- no file (or unreadable file)
 	f:close()
