@@ -1,7 +1,7 @@
 <html>
 
 <head>
-<title>CGILua 4.0: Installing and Configuring</title>
+<title>CGILua: Installing and configuring</title>
 <style type="text/css">
 ul { list-style-type: disc };
 </style>
@@ -10,34 +10,120 @@ ul { list-style-type: disc };
 <body bgcolor="#FFFFFF">
 
 <hr>
-<h1>
-<a href="index.html">
+
+<center>
+<table border=0 cellspacing=2 cellpadding=2>
+<tr><td align=center><a href="http://www.lua.org">
 <img border=0 alt="CGILua" src="cgi-128.gif"></a>
-Installing and Configuring CGILua
-</H1>
+<tr><td align=center><big><b>CGILua</b></big>
+<tr><td align=center valign=top>Installing and configuring
+</table>
+</center>
+<p>
 
-<FONT FACE="Arial,Helvetica">
-<a href="functions.html#g1">g1</a> &middot;
-<a href="functions.html#g2">g2</a> &middot;
-<a href="functions.html#g3">g3</a>
-</font>
-
-<hr>
-
-<h2><a name=g1>g1</a></h2><p>
-
-<hr>
-
-<h2><a name=g2>g2</a></h2><p>
+<center><small>
+<a href="#organization">organization</a> &middot;
+<a href="#config">configuration</a> &middot;
+<a href="#advanced">advanced</a>
+</small></center>
 
 <hr>
 
-<h2><a name=g3>g3</a></h2><p>
+<a name="organization"></a>
+<h2>Organization</h2>
+<p>
+The following table shows the installation files used by CGILua and
+the directories where they should live:
+<table cellpadding="10">
+  <tr><td><table border cellspacing="1" cellpadding="10"><tr><td>
+<table cellspacing="0" cellpadding="0">
+  <tr> <td align="right"><tt>cgi-scripts/</tt></td> <td><tt>cgilua</tt></td> </tr>
+  <tr> <td>&nbsp;</td> <td><tt>map.lua</tt></td> </tr>
+  <tr> <td>&nbsp;</td> </tr>
+  <tr> <td align="right"><tt>main-dir/</tt></td> <td><tt>main.lua</tt></td> </tr>
+  <tr> <td>&nbsp;</td> <td><tt>cgilua.lua</tt></td> </tr>
+  <tr> <td>&nbsp;</td> <td><tt>prep.lua</tt></td> </tr>
+  <tr> <td>&nbsp;</td> <td><tt>readuntil.lua</tt></td> </tr>
+  <tr> <td>&nbsp;</td> </tr>
+  <tr> <td align="right"><tt>lib-dir/</tt></td> <td><tt>cookies.lua</tt></td> </tr>
+</table>
+    </td></tr></table></td>
+    <td valign="top">
+We recommend <tt>lib-dir</tt> to be placed inside <tt>main-dir</tt>:
+assuring that only the Lua files inside it could be <em>required</em>
+by the scripts.
+<br>
+We also recommend <tt>main-dir</tt> to be named <tt>cgilua-5.0</tt>
+and be placed side-by-side of <tt>cgi-scripts</tt> directory.
+<br>
+The names of the directories can be defined at <tt>map.lua</tt>
+(see <a href="#config">Configuration</a>).
+<br>
+Other libraries available to the scripts should be put at <tt>lib-dir</tt>.
+This directory will be in the <tt>LUA_PATH</tt> therefore accessible via
+<tt>require</tt>.
+In the case of dynamic loadable libraries (<tt>.DLL</tt>, <tt>.so</tt>,
+<tt>.dylib</tt> etc.) the corresponding "loader" Lua file should be placed
+there at <tt>lib-dir</tt> and the binary object at the appropriate place
+according to the operating system used (<tt>C:\SYSTEM</tt> on Windows,
+<tt>/usr/local/lib</tt> on Unix etc.).
+    </td>
+  </tr>
+</table>
+
+<a name="config"></a>
+<h2>Configuration</h2>
+<p>
+CGILua 5.0 offers configuration in three levels:
+system, application and script.
+<br>
+System configuration is placed at <tt>map.lua</tt>.
+The other two configuration levels will be described
+on the <a href="#advanced">next section</a>.
+<p>
+<tt>map.lua</tt> is the only file with a fixed place (the same directory
+as the executable) and is also where the other directories are
+defined.
+There are five variables to define at <tt>map.lua</tt>:
+<ul>
+  <li> <b><tt>main_dir</tt></b> The path of main CGILua directory.
+This path can be absolute or relative to the root cgi directory.
+
+  <li> <b><tt>lib_dir</tt></b> The full path of the libraries directory.
+This directory will be accessed via <tt>require</tt> so it should
+be an absolute path to make sure it will work for every script.
+
+  <li> <b><tt>appscript</tt></b> The optional application Lua script.
+This script will be called for all requests;
+this is the second configuration level.
+The path to the script can be relative to the root cgi directory.
+
+  <li> <b><tt>userscriptname</tt></b> The optional script environment
+file name.
+A file with that name will be searched at the same directory of the
+(request) script.
+This is the third configuration level.
+
+  <li> <b><tt>script_path</tt></b> The (request) script path.
+Typically it will be the value of <tt>PATH_TRANSLATED</tt>
+environment variable.
+</ul>
+
+<a name="advanced"></a>
+<h2>Advanced configuration</h2>
+<p>
+The application and script configuration levels are defined
+at the application script (<tt>appscript</tt> variable) and
+at the environment script (<tt>userscriptname</tt> variable)
+respectively.
+The only difference between them is the encloseness (?!?!):
+the application script will be run for every request while
+the user script will be run before every script in the same
+directoy.
 
 <hr>
 <small>
-Last update:
-Thu Mar 21 10:18:00 EST 2002
+$Id: config.html,v 1.2 2003/10/01 13:48:57 tomas Exp $
 </small>
 
 </body>

@@ -1,7 +1,7 @@
 <html>
 
 <head>
-<title>CGILua 4.0</title>
+<title>CGILua</title>
 <style type="text/css">
 ul { list-style-type: disc };
 </style>
@@ -10,34 +10,129 @@ ul { list-style-type: disc };
 <body bgcolor="#FFFFFF">
 
 <hr>
-<h1>
-<a href="index.html">
-<img border=0 alt="CGILua" src="cgi-128.gif"></a>
-Building CGI scripts with Lua
-</H1>
 
-<FONT FACE="Arial,Helvetica">
-<a href="index.html#overview">overview</a> &middot;
-<a href="index.html#down">download</a> &middot;
+<center>
+<table border=0 cellspacing=2 cellpadding=2>
+<tr><td align=center><a href="http://www.lua.org">
+<img border=0 alt="CGILua" src="cgi-128.gif"></a>
+<tr><td align=center><big><b>CGILua</b></big>
+<tr><td align=center valign=top>Building CGI scripts with Lua
+</table>
+</center>
+<p>
+
+<center><small>
+<a href="#over">overview</a> &middot;
+<a href="#download">download</a> &middot;
 <a href="config.html">install & config</a> &middot;
-<a href="scripts.html">CGILua scripts</a> &middot;
+<a href="scripts.html">scripts</a> &middot;
 <a href="upload.html">file upload</a> &middot;
-<a href="cookies.html">cookies</a> &middot;
+<a href="reference.html">reference</a> &middot;
 <a href="idx.html">index</a> 
-</font>
+</small></center>
+<p>
 
 <hr>
 
-<h2><a name=whatis>What is CGILua?</a></h2><p>
+<h2>Contents</h2>
+<p>
+<ul>
+  <li> <a href="#over">Overview</a>
+  <li> <a href="#version">Current Version</a>
+  <li> <a href="#download">Download</a>
+  <li> <a href="#new">What's new</a>
+  <li> <a href="#incompatibility">Incompatibility with previous versions</a>
+  <li> <a href="config.html">Installation and configuration</a>
+    <ul>
+      <li> <a href="config.html#directories">Special directories</a>
+      <li> <a href="config.html#install">Installation</a>
+      <li> <a href="config.html#config">Configuration</a>
+    </ul>
+  <li> <a href="scripts.html">CGILua scripts</a>
+    <ul>
+      <li> <a href="scripts.html#templates">HTML Templates</a>
+      <li> <a href="scripts.html#lua_scripts">Lua Scripts</a>
+    </ul>
+  <li> <a href="upload.html">File upload</a>
+  <li> <a href="reference.html">CGILua Reference</a>
+    <ul>
+      <li> <a href="reference.html#headers">Headers</a>
+<!--
+cgilua.httpheader
+cgilua.contentheader
+cgilua.locationheader
+cgilua.htmlheader
+cgilua.redirect
+-->
+      <li> <a href="reference.html#prep">Pre-processing HTML</a>
+<!--
+cgilua.preprocess
+cgilua.includehtml
+cgilua.mkurlpath
+cgilua.mkabsolutepath
+-->
+      <li> <a href="reference.html#auxiliar">Auxiliar functions</a>
+<!--
+cgilua.escape
+cgilua.unescape
+cgilua.insertfield
+cgilua.encodetable
+cgilua.splitpath
+cgilua.getscripttype
+cgilua.parsequery
+cgilua.doscript
+cgilua.doif
+-->
+      <li> <a href="reference.html#behavior">CGILua behavior</a>
+<!--
+cgilua.setclosefunction
+cgilua.setmaxfilesize
+cgilua.setmaxinput
+cgilua.addscripthandler
+cgilua.getscripthandler
+-->
+      <li> <a href="reference.html#error">Error treatment</a>
+<!--
+cgilua.seterrorhandler
+cgilua.seterroroutput
+cgilua.seterrorlog
+cgilua.pcall
+-->
+      <li> <a href="reference.html#variables">Global variables</a>
+<!--
+cgilua.script_path
+cgilua.script_pdir
+cgilua.script_file
+cgilua.script_vpath
+cgilua.script_vdir
+cgilua.urlpath
+-->
+      <li> <a href="reference.html#cookies">Cookies</a>
+<!--
+cookie.set
+cookie.sethtml
+cookie.get
+cookie.delete
+-->
+      <li> <a href="reference.html#dir">Directories</a>
+<!--
+dir.getcwd
+dir.chdir
+-->
+    </ul>
+</ul>
 
-<B>CGILua</b> is a tool for creating dynamic HTML pages and manipulating input
+<a name="over"></a>
+<h2>Overview</h2>
+<p>
+CGILua is a tool for creating dynamic HTML pages and manipulating input
 data from forms. 
 It is simple but powerful, allowing complex tasks to be carried out
 with minimum effort. Typical applications that can be developed 
 with CGILua include, for instance, WWW information systems based on external 
 data (databases) and WWW gateways to existing systems.<p>
 
-<b>CGILua</b> uses the interpreted language <a href="http://www.lua.org">Lua</a>
+CGILua uses the interpreted language <a href="http://www.lua.org">Lua</a>
 as a server-side scripting language for creating dynamic Web pages. Both 
 pure <a href="scripts.html#lscripts">Lua scripts</a> and 
 <a href="templates.html">HTML templates</a> are supported by CGILua. 
@@ -48,7 +143,7 @@ a conventional HTML file that embeds Lua code by using some special marks.
 <p>Lua scripts and HTML templates are equally easy to use, 
 and choosing one of them 
 basically depends on the characteristics
-of an specific page. While HTML templates are convenient for 
+of a specific page. While HTML templates are convenient for 
 creating graphically sophisticated pages, probably with the help
 of an HTML editor, Lua scripts are more adequate for creating
 pages that are simple in terms of its HTML structure, but require a 
@@ -59,22 +154,45 @@ of both scripting methods and some examples of their use
 see <a href="scripts.html">CGILua scripts</a>.
 
 
-<hr>
+<a name="version"></a>
+<h2>Current version</h2>
+<p>
+Current version is 5.0 alpha.
 
-<h2><a name=down>Download</a></h2><p>
 
+<a name="download"></a>
+<h2>Download</h2>
+<p>
 CGILua can be downloaded in source code from the following links: <p>
 <ul>
-<li><a href="cgilua-4.0.3.tar.gz">cgilua-4.0.3.tar.gz</a><br>
-<li><a href="cgilua-4.0.3.zip">cgilua-4.0.3.zip.</a><br>
+<li><a href="cgilua-5.0.tar.gz">cgilua-5.0.tar.gz</a><br>
+<li><a href="cgilua-5.0.zip">cgilua-5.0.zip</a><br>
 </ul>
 
+<a name="new"></a>
+<h2>What's new</h2>
 <p>
+<ul>
+  <li>[?/?/2003] Version 5.0 alpha released
+</ul>
+
+
+<a name="incompatibility"></a>
+<h2>Incompatibility with previous versions</h2>
+<p>
+CGILua 5.0 uses <a href="http://www.lua.org">Lua 5.0</a>.
+
+<h3>Incompatibilities with version 4.0</h3>
+<p>
+
+<h3>Incompatibilities with version 3.2</h3>
+<p>
+
+
 <p>
 <hr>
 <small>
-Last update:
-Thu Mar 21 10:18:00 EST 2002
+$Id: index.html,v 1.2 2003/10/01 13:48:57 tomas Exp $
 </small>
 
 </body>
