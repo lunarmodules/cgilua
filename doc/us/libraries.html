@@ -79,6 +79,9 @@ Argument <code>table</code> is the table to be serialized;
 <code>indent</code> is an optional string with the indentation pattern;
 <code>prefix</code> is an optional string with the indentation prefix
 (it is used to store the actual indentation between the recursion calls).<br>
+Some restrictions must be noted:
+values of types <i>function</i> and <i>userdata</i> could not be serialized;
+also, tables with cycles are not serialized.<br>
 Returns nothing.
 
 
@@ -88,6 +91,13 @@ Returns nothing.
 
 <a name="close"></a>
 <h3><code>cgilua.session.close ()</code></h3>
+Closes user session.
+Saves all data in <code>cgilua.session.data</code> to the storing system.
+This function should be called after the end of the script's execution.
+A recommended way to do that is by calling
+<a href="reference.html#addclosefunction">addclosefunction</a>
+in the configuration file.<br>
+Returns nothing.
 
 <a name="data"></a>
 <h3><code>cgilua.session.data</code></h3>
@@ -114,7 +124,12 @@ Returns the new session identifier.
 <a name="open"></a>
 <h3><code>cgilua.session.open ()</code></h3>
 Opens user session.
-Creates table <code>cgilua.session.data</code>.<br>
+Creates table <code>cgilua.session.data</code>.
+This function should be called just before the execution of the script,
+but after the processing of the request's headers.
+Therefore it must be added to the opening functions list
+(see <a href="reference.html#addopenfunction">addopenfunction</a>)
+in the configuration file.<br>
 Returns nothing.
 
 <a name="save"></a>
@@ -132,7 +147,7 @@ Returns nothing.
 
 
 <hr>
-<small>$Id: libraries.html,v 1.9 2004/11/22 19:58:12 tomas Exp $</small>
+<small>$Id: libraries.html,v 1.10 2004/11/30 15:13:03 tomas Exp $</small>
 </body>
 </html>
 
