@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.26 2004/12/17 16:35:42 tomas Exp $
+# $Id: Makefile,v 1.27 2004/12/22 09:24:20 tomas Exp $
 
 T= clmain
 
@@ -28,4 +28,4 @@ dist dist_dir:
 	cp Makefile $(DIST_DIR)
 	cp $(COMPAT) $(LIB_LUAS) $(DIST_DIR)
 	mkdir -p $(DIST_DIR)/cgilua
-	cp $(CGILUA_LUAS) $(DIST_DIR)/cgilua/
+	cp $(CGILUA_LUAS) cgilua/$(CONFIG_FILE) $(DIST_DIR)/cgilua/
