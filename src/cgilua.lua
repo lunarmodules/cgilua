@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.10 2004/05/12 11:26:39 tomas Exp $
+-- $Id: cgilua.lua,v 1.11 2004/06/22 10:39:08 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -275,6 +275,18 @@ local script_handlers = {
 }
 
 ----------------------------------------------------------------------------
+-- Default handler.
+-- Sends the contents of the file to the output without processing it.
+----------------------------------------------------------------------------
+local function default_handler (filename)
+	htmlheader ()
+	local fh = assert (open (filename))
+	local prog = fh:read("*a")
+	fh:close()
+	put (prog)
+end
+
+----------------------------------------------------------------------------
 -- Add a script handler.
 -- @param file_extension String with the lower-case extension of the script.
 -- @param func Function to handle this kind of scripts.
@@ -297,7 +309,7 @@ end
 ----------------------------------------------------------------------------
 function getscripthandler (path)
 	local i,f, ext = strfind (path, "%.([^.]+)$")
-	return script_handlers[strlower(ext or '')]
+	return script_handlers[strlower(ext or '')] or default_handler
 end
 
 ---------------------------------------------------------------------------
@@ -363,7 +375,7 @@ function seterrorlog (f)
 end
 
 ---------------------------------------------------------------------------
--- Execute a function with an error handler.
+-- Executes a function with an error handler.
 ---------------------------------------------------------------------------
 function pcall (f, ...)
 	local ok, errmsg = xpcall (function () return f(unpack(arg)) end,
@@ -404,6 +416,35 @@ function close()
 	end
 end
 
+----------------------------------------------------------------------------
+-- Stores all open functions in order they are set.
+local open_functions = {
+}
+
+---------------------------------------------------------------------------
+-- Set "open" function
+--
+-- This function will be called before the user script (and environment)
+-- execution
+---------------------------------------------------------------------------
+function addopenfunction (f)
+	local tf = type(f)
+	if tf == "function" then
+		tinsert (open_functions, f)
+	else
+		error (format ("Invalid type: expected `function', got `%s'", tf))
+	end
+end
+
+---------------------------------------------------------------------------
+-- Open function.
+---------------------------------------------------------------------------
+function _open()
+	for i = getn(open_functions), 1, -1 do
+		open_functions[i]()
+	end
+end
+
 ---------------------------------------------------------------------------
 -- Resets CGILua's state.
 ---------------------------------------------------------------------------
@@ -419,5 +460,6 @@ function reset ()
 	erroroutput = nil
 	-- Handlers
 	script_handlers = {}
+	open_function = {}
 	close_functions = {}
 end
