@@ -1,14 +1,14 @@
-# $Id: Makefile,v 1.15 2004/08/26 09:20:57 tomas Exp $
+# $Id: Makefile,v 1.16 2004/09/29 18:01:45 tomas Exp $
 
 include ./config
 
 SRCS= Makefile config README
 
 
-dist:
+dist: lfs
 	mkdir -p $(PKG)
 	cp $(SRCS) $(PKG)
-	cd luafilesystem; export DIST_DIR=../$(PKG)/luafilesystem; make -e $@
+	cd luafilesystem; export DIST_DIR=../$(PKG)/luafilesystem; make -e dist_dir
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
@@ -17,14 +17,13 @@ dist:
 	zip -rq $(ZIP_FILE) $(PKG)/*
 	rm -rf $(PKG)
 
-cgi fcgi mod:
+cgi fcgi mod: lfs
 	cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; export LIB_OPTION="$(LIB_OPTION)"; export CFLAGS="$(CFLAGS)"; export LIBS="$(LIBS)"; make -e lib
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
 
-cgiinstall fcgiinstall modinstall:
-	#cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; export LIB_DIR=$(CGILUA_LIBDIR); export LUA_DIR=/dev/null; make -e install
+cgiinstall fcgiinstall modinstall: lfs
 	cd luafilesystem; export LIB_EXT="$(LIB_EXT)"; export LIB_DIR="$(LUA_LIBDIR)"; export LUA_DIR=/dev/null; make -e install
 	cd launcher; make $@
 	cd clmain; make $@
@@ -35,3 +34,6 @@ clean:
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
+
+lfs:
+	cvs -d poison:/usr/local/cvsroot checkout luafilesystem
