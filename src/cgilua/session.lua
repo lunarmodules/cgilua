@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.2 2004/08/30 10:59:01 tomas Exp $
+-- $Id: session.lua,v 1.3 2004/09/01 02:55:11 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"lfs"
@@ -91,7 +91,7 @@ function save (id, data)
 	assert (check_id (id))
 	local fh = assert (open (filename (id), "w+"))
 	fh:write "return "
-	serialize.serialize_table (data, function (s) fh:write(s) end)
+	serialize.table (data, function (s) fh:write(s) end)
 	fh:close()
 end
 

@@ -2,29 +2,36 @@
 -- Serialize tables.
 -- It works only for tables without cycles and without functions or
 -- userdata inside it.
--- $Id: serialize.lua,v 1.1 2004/08/30 10:59:01 tomas Exp $
+-- $Id: serialize.lua,v 1.2 2004/09/01 02:55:11 tomas Exp $
 ----------------------------------------------------------------------------
 
 local ipairs, pairs, type = ipairs, pairs, type
 local format = string.format
 local sort, tinsert = table.sort, table.insert
-local max, min = math.max, math.min
 
 package ("serialize", arg and arg[1])
 
-serialize_value = nil
+----------------------------------------------------------------------------
+value = nil
 
 ----------------------------------------------------------------------------
 -- Serializes a table.
 -- @param tab Table representing the session.
 -- @param outf Function used to generate the output.
+-- @param ind String with indentation pattern.
+-- @param pre String with indentation prefix.
 ----------------------------------------------------------------------------
-function serialize_table (tab, outf)
+function table (tab, outf, ind, pre)
+	local sep_n, sep, _n = ",\n", ", ", "\n"
+	if (not ind) or (ind == "") then ind = ""; sep_n = ", "; _n = "" end
+	if not pre then pre = "" end
 	outf ("{")
+	local p = pre..ind
 	-- prepare list of keys
 	local keys = { boolean = {}, number = {}, string = {} }
-	local min, max = 1, 0
+	local total = 0
 	for key in pairs (tab) do
+		total = total + 1
 		local t = type(key)
 		if t == "string" then
 			tinsert (keys.string, key)
@@ -32,62 +39,72 @@ function serialize_table (tab, outf)
 			keys[t][key] = true
 		end
 	end
+	local many = total > 5
+	if not many then sep_n = sep; _n = " " end
+	outf (_n)
 	-- serialize entries with numeric keys
-	local n = keys.number
-	for key, val in ipairs (tab) do
-		serialize_value (val, outf)
-		n[key] = nil
+	if many then
+		local _f,_s,_v = ipairs(tab)
+		if _f(_s,_v) then outf (p) end
 	end
-	for key in pairs (n) do
+	local num = keys.number
+	local ok = false
+	-- entries with automatic index
+	for key, val in ipairs (tab) do
+		value (val, outf, ind, p)
+		outf (sep)
+		num[key] = nil
+		ok = true
+	end
+	if ok and many then outf (_n) end
+	-- entries with explicit index
+	for key in pairs (num) do
+		if many then outf (p) end
 		outf ("[")
 		outf (key)
 		outf ("] = ")
-		serialize_value (tab[key], outf)
+		value (tab[key], outf, ind, p)
+		outf (sep_n)
 	end
 	-- serialize entries with boolean keys
 	local tr = keys.boolean[true]
 	if tr then
-		outf (format ("[%s] = ", tostring(tr)))
-		serialize_value (tab[tr], outf)
+		outf (format ("%s[true] = ", many and p or ''))
+		value (tab[true], outf, ind, p)
+		outf (sep_n)
 	end
 	local fa = keys.boolean[false]
 	if fa then
-		outf (format ("[%s] = ", tostring(fa)))
-		serialize_value (tab[fa], outf)
+		outf (format ("%s[false] = ", many and p or ''))
+		value (tab[false], outf, ind, p)
+		outf (sep_n)
 	end
 	-- serialize entries with string keys
 	sort (keys.string)
 	for _, key in ipairs (keys.string) do
-		outf ("[")
-		outf (format ("%q", key))
-		outf ("] = ")
-		serialize_value (tab[key], outf)
+		outf (format ("%s[%q] = ", many and p or '', key))
+		value (tab[key], outf, ind, p)
+		outf (sep_n)
 	end
-	outf ("}\n")
+	if many then outf (pre) end
+	outf ("}")
 end
 
 
 ----------------------------------------------------------------------------
--- Serialize a value.
+-- Serializes a value.
 ----------------------------------------------------------------------------
-serialize_value = function (v, outf)
+value = function (v, outf, ind, pre)
 	local t = type (v)
-	local fmt, val
 	if t == "string" then
-		fmt = "%q,"
-		val = v
+		outf (format ("%q", v))
 	elseif t == "number" then
-		fmt = "%d,"
-		val = v
+		outf (tostring(v))
 	elseif t == "boolean" then
-		fmt = v and "true," or "false,"
+		outf (tostring(v))
 	elseif t == "table" then
-		fmt = ","
-		--val = ""
-		serialize_table (v, outf)
+		table (v, outf, ind, pre)
 	else
-		fmt = "%q,"
-		val = tostring (v)
+		outf (format ("%q", tostring(v)))
 	end
-	outf (format (fmt, val))
 end
