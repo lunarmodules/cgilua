@@ -37,9 +37,11 @@ for p, s in pairs (package.loaded) do
 	local n = pack_name(p)
 	if _G[n] then
 		pack[n] = true
+		table.insert (pack, n)
 	end
 end
-for p in pairs (pack) do bg = color() ?>
+table.sort (pack, function (x, y) return _G[x]._NAME < _G[y]._NAME end)
+for _, p in ipairs (pack) do bg = color() ?>
   <tr>
     <td bgcolor = "<%= bg %>"><%= idx(p,"_NAME") %>
     <td bgcolor = "<%= bg %>"><%= idx(p,"_COPYRIGHT") %>
