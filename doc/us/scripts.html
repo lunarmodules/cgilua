@@ -57,11 +57,12 @@ first sending the correct header
 and next sending the actual document.
 <p>
 CGILua offers some functions to do these tasks.
-The most common is <code>cgilua.htmlheader</code> that
-produce the header for an HTML document
+The most common is
+<a href="reference.html#htmlheader"><code>cgilua.htmlheader</code></a>
+that produce the header for an HTML document
 (see <a href="reference.html#headers">Headers</a> for a complete list).
 The function used to send the document's contents is
-<code>cgilua.put</code>.
+<a href="reference.html#put"><code>cgilua.put</code></a>.
 
 <p>
 For example, an HTML document which displays the sentence "Hello World!" can 
@@ -115,7 +116,7 @@ cgilua.put('&lt;/html&gt;')
 
 <p>
 The use of <code><i>cgi.language</code></i> indicates that a variable
-named "language" was passed to the script as a cgi parameter,
+named "language" was passed to the script as a CGI parameter,
 coming from a form or from the URL used to activate it.
 CGILua automatically decodes such variables.
 
@@ -191,8 +192,8 @@ Both ways, all parameters will be provided inside the
 <b>cgi table</b>.
 <p>
 Almost all types of parameters will be given as strings.
-Even if the value of a parameter is a number, it will be
-provided as it's string representation.
+Even if the value of a parameter is a number,
+it will be converted to it's string representation.
 <p>
 There are only two exceptions when the value value will be
 a table.
@@ -205,17 +206,19 @@ The table will have the following fields:
     copied because CGILua's will remove it after the script ends.
 </ul>
 <p>
-The other case of a table value occurs when there is more than
-one value associated with the same parameter name or in the case
-of a selection list with multiple values.
+The other case of a value which type is a table occurs when there is
+more than one value associated with the same parameter name.
+This is the case of a selection list with multiple values;
+it also occurs when the form (of the referrer) had two or more
+elements with the same <code>name</code> attribute.
 All values will be inserted in a table in the order in which they
-are treated (the keys will be numbers).
+are treated (the keys of the table will be numbers).
 
 
 <p>
 <hr>
 <small>
-$Id: scripts.html,v 1.2 2004/03/25 18:54:57 tomas Exp $
+$Id: scripts.html,v 1.3 2004/04/09 13:43:53 tomas Exp $
 </small>
 
 </body>

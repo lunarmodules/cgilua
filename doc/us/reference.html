@@ -47,6 +47,12 @@ Sends the header to force a redirection to the given URL.
 <h3><code>cgilua.redirect (url, args)</code></h3>
 Sends the header to force a redirection to the given URL.
 
+<a name="header"></a>
+<h3><code>cgilua.header (header, value)</code></h3>
+Sends a generic header.
+This function should <em>not</em> be used to generate a
+<em>Content-type</em> nor a <em>Location</em> header.
+
 
 <hr>
 <a name="contents"></a>
@@ -86,26 +92,37 @@ sends the HTML header before the pre-processed file.
 <a name="script_path"></a>
 <h3><code>cgilua.script_path ()</code></h3>
 The complete path of the running script.
+This variable is usually the same as the CGI environment variable
+<code>PATH_TRANSLATED</code>.
 
 <a name="script_pdir"></a>
 <h3><code>cgilua.script_pdir ()</code></h3>
 The directory of the running script.
+Obtained from <a href="#script_path"><code>cgilua.script_path</code></a>.
 
 <a name="script_file"></a>
 <h3><code>cgilua.script_file ()</code></h3>
 The file name of the running script.
+Obtained from <a href="#script_path"><code>cgilua.script_path</code></a>.
 
 <a name="script_vpath"></a>
 <h3><code>cgilua.script_vpath ()</code></h3>
 The complete virtual path of the running script.
+Equivalent to CGI environment variable <code>PATH_INFO</code>.
 
 <a name="script_vdir"></a>
 <h3><code>cgilua.script_vdir ()</code></h3>
 The virtual directory of the running script.
+Obtained from <a href="#script_vpath"><code>cgilua.script_vpath</code></a>.
+
+<a name="servervariable"></a>
+<h3><code>cgilua.servervariable (varname)</code></h3>
+Returns the value of a CGI environment variable.
 
 <a name="urlpath"></a>
 <h3><code>cgilua.urlpath ()</code></h3>
-???
+The name of the script.
+Equivalent to CGI environment variable <code>SCRIPT_NAME</code>.
 
 
 <hr>
@@ -201,6 +218,15 @@ Gets the handler defined to process the given path.
 <h3><code>cgilua.handle (path)</code></h3>
 Executes a script (given its full path) according to the defined handlers.
 
+<a name="parsequery"></a>
+<h3><code>cgilua.parsequery (query, args)</code></h3>
+Parse URL-encoded request data.
+This could be the query part of the script URL or URL-encoded post data.
+Each decoded
+<em>name = value</em>
+pair is inserted into table
+<code>args</code>.
+
 <a name="pcall"></a>
 <h3><code>cgilua.pcall (func, ...)</code></h3>
 Executes a function using the CGILua's error functions.
@@ -216,7 +242,7 @@ Resets CGILua's internal state.
 
 <hr>
 <small>
-$Id: reference.html,v 1.1 2004/03/25 19:31:05 tomas Exp $
+$Id: reference.html,v 1.2 2004/04/09 13:43:53 tomas Exp $
 </small>
 
 </body>
