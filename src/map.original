@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
--- $Id: map.original,v 1.1 2003/04/07 15:53:53 tomas Exp $
+-- $Id: map.original,v 1.1.1.1 2003/04/07 15:53:53 tomas Exp $
 --
 -- Determines the location of CGILua's main script and maps the 'virtual' 
 -- path of the script to be executed (as specified in the request URL) to 
