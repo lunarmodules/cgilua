@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.18 2004/10/15 10:53:23 tomas Exp $
+# $Id: Makefile,v 1.19 2004/10/20 10:18:02 tomas Exp $
 
 include ./config
 
@@ -18,13 +18,13 @@ dist: luafilesystem
 	rm -rf $(PKG)
 
 cgi fcgi mod: luafilesystem
-	cd luafilesystem; export COMPAT_DIR=".."; export LIB_EXT="$(LIB_EXT)"; export LIB_OPTION="$(LIB_OPTION)"; export CFLAGS="$(CFLAGS)"; export LIBS="$(LIBS)"; make -e lib
+	cd luafilesystem; export COMPAT_DIR="../$(COMPAT_DIR)"; export LIB_EXT="$(LIB_EXT)"; export LIB_OPTION="$(LIB_OPTION)"; export LIBS="$(LIBS)"; make -e lib
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
 
 cgiinstall fcgiinstall modinstall: luafilesystem
-	cd luafilesystem; export COMPAT_DIR=".."; export LIB_EXT="$(LIB_EXT)"; export LIB_DIR="$(LUA_LIBDIR)"; export LUA_DIR=/dev/null; make -e install
+	cd luafilesystem; export COMPAT_DIR="../$(COMPAT_DIR)"; export LIB_EXT="$(LIB_EXT)"; export LIB_DIR="$(LUA_LIBDIR)"; export LUA_DIR=/dev/null; make -e install
 	cd launcher; make $@
 	cd clmain; make $@
 	cd doc; make $@
@@ -36,4 +36,4 @@ clean:
 	cd doc; make $@
 
 luafilesystem:
-	cvs -d poison:/usr/local/cvsroot checkout luafilesystem
+	cvs checkout luafilesystem
