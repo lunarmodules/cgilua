@@ -1,6 +1,6 @@
 <?lua
 -- Tries to load known libraries
-for _, t in ipairs { "lxp", "luasql.postgres", "luasql.mysql", "luasql.oci8", "luasql.sqlite", "luasql.odbc", "socket", "xmlrpc", "soap", "lualdap", "md5", } do
+for _, t in ipairs { "lxp", "luasql.postgres", "luasql.mysql", "luasql.oci8", "luasql.sqlite", "luasql.odbc", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", } do
 	pcall (require, t)
 end
 
@@ -40,7 +40,11 @@ for p, s in pairs (package.loaded) do
 		table.insert (pack, n)
 	end
 end
-table.sort (pack, function (x, y) return _G[x]._NAME < _G[y]._NAME end)
+table.sort (pack, function (x, y)
+	local nx = _G[x] and _G[x]._NAME or ""
+	local ny = _G[y] and _G[y]._NAME or ""
+	return nx < ny
+end)
 for _, p in ipairs (pack) do bg = color() ?>
   <tr>
     <td bgcolor = "<%= bg %>"><%= idx(p,"_NAME") %>
