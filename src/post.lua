@@ -14,7 +14,7 @@
 --		args = params,
 --	}
 ----------------------------------------------------------------------------
--- $Id: post.lua,v 1.1 2004/03/25 19:01:39 tomas Exp $
+-- $Id: post.lua,v 1.2 2004/04/06 17:28:07 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"readuntil"
@@ -22,6 +22,9 @@ require"urlcode"
 
 local Public = {}
 post = Public
+setmetatable (Public, {
+	__index = function (t,n) error("Error reading undefined variable "..n, 2) end,
+})
 
 local assert, error, tonumber, tostring, type = assert, error, tonumber, tostring, type
 local tmpfile = io.tmpfile
@@ -43,10 +46,7 @@ local discardinput = nil  -- discard all remaining input
 local readuntil = nil     -- read until delimiter
 local read = nil          -- basic read function
 
-setfenv (1, {
-	__fenv = 1,
-	__index = function (t,n) error ("Accessing undefined variable "..n, 2) end,
-})
+setfenv (1, Public)
 
 ----------------------------------------------------------------------------
 -- Extract the boundary string from CONTENT_TYPE metavariable
@@ -134,7 +134,7 @@ local function fileupload (filename)
 	local out = function (str)
 		local sl = strlen (str)
 		if bytesread + sl > maxfilesize then
-			discardinput ()
+			discardinput (bytesleft)
 			error (format ("Maximum file size (%d kbytes) exceeded while uploading `%s'", maxfilesize / 1024, filename))
 		end
 		file:write (str)
@@ -251,17 +251,17 @@ local function init (defs)
 	end
 	content_type = defs.content_type
 	if defs.maxinput then
-		Public.setmaxinput (defs.maxinput)
+		setmaxinput (defs.maxinput)
 	end
 	if defs.maxfilesize then
-		Public.setmaxfilesize (defs.maxfilesize)
+		setmaxfilesize (defs.maxfilesize)
 	end
 end
 
 ---------------------------------------------------------------------------
 -- Set the maximum "total" input size allowed (in bytes)
 ---------------------------------------------------------------------------
-function Public.setmaxinput(nbytes)
+function setmaxinput(nbytes)
   -- can only be set once
 --[[
   if maxinput then
@@ -275,7 +275,7 @@ end
 -- Set the maximum size for an "uploaded" file (in bytes)
 --   (can be redefined by a script but "maxinputsize" is checked first)
 ---------------------------------------------------------------------------
-function Public.setmaxfilesize(nbytes)
+function setmaxfilesize(nbytes)
   maxfilesize = nbytes
 end
 
@@ -287,13 +287,14 @@ end
 --   (defined by the metavariable CONTENT_LENGTH) exceeds the
 --   maximum input size allowed
 ----------------------------------------------------------------------------
-function Public.parsedata (defs)
+function parsedata (defs)
 	assert (type(defs.args) == "table", "field `args' must be a table")
 	init (defs)
 	-- get the "total" size of the incoming data
 	local inputsize = tonumber(defs.content_length) or 0
 	if inputsize > maxinput then
 		-- some Web Servers (like IIS) require that all the incoming data is read 
+		bytesleft = inputsize
 		discardinput(inputsize)
 		error(format("Total size of incoming data (%d KB) exceeds configured maximum (%d KB)",
 			inputsize /1024, maxinput / 1024))

@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: prep.lua,v 1.4 2004/03/25 19:01:39 tomas Exp $
+-- $Id: prep.lua,v 1.5 2004/04/06 17:28:07 tomas Exp $
 ----------------------------------------------------------------------------
 
 local format = string.format
@@ -12,6 +12,9 @@ local tinsert = table.insert
 
 local Public = {}
 HTMLPreProcessor = Public
+setmetatable (Public, {
+	__index = function(t,n) error("Error reading undefined variable "..n, 2) end,
+})
 setfenv(1, Public)
 
 -- function to do output
