@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.7 2004/10/15 10:54:03 tomas Exp $
+-- $Id: cgilua.lua,v 1.8 2004/10/27 17:17:24 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -17,29 +17,29 @@ local gsub, format, strfind, strlower, strsub = string.gsub, string.format, stri
 local _open = io.open
 local getn, tinsert, tremove = table.getn, table.insert, table.remove
 local ap = ap
-local HTTP_Response, HTTP_Request = HTTP_Response, HTTP_Request
+local SAPI = SAPI
 local lfs = lfs
 local urlcode = cgilua.urlcode
 local post = cgilua.post
 local prep = cgilua.prep
 local translate = prep.translate
 
-prep.setoutfunc ("HTTP_Response.write")
+prep.setoutfunc ("SAPI.Response.write")
 prep.setcompatmode (true)
 
 -- Internal state variables.
 local default_errorhandler = debug.traceback
 local errorhandler = default_errorhandler
 local default_errorlog = function (msg)
-	HTTP_Response.errorlog (msg)
-	HTTP_Response.errorlog (HTTP_Request.servervariable"REMOTE_ADDR")
-	HTTP_Response.errorlog (os.date())
+	SAPI.Response.errorlog (msg)
+	SAPI.Response.errorlog (SAPI.Request.servervariable"REMOTE_ADDR")
+	SAPI.Response.errorlog (os.date())
 end
 local errorlog = default_errorlog
 local default_erroroutput = function (msg)
-	HTTP_Response.contenttype ("text/html")
+	SAPI.Response.contenttype ("text/html")
 	msg = string.gsub (string.gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
-	HTTP_Response.write (msg)
+	SAPI.Response.write (msg)
 end
 local erroroutput = default_erroroutput
 local default_maxfilesize = 512 * 1024
@@ -56,16 +56,16 @@ script_path = false
 ----------------------------------------------------------------------------
 -- Header functions
 ----------------------------------------------------------------------------
-header = HTTP_Response.header
+header = SAPI.Response.header
 
 function contentheader (type, subtype)
-	HTTP_Response.contenttype (type..'/'..subtype)
+	SAPI.Response.contenttype (type..'/'..subtype)
 end
 
-locationheader = HTTP_Response.redirect
+locationheader = SAPI.Response.redirect
 
 function htmlheader()
-	HTTP_Response.contenttype ("text/html")
+	SAPI.Response.contenttype ("text/html")
 end
 
 ----------------------------------------------------------------------------
@@ -86,12 +86,12 @@ end
 ----------------------------------------------------------------------------
 -- Returns a server variable
 ----------------------------------------------------------------------------
-servervariable = HTTP_Request.servervariable
+servervariable = SAPI.Request.servervariable
 
 ----------------------------------------------------------------------------
 -- Primitive error output function
 ----------------------------------------------------------------------------
-error_log = HTTP_Response.errorlog
+error_log = SAPI.Response.errorlog
 
 ----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
@@ -100,7 +100,7 @@ error_log = HTTP_Response.errorlog
 --  each of its arguments (strings or numbers) to file _OUTPUT (a file
 --  handle initialized with the file descriptor for stdout)
 ----------------------------------------------------------------------------
-put = HTTP_Response.write
+put = SAPI.Response.write
 
 ----------------------------------------------------------------------------
 -- Remove globals not allowed in CGILua scripts
@@ -265,7 +265,7 @@ local function getparams (args)
 	-- Fill in args table.
 	if servervariable"REQUEST_METHOD" == "POST" then
 		post.parsedata {
-			read = HTTP_Request.getpostdata,
+			read = SAPI.Request.getpostdata,
 			discardinput = ap and ap.discard_request_body,
 			content_type = servervariable"CONTENT_TYPE",
 			content_length = servervariable"CONTENT_LENGTH",

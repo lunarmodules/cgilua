@@ -34,38 +34,38 @@ ul { list-style-type: disc };
 The Server API is a set of functions that encapsulate the diferences
 between the launchers.
 The functions are grouped into two groups:
-HTTP_Request and HTTP_Response.
+SAPI.Request and SAPI.Response.
 <p>
 Here is the list of functions:
 <ul>
-  <li> <b><code>HTTP_Response.contenttype (string)</code></b> Sends the
+  <li> <b><code>SAPI.Response.contenttype (string)</code></b> Sends the
     <code>Content-type</code> header to the client.  The given string
     is of the form "type/subtype".  This function must be called before
     any output is generated.
 
-  <li> <b><code>HTTP_Response.redirect (string)</code></b> Sends the
+  <li> <b><code>SAPI.Response.redirect (string)</code></b> Sends the
     <code>Location</code> header to the client.
     The given string should be a URL.
 
-  <li> <b><code>HTTP_Response.header (header, value)</code></b> Sends a
+  <li> <b><code>SAPI.Response.header (header, value)</code></b> Sends a
     generic header to the client.  The first argument must be the header
     name, such as "Set-Cookie".  The second argument should be its value.
     This function should not be used to replace the <code>contenttype</code>
     nor the <code>redirect</code> functions.
 
-  <li> <b><code>HTTP_Response.write (string)</code></b> Generates output.
+  <li> <b><code>SAPI.Response.write (string)</code></b> Generates output.
 
-  <li> <b><code>HTTP_Response.errorlog (string)</code></b> Generates
+  <li> <b><code>SAPI.Response.errorlog (string)</code></b> Generates
     error output.
 </ul>
 
 <ul>
-  <li> <b><code>HTTP_Request.getpostdata ([n])</code></b> Gets a block
+  <li> <b><code>SAPI.Request.getpostdata ([n])</code></b> Gets a block
     of "POST data".
     The optional parameter is the number of bytes to read (a default block
     size is used instead).  This function returns the block as a Lua string.
 
-  <li> <b><code>HTTP_Request.servervariable (string)</code></b> Gets the
+  <li> <b><code>SAPI.Request.servervariable (string)</code></b> Gets the
     value of an environment variable (<code>CONTENT_LENGTH</code>,
     <code>QUERY_STRING</code>,
     <code>REMOTE_ADDR</code> etc.).
@@ -76,7 +76,7 @@ Here is the list of functions:
 <p>
 <hr>
 <small>
-$Id: sapi.html,v 1.8 2004/06/22 10:30:52 tomas Exp $
+$Id: sapi.html,v 1.9 2004/10/27 17:17:24 tomas Exp $
 </small>
 
 </body>
