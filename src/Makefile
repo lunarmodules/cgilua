@@ -1,6 +1,6 @@
-# $Id: Makefile,v 1.5 2004/04/16 10:17:36 tomas Exp $
+# $Id: Makefile,v 1.6 2004/04/20 09:34:16 tomas Exp $
 
-T= weblib
+T= clmain
 
 include ../config
 
