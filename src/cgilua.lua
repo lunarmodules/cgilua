@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cgilua.lua,v 1.3 2004/03/25 19:01:39 tomas Exp $
+-- $Id: cgilua.lua,v 1.4 2004/04/06 17:26:54 tomas Exp $
 --
 -- Auxiliar functions defined for CGILua scripts
 ----------------------------------------------------------------------------
@@ -8,16 +8,21 @@ require"urlcode"
 require"prep"
 require"post"
 
-local Public = {}
+local Public = {
+	script_path = false,
+}
 cgilua = Public
+setmetatable (Public, {
+	__index = function (t,n) error("Error reading undefined variable "..n, 2) end,
+})
 
-local _loadlib = loadlib
 local _require = require
 
-local assert, error, _G, loadstring, loadfile, _TRACEBACK, type, unpack, xpcall = assert, error, _G, loadstring, loadfile, _TRACEBACK, type, unpack, xpcall
+local assert, error, _G, loadstring, loadfile, type, unpack, xpcall = assert, error, _G, loadstring, loadfile, type, unpack, xpcall
 local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
 local open = io.open
 local getn = table.getn
+local traceback = debug.traceback
 local url_encodetable, url_escape, url_insertfield, url_parsequery, url_unescape = url_encodetable, url_escape, url_insertfield, url_parsequery, url_unescape
 local ap = ap
 local post = post
@@ -30,43 +35,40 @@ HTMLPreProcessor.setcompatmode (true)
 -- Internal state variables.
 local closefunction, errorhandler, errorlog, erroroutput, libdir, maxfilesize, maxinput, path
 
-setfenv (1, {
-	__fenv = 1,
-	__index = function (t,n) error("Accessing undefined variable "..n, 2) end,
-})
+setfenv (1, Public)
 
 ----------------------------------------------------------------------------
 -- Header functions
 ----------------------------------------------------------------------------
-function Public.contentheader (type, subtype)
+function contentheader (type, subtype)
 	HTTP_Response.contenttype (type..'/'..subtype)
 end
 
-Public.locationheader = HTTP_Response.redirect
+locationheader = HTTP_Response.redirect
 
-function Public.htmlheader()
+function htmlheader()
 	HTTP_Response.contenttype ("text/html")
 end
 
 ----------------------------------------------------------------------------
 -- Create an HTTP header redirecting the browser to another URL
 ----------------------------------------------------------------------------
-function Public.redirect (url, args)
+function redirect (url, args)
 	if strfind(url,"http:") then
 		local params=""
 		if args then
-			params = "?"..Public.encodetable(args)
+			params = "?"..encodetable(args)
 		end
-		Public.locationheader(url..params)
+		locationheader(url..params)
 	else
-		Public.locationheader(Public.mkabsoluteurl(Public.mkurlpath(url,args)))
+		locationheader(mkabsoluteurl(mkurlpath(url,args)))
 	end
 end
 
 ----------------------------------------------------------------------------
 -- Returns a server variable
 ----------------------------------------------------------------------------
-Public.servervariable = HTTP_Request.servervariable
+servervariable = HTTP_Request.servervariable
 
 ----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
@@ -75,12 +77,12 @@ Public.servervariable = HTTP_Request.servervariable
 --  each of its arguments (strings or numbers) to file _OUTPUT (a file
 --  handle initialized with the file descriptor for stdout)
 ----------------------------------------------------------------------------
-Public.put = HTTP_Response.write
+put = HTTP_Response.write
 
 ----------------------------------------------------------------------------
 -- Remove globals not allowed in CGILua scripts
 ----------------------------------------------------------------------------
-function Public.removeglobals (notallowed)
+function removeglobals (notallowed)
 	for i=1,getn(notallowed) do
 		local g = notallowed[i]
 		if type(_G[g]) ~= "function" then
@@ -101,7 +103,7 @@ _G.require = function (packagename)
 	assert (not (strfind (packagename, "[^%w_.-]") or
 			strfind (packagename, "%.%.")),
 		"Package name cannot contain punctuation characters")
-	_G.LUA_PATH = format ("%s?;%s?.lua", libdir, libdir)
+	_G.LUA_PATH = format ("%s?.lua;%s?", libdir, libdir)
 	return _require (packagename)
 end
 
@@ -110,7 +112,7 @@ end
 --  If an error is found, Lua's error handler is called and this function
 --  does not return
 ----------------------------------------------------------------------------
-function Public.doscript (filename)
+function doscript (filename)
 	local res, err = loadfile(filename)
 	if not res then
 		error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))
@@ -124,18 +126,18 @@ end
 --  If an error is found, and it is not a "file error", Lua 'error'
 --  is called and this function does not return
 ----------------------------------------------------------------------------
-function Public.doif (filename)
+function doif (filename)
 	if not filename then return end    -- no file
 	local f, err = open(filename)
 	if not f then return nil, err end    -- no file (or unreadable file)
 	f:close()
-	return Public.doscript (filename)
+	return doscript (filename)
 end
 
 ---------------------------------------------------------------------------
 -- Set the maximum "total" input size allowed (in bytes)
 ---------------------------------------------------------------------------
-function Public.setmaxinput(nbytes)
+function setmaxinput(nbytes)
 	-- can only be set once (by CGILua's mainscript)
 	if maxinput then
 		error("Maximum input size redefinition is not allowed")
@@ -147,7 +149,7 @@ end
 -- Set the maximum size for an "uploaded" file (in bytes)
 --   (can be redefined by a script but "maxinputsize" is checked first)
 ---------------------------------------------------------------------------
-function Public.setmaxfilesize(nbytes)
+function setmaxfilesize(nbytes)
 	maxfilesize = nbytes
 end
 
@@ -155,7 +157,7 @@ end
 -- Preprocess and include the content of a mixed HTML file into the 
 --  currently 'open' HTML document. 
 ----------------------------------------------------------------------------
-function Public.includehtml (filename)
+function includehtml (filename)
 	local fh = assert (open (filename))
 	local prog = fh:read("*a")
 	fh:close()
@@ -175,9 +177,9 @@ end
 --   HTML document ( a 'Content-type' header is inserted before the
 --   preprocessed HTML )
 ----------------------------------------------------------------------------
-function Public.preprocess (filename)
-	Public.htmlheader ()
-	Public.includehtml (filename)
+function preprocess (filename)
+	htmlheader ()
+	includehtml (filename)
 end
 
 ----------------------------------------------------------------------------
@@ -186,34 +188,34 @@ end
 --
 --  Each decoded (name=value) pair is inserted into table [[args]]
 ----------------------------------------------------------------------------
-Public.parsequery = url_parsequery
+parsequery = url_parsequery
 
 ----------------------------------------------------------------------------
 -- URL-encode the elements of a table creating a string to be used in a
 --   URL for passing data/parameters to another script
 ----------------------------------------------------------------------------
-Public.encodetable = url_encodetable
+encodetable = url_encodetable
 
 ----------------------------------------------------------------------------
 -- Create an URL path to be used as a link to a CGILua script
 ----------------------------------------------------------------------------
-function Public.mkurlpath (script, args)
+function mkurlpath (script, args)
 	-- URL-encode the parameters to be passed do the script
 	local params = ""
 	if args then
-		params = "?"..Public.encodetable(args)
+		params = "?"..encodetable(args)
 	end
 	if strsub(script,1,1) == "/" then
-		return Public.urlpath .. script .. params
+		return urlpath .. script .. params
 	else
-		return Public.urlpath .. Public.script_vdir .. script .. params
+		return urlpath .. script_vdir .. script .. params
 	end
 end
 
 ----------------------------------------------------------------------------
 -- Create an absolute URL containing the given URL path
 ----------------------------------------------------------------------------
-function Public.mkabsoluteurl (path, protocol)
+function mkabsoluteurl (path, protocol)
 	if not protocol then protocol = "http" end
 	return format("%s://%s:%s%s",
 		protocol,
@@ -225,7 +227,7 @@ end
 ----------------------------------------------------------------------------
 -- Extract the "directory" and "file" parts of a path
 ----------------------------------------------------------------------------
-function Public.splitpath (path)
+function splitpath (path)
 	local _,_,dir,file = strfind(path,"^(.-)([^:/\\]*)$")
 	return dir,file
 end
@@ -233,13 +235,12 @@ end
 ----------------------------------------------------------------------------
 -- Define variables and build `cgi' table.
 ----------------------------------------------------------------------------
-function Public.getparams (args)
-	local P = Public
+function getparams (args)
 	-- Define variables.
-	P.script_pdir, P.script_file = P.splitpath (P.script_path)
-	P.script_vpath = HTTP_Request.servervariable"PATH_INFO"
-	P.script_vdir = P.splitpath (HTTP_Request.servervariable"PATH_INFO")
-	P.urlpath = HTTP_Request.servervariable"SCRIPT_NAME"
+	script_pdir, script_file = splitpath (script_path)
+	script_vpath = HTTP_Request.servervariable"PATH_INFO"
+	script_vdir = splitpath (HTTP_Request.servervariable"PATH_INFO")
+	urlpath = HTTP_Request.servervariable"SCRIPT_NAME"
 	-- Fill in args table.
 	if HTTP_Request.servervariable"REQUEST_METHOD" == "POST" then
 		post.parsedata {
@@ -252,7 +253,7 @@ function Public.getparams (args)
 			args = args,
 		}
 	end
-	Public.parsequery (HTTP_Request.servervariable"QUERY_STRING", args)
+	parsequery (HTTP_Request.servervariable"QUERY_STRING", args)
 end
 
 ----------------------------------------------------------------------------
@@ -266,7 +267,7 @@ local script_handlers = {
 -- @param file_extension String with the lower-case extension of the script.
 -- @param func Function to handle this kind of scripts.
 ----------------------------------------------------------------------------
-function Public.addscripthandler (file_extension, func)
+function addscripthandler (file_extension, func)
 	assert (type(file_extension) == "string", "File extension must be a string")
 	if strfind (file_extension, '%.', 1) then
 		file_extension = strsub (file_extension, 2)
@@ -282,7 +283,7 @@ end
 -- @param path String with a script path.
 -- @return Function that handles it or nil.
 ----------------------------------------------------------------------------
-function Public.getscripthandler (path)
+function getscripthandler (path)
 	local i,f, ext = strfind (path, "%.([^.]+)$")
 	return script_handlers[strlower(ext or '')]
 end
@@ -292,14 +293,14 @@ end
 -- @param path String with a script path.
 -- @return The returned values from the script.
 ---------------------------------------------------------------------------
-function Public.handle (path)
-	return Public.getscripthandler (path) (path)
+function handle (path)
+	return getscripthandler (path) (path)
 end
 
 ---------------------------------------------------------------------------
 -- Set CGILua's default libraries directory
 ---------------------------------------------------------------------------
-function Public.setlibdir(newlibdir)
+function setlibdir(newlibdir)
 	-- can only be set once (by CGILua's mainscript)
 	if libdir then
 		error("Libraries directory redefinition is not allowed")
@@ -314,7 +315,7 @@ end
 -- It receives the error message generated by Lua and it is resposible
 -- for the final message which should be returned.
 ---------------------------------------------------------------------------
-function Public.seterrorhandler (f)
+function seterrorhandler (f)
 	local tf = type(f)
 	if tf == "function" then
 		errorhandler = f
@@ -327,7 +328,7 @@ end
 -- Sets "erroroutput" function
 -- This function is called to generate the error output.
 ---------------------------------------------------------------------------
-function Public.seterroroutput (f)
+function seterroroutput (f)
 	local tf = type(f)
 	if tf == "function" then
 		erroroutput = f
@@ -340,7 +341,7 @@ end
 -- Sets "errorlog" function
 -- This function will be called to log the error message.
 ---------------------------------------------------------------------------
-function Public.seterrorlog (f)
+function seterrorlog (f)
 	local tf = type(f)
 	if tf == "function" then
 		errorlog = f
@@ -352,13 +353,15 @@ end
 ---------------------------------------------------------------------------
 -- Execute a function with an error handler.
 ---------------------------------------------------------------------------
-function Public.pcall (f, ...)
+function pcall (f, ...)
 	local ok, errmsg = xpcall (function () return f(unpack(arg)) end,
 		errorhandler)
 	if not ok then
-		errorlog (errmsg)
 		erroroutput (errmsg)
+		errorlog (errmsg)
+		return false
 	end
+	return true
 end
 
 ---------------------------------------------------------------------------
@@ -366,7 +369,7 @@ end
 --
 -- This function will be called after the user script execution
 ---------------------------------------------------------------------------
-function Public.setclosefunction (f)
+function setclosefunction (f)
 	local tf = type(f)
 	if tf == "function" then
 		closefunction = f
@@ -378,7 +381,7 @@ end
 ---------------------------------------------------------------------------
 -- Close function.
 ---------------------------------------------------------------------------
-function Public.close()
+function close()
 	if closefunction then
 		closefunction()
 	end
@@ -387,7 +390,7 @@ end
 ---------------------------------------------------------------------------
 -- Resets CGILua's state.
 ---------------------------------------------------------------------------
-function Public.reset ()
+function reset ()
 	closefunction = nil
 	libdir = nil
 	maxfilesize = nil
@@ -400,11 +403,11 @@ function Public.reset ()
 	-- Handlers ???
 end
 
-Public.seterrorhandler (_TRACEBACK)
-Public.seterroroutput (function (msg)
-	Public.contentheader("text", "plain")
-	Public.put ("There was an error.\nProper information was written to the error log.")
+seterrorhandler (traceback)
+seterroroutput (function (msg)
+	contentheader("text", "plain")
+	put ("There was an error.\nProper information was written to the error log.")
 end)
-Public.seterrorlog (function (msg)
+seterrorlog (function (msg)
 	HTTP_Response.errorlog (msg)
 end)
