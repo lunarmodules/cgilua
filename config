@@ -1,19 +1,23 @@
 # Installation directories
 LUA_DIR= /usr/local/share/lua/5.0
 LUA_LIBDIR= /usr/local/lib/lua/5.0
+# Lua includes directory
+LUA_INC= /usr/local/include/lua5
 # Apache root directory
 APACHE2_DIR= /usr/local/apache2
 CGI_DIR= $(APACHE2_DIR)/cgi-bin
 # Lua FastCGI directory
 FCGI_DIR= $(APACHE2_DIR)/fcgilua
-# Lua Apache module directory
-MOD_DEFS= -DLUA_STATE_PER_PROCESS
-#MOD_DEFS= -DLUA_STATE_PER_REQUEST
 # Lua Compiler
 LUAC= /usr/local/bin/luac
 # Lua Binary converter (bin2c)
 # Lua distribution includes it at etc directory
 BIN2C= /usr/local/bin/bin2c
+# Lua 5.1 package compatibility
+COMPAT_DIR= compat
+# Lua paths
+LUA_PATH= $(LUA_DIR)/?.lua;$(LUA_DIR)/?/?.lua
+LUA_CPATH= $(LUA_LIBDIR)/?$(LIB_EXT);$(LUA_LIBDIR)/lib?$(LIB_EXT)
 
 # OS dependent
 LIB_EXT= .dylib
@@ -24,15 +28,18 @@ LIB_OPTION= -dynamiclib #for MacOS X
 # Compilation directives
 # pre-compile and include .lua file of launchers into .c file.
 CGILUA_DEFS= -DINCLUDE_LUA
+# mod_lua policy on state creation
+MOD_DEFS= -DLUA_STATE_PER_PROCESS
+#MOD_DEFS= -DLUA_STATE_PER_REQUEST
 # On FreeBSD systems, the following line should be commented
 DLLIB= -ldl
 WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings
-INCS= -I/usr/local/include/lua5
+INCS= -I$(LUA_INC) -I$(COMPAT_DIR)
 CFLAGS= $(WARN) $(INCS) $(CGILUA_DEFS)
 CC= gcc
 
 #########################################################
-VERSION= 5.0b2
+VERSION= 5.0b3
 PKG= cgilua-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
@@ -40,10 +47,8 @@ DIST_DIR= ../$(PKG)/$T
 CGILUA_DIR=        $(LUA_DIR)/cgilua
 CGILUA_TMPDIR=     /tmp/cgilua
 CGILUA_DOC=        $(CGILUA_DIR)/doc
-# Lua 5.1 package compatibility
-COMPAT_DIR= compat
 
 CL_LIBS= -llua -llualib -lm $(DLLIB)
 LIBS= $(CL_LIBS)
 
-# $Id: config,v 1.29 2004/12/22 19:23:43 tuler Exp $
+# $Id: config,v 1.30 2005/01/18 16:11:11 tomas Exp $
