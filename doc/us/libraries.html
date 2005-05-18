@@ -1,45 +1,83 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<meta name="generator" content="HTML Tidy, see www.w3.org">
-<title>CGILua 5.0: Distributed libraries</title>
-<style type="text/css">
-ul { list-style-type: disc };
-</style>
+    <title>CGILua - Building web scripts with Lua</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-<body bgcolor="#FFFFFF">
-<center>
-<table border="0" cellspacing="2" cellpadding="2">
-<tr>
-<td align="center"><a href="http://www.keplerproject.org"><img
-border="0" alt="CGILua" src="cgi-128.gif"></a> </td>
-</tr>
+<body>
 
-<tr>
-<td align="center"><big><b>CGILua 5.0</b></big> </td>
-</tr>
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="CGILua logo" src="cgi-128.gif"/>
+	</a></div>
+	<div id="product_name"><big><b>CGILua</b></big></div>
+	<div id="product_description">Building web scripts with Lua</div>
+</div> <!-- id="product" -->
 
-<tr>
-<td align="center" valign="top">Distributed libraries</td>
-</tr>
-</table>
-</center>
+<div id="main">
+	
+<div id="navigation">
+<h1>CGILua</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="#incompatibility">Incompatibilities</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><a href="config.html">Installation and configuration</a>
+			<ul>
+				<li><a href="config.html#installation">Installation</a></li>
+				<li><a href="config.html#config">Configuration</a></li>
+			</ul>
+		</li>
+		<li><a href="scripts.html">CGILua scripts</a>
+			<ul>
+				<li><a href="scripts.html#scripts">Lua Scripts</a></li>
+				<li><a href="scripts.html#templates">Lua Pages</a></li>
+				<li><a href="scripts.html#parameters">Receiving parameters</a></li>
+			</ul>
+		</li>
+		<li><a href="reference.html">CGILua reference</a>
+			<ul>
+				<li><a href="reference.html#headers">Headers</a></li>
+				<li><a href="reference.html#contents">Content generation</a></li>
+				<li><a href="reference.html#prep">Pre-processing templates</a></li>
+				<li><a href="reference.html#variables">CGILua's variables</a></li>
+				<li><a href="reference.html#error_handling">Error Handling</a></li>
+				<li><a href="reference.html#behavior">CGILua behavior</a></li>
+				<li><a href="reference.html#auxiliar">Auxiliary functions</a></li>
+				<li><a href="reference.html#urlcode">URL encoding functions</a></li>
+				<li><a href="reference.html#index">Alphabetic index</a></li>
+			</ul>
+		</li>
+		<li><strong>Distributed libraries</strong>
+			<ul>
+				<li><a href="libraries.html#cookies">Cookies</a></li>
+				<li><a href="libraries.html#serialize">Serialize</a></li>
+				<li><a href="libraries.html#session">Session</a></li>
+				<li><a href="libraries.html#stable">Stable</a></li>
+			</ul>
+		</li>
+		<li><a href="sapi.html">Server API</a></li>
+		<li><a href="examples.html">Examples</a></li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
 
-<p></p>
+<div id="content">
 
-<center>
-<small>
-<a href="index.html">home</a> &middot;
-<a href="#cookies">cookies</a> &middot;
-<a href="#serialize">serialize</a> &middot;
-<a href="#session">session</a> &middot;
-<a href="#stable">stable</a>
-</small>
-</center>
 
-<hr>
-<a name="cookies"></a> 
-<h2>Cookies</h2>
+<h2><a name="cookies"></a>Cookies</h2>
 
 <a name="get"></a> 
 <h3><code>cgilua.cookies.get (name)</code></h3>
@@ -61,18 +99,16 @@ it should be called after the <code>&lt;head&gt;</code> HTML tag was
 produced and before the <code>&lt;body&gt;</code>.<br>
 Returns nothing.
 
-<a name="delete"></a> 
-<h3><code>cgilua.cookies.delete (name[, options])</code></h3>
+
+<h3><a name="delete"></a><code>cgilua.cookies.delete (name[, options])</code></h3>
 Deletes the value of the named cookie
 (by setting its value to <code>xxx</code>).
 Returns nothing.
 
 
-<hr>
-<a name="serialize"></a>
-<h2>Serialize</h2>
+<hr/>
+<h2><a name="serialize"></a>Serialize</h2>
 
-<a name="serialize"></a>
 <h3><code>cgilua.serialize (table, outfunc, indent, prefix)</code></h3>
 Serializes a table.
 Argument <code>table</code> is the table to be serialized;
@@ -85,13 +121,10 @@ values of types <i>function</i> and <i>userdata</i> could not be serialized;
 also, tables with cycles are not serialized.<br>
 Returns nothing.
 
+<hr/>
+<h2><a name="session"></a>Session</h2>
 
-<hr>
-<a name="session"></a> 
-<h2>Session</h2>
-
-<a name="close"></a>
-<h3><code>cgilua.session.close ()</code></h3>
+<h3><a name="close"></a><code>cgilua.session.close ()</code></h3>
 Closes user session.
 Saves all data in <code>cgilua.session.data</code> to the storing system.
 This function should be called after the end of the script's execution.
@@ -100,30 +133,30 @@ A recommended way to do that is by calling
 in the configuration file.<br>
 Returns nothing.
 
-<a name="data"></a>
-<h3><code>cgilua.session.data</code></h3>
+
+<h3><a name="data"></a><code>cgilua.session.data</code></h3>
 Table which holds session data.
 
-<a name="delete"></a>
-<h3><code>cgilua.session.delete (id)</code></h3>
+
+<h3><a name="delete"></a><code>cgilua.session.delete (id)</code></h3>
 Deletes a session.
 The argument is the session identifier.<br>
 Returns nothing.
 
-<a name="load"></a>
-<h3><code>cgilua.session.load (id)</code></h3>
+
+<h3><a name="load"></a><code>cgilua.session.load (id)</code></h3>
 Loads data from a session.
 The argument is the session identifier.<br>
 Returns a table with session data or
 <code>nil</code> followed by an error message.
 
-<a name="new"></a>
-<h3><code>cgilua.session.new ()</code></h3>
+
+<h3><a name="new"></a><code>cgilua.session.new ()</code></h3>
 Creates a new session identifier.<br>
 Returns the new session identifier.
 
-<a name="open"></a>
-<h3><code>cgilua.session.open ()</code></h3>
+
+<h3><a name="open"></a><code>cgilua.session.open ()</code></h3>
 Opens user session.
 Creates table <code>cgilua.session.data</code>.
 This function should be called just before the execution of the script,
@@ -133,37 +166,43 @@ Therefore it must be added to the opening functions list
 in the configuration file.<br>
 Returns nothing.
 
-<a name="save"></a>
-<h3><code>cgilua.session.save (id, data)</code></h3>
+
+<h3><a name="save"></a><code>cgilua.session.save (id, data)</code></h3>
 Saves data to a session.
 Argument <code>id</code> is a session identifier;
 argument <code>data</code> is a table with session data to be saved.<br>
 Returns nothing.
 
-<a name="setsessiondir"></a>
-<h3><code>cgilua.session.setsessiondir (path)</code></h3>
+
+<h3><a name="setsessiondir"></a><code>cgilua.session.setsessiondir (path)</code></h3>
 Changes the session temporary directory.
 Argument <code>path</code> is a string with the new directory.<br>
 Returns nothing. 
 
+<hr/>
+<h2><a name="stable"></a>Stable (state table)</h2>
 
-<hr>
-<a name="stable"></a> 
-<h2>Stable (state table)</h2>
-
-<a name="get"></a>
-<h3><code>stable.get (key)</code></h3>
+<h3><a name="get"></a><code>stable.get (key)</code></h3>
 Retrieves the value of a given key.<br>
 Returns any value.
 
-<a name="set"></a>
-<h3><code>stable.set (key, value)</code></h3>
+
+<h3><a name="set"></a><code>stable.set (key, value)</code></h3>
 Stores a value associated to a key.<br>
 Returns nothing.
 
+</div> <!-- id="content" -->
 
-<hr>
-<small>$Id: libraries.html,v 1.14 2005/03/08 21:04:51 carregal Exp $</small>
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>
+	$Id: libraries.html,v 1.15 2005/05/18 21:16:12 uid20006 Exp $
+	</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
 </body>
-</html>
-
+</html> 
