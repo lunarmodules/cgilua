@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.19 2005/03/16 20:25:20 tomas Exp $
+-- $Id: cgilua.lua,v 1.20 2005/06/23 11:06:37 uid20013 Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.urlcode"
@@ -50,8 +50,7 @@ module (arg and arg[1])
 
 _COPYRIGHT = "Copyright (C) 2003-2005 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic HTML pages and manipulating input data from forms"
-_NAME = "CGILua"
-_VERSION = "5.0b3"
+_VERSION = "CGILua 5.0"
 script_path = false
 
 ----------------------------------------------------------------------------
