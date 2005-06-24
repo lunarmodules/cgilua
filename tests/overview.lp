@@ -1,10 +1,10 @@
 <?lua
 -- Tries to load known libraries
-for _, t in ipairs { "lxp", "luasql.postgres", "luasql.mysql", "luasql.oci8", "luasql.sqlite", "luasql.odbc", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", "zip", "stable", } do
+for _, t in ipairs { "lxp", "luasql.postgres", "luasql.mysql", "luasql.oci8", "luasql.sqlite", "luasql.odbc", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", "zip", "stable", "venv", "copas", } do
 	pcall (require, t)
 end
 
-libraries = { "lxp", "luasql", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", "zip", "stable", }
+libraries = { "lxp", "luasql", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", "zip", "stable", "copas", }
 
 local colors = { "#999999", "#CCCCCC", "#FFFFFF", }
 local i = 0
@@ -22,37 +22,42 @@ function idx (t, f) return _G[t][f] or _G[t]["_"..f] or "" end
 
 <table>
   <tr>
-    <th>Name
-    <th>Copyright
+    <th>
     <th>Version
+    <th>Copyright
     <th>Description
   </tr>
+<?lua
+local support = {
+	{ "Lua", "_VERSION" },
+	{ "compat-5.1", "_COMPAT51" },
+	{ "venv", "_VENV" },
+}
+for _, l in ipairs (support) do
+?>
   <tr>
-    <td bgcolor = "#999999">Lua
+    <td bgcolor = "#999999"><%= l[1] %>
+    <td bgcolor = "#999999"><%= tostring(_G[l[2]]) %>
     <td bgcolor = "#999999">
-    <td bgcolor = "#999999"><%= _VERSION%>
     <td bgcolor = "#999999">
   </tr>
+<? end ?>
 <?lua
 local pack = {}
 for i, p in ipairs (libraries) do
 	local s = _G[p]
 	local n = pack_name(p)
-	if type(_G[n]) == "table" and _G[n]._NAME then
+	if type(_G[n]) == "table" and _G[n]._VERSION then
 		pack[n] = true
 		table.insert (pack, n)
 	end
 end
-table.sort (pack, function (x, y)
-	local nx = _G[x] and _G[x]._NAME or ""
-	local ny = _G[y] and _G[y]._NAME or ""
-	return nx < ny
-end)
+table.sort (pack)
 for _, p in ipairs (pack) do bg = color() ?>
   <tr>
-    <td bgcolor = "<%= bg %>"><%= idx(p,"NAME") %>
-    <td bgcolor = "<%= bg %>"><small><%= idx(p,"COPYRIGHT") %></small>
+    <td bgcolor = "<%= bg %>"><%= p %>
     <td bgcolor = "<%= bg %>"><%= idx(p,"VERSION") %>
+    <td bgcolor = "<%= bg %>"><small><%= idx(p,"COPYRIGHT") %></small>
     <td bgcolor = "<%= bg %>"><small><%= idx(p,"DESCRIPTION") %></small>
   </tr>
 <?lua end ?>
