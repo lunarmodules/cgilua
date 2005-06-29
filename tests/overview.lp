@@ -22,10 +22,9 @@ function idx (t, f) return _G[t][f] or _G[t]["_"..f] or "" end
 
 <table>
   <tr>
-    <th>
-    <th>Version
-    <th>Copyright
-    <th>Description
+    <th bgcolor="#999999">Version
+    <th bgcolor="#999999">Copyright
+    <th bgcolor="#999999">Description
   </tr>
 <?lua
 local support = {
@@ -33,15 +32,15 @@ local support = {
 	{ "compat-5.1", "_COMPAT51" },
 	{ "venv", "_VENV" },
 }
-for _, l in ipairs (support) do
+for _, l in ipairs (support) do bg = color()
 ?>
   <tr>
-    <td bgcolor = "#999999"><%= l[1] %>
-    <td bgcolor = "#999999"><%= tostring(_G[l[2]]) %>
-    <td bgcolor = "#999999">
-    <td bgcolor = "#999999">
+    <td bgcolor = "<%= bg %>"><%= tostring(_G[l[2]]) %>
+    <td bgcolor = "<%= bg %>">
+    <td bgcolor = "<%= bg %>">
   </tr>
 <? end ?>
+  <tr><td colspan="4"></tr>
 <?lua
 local pack = {}
 for i, p in ipairs (libraries) do
@@ -55,7 +54,6 @@ end
 table.sort (pack)
 for _, p in ipairs (pack) do bg = color() ?>
   <tr>
-    <td bgcolor = "<%= bg %>"><%= p %>
     <td bgcolor = "<%= bg %>"><%= idx(p,"VERSION") %>
     <td bgcolor = "<%= bg %>"><small><%= idx(p,"COPYRIGHT") %></small>
     <td bgcolor = "<%= bg %>"><small><%= idx(p,"DESCRIPTION") %></small>
