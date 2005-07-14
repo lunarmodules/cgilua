@@ -2,7 +2,7 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>CGILua - Building web scripts with Lua</title>
+    <title>CGILua - Building Web Scripts with Lua</title>
     <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -29,7 +29,7 @@
 				<li><a href="index.html#status">Status</a></li>
 				<li><a href="index.html#download">Download</a></li>
 				<li><a href="index.html#history">History</a></li>
-				<li><a href="#incompatibility">Incompatibilities</a></li>
+				<li><a href="index.html#incompatibility">Incompatibilities</a></li>
 				<li><a href="index.html#credits">Credits</a></li>
 				<li><a href="index.html#contact">Contact us</a></li>
 			</ul>
@@ -78,58 +78,45 @@
 
 
 <h2><a name="overview"></a>Overview</h2>
-<p>CGILua is a tool for creating dynamic web pages and
-manipulating input data from forms. It is simple but powerful,
-allowing complex tasks to be carried out with minimum effort.
-Typical applications that can be developed with CGILua include, for
-instance, web based information systems accessing external data
-(databases) and gateways to existing systems.</p>
-<p>CGILua uses the interpreted
-language <a href="http://www.lua.org">Lua</a>
-as a server-side scripting language
-for creating dynamic Web pages. Both pure <a
- href="scripts.html#scripts">Lua Scripts</a>
-and <a href="scripts.html#templates">Lua Pages</a> are supported by
-CGILua. A Lua script is essentially a Lua program that creates the
-whole contents of a web page and returns it to the web server. A Lua
-page is a conventional markup text (HTML, XML etc) file that embeds Lua
-code using
-some special tags.</p>
-<p>Lua scripts and Lua pages
-are equally easy to use, and
-choosing one of them basically depends on the characteristics of a
-specific page. While Lua pages are more convenient for the separation
-of content and format, where the format is usually manipulated with the
-help of a HTML
-editor, Lua scripts are more adequate for creating pages that are
-simple in terms of its HTML structure, but require a significative
-amount of internal processing.</p>
-<p>Allowing these two methods
-to be intermixed, CGILua provides Web applications developers with
-great flexibility when both requirements are present. For a
-detailed description of both scripting methods and some examples of
-their use see <a href="scripts.html">CGILua
-scripts</a>.</p>
-<p>CGILua can use
-Java Servlet, ISAPI module,
-Apache module, FastCGI and traditional CGI. CGILua's architecture
-is divided in two layers. The lower level one is represented by the
-Server API (<a href="sapi.html">SAPI</a>) and the higher level is
-represented by the CGILua API itself. The high level layer is
-implemented using only SAPI and is totally portable between the
-launchers.
-This way any CGILua script or CGILua page could be run by any
-launcher.</p>
-<p>CGILua is free software and
-uses the same <a href="license.html">license</a>
-as Lua 5.0.
-</p>
+<p>CGILua is a tool for creating dynamic web pages and manipulating input data
+from forms. It is simple but powerful, allowing complex tasks to be carried
+out with minimum effort. Typical applications that can be developed with
+CGILua include, for instance, web based information systems accessing external
+data (files or databases) and gateways to existing systems.</p>
 
+<p>CGILua uses the interpreted language <a href="http://www.lua.org">Lua</a>
+as a server-side scripting language for creating dynamic Web pages. Both pure
+<a href="scripts.html#scripts">Lua Scripts</a> and
+<a href="scripts.html#templates">Lua Pages</a> (LP) are supported by CGILua.
+A Lua script is essentially a Lua program that creates the whole contents of
+a web page and returns it to the web server. A Lua Page is a conventional
+markup text (HTML, XML etc) file that embeds Lua code using some special
+tags.</p>
+
+<p>Lua scripts and Lua Pages are equally easy to use, and choosing one of them
+basically depends on the characteristics of a specific page. While Lua
+Pages are more convenient for the separation of content and format, where
+the format is usually manipulated with the help of a HTML editor, Lua scripts
+are more adequate for creating pages that are simpler in terms of its HTML
+structure, but require a significative amount of internal processing.</p>
+
+<p>Allowing these two methods to be intermixed, CGILua provides Web applications
+developers with great flexibility when both requirements are present. For a
+detailed description of both scripting methods and some examples of
+their use see <a href="scripts.html">CGILua scripts</a>.</p>
+
+<p>CGILua can use Java Servlet, ISAPI module, Apache module, FastCGI and
+traditional CGI. CGILua's architecture is divided in two layers. The lower level
+one is represented by the Server API (<a href="sapi.html">SAPI</a>) and the higher
+level is represented by the CGILua API itself. The high level layer is
+implemented using only SAPI and is totally portable between the launchers.
+This way any CGILua script or CGILua page could be run by any launcher.</p>
+
+<p>CGILua is free software and uses the same <a href="license.html">license</a>
+as Lua 5.0.</p>
 
 <h2><a name="status"></a>Status</h2>
-<p>Current version is 5.0 beta 2.
-</p>
-
+<p>Current version is 5.0.</p>
 
 <h2><a name="download"></a>Download</h2>
 <p>CGILua can be downloaded in source code from the
@@ -163,26 +150,24 @@ for more details).</li>
 
 <h2><a name="incompatibility"></a>Incompatibility with previous versions</h2>
 <ul>
-  <li>CGILua 5.0 uses <a href="http://www.lua.org">Lua 5.0</a>.</li>
-  <li><code>The cgi</code>
-table now allows table values. See <a href="scripts.html#parameters">Receiving
-parameters</a>
-for a more
-detailed explanation.</li>
-  <li>The template tags are
-incompatible. See <a href="scripts.html#templates">Lua pages</a>
-for a more detailed
-explanation.</li>
-  <li>The use of <b><code>getenv</code></b>
-to obtain CGI variables
-should be replaced by <a href="reference.html#servervariable"><b><code>cgilua.servervariable</code></b></a>.</li>
+    <li>CGILua 5.0 uses <a href="http://www.lua.org">Lua 5.0</a>.</li>
+    <li><code>The cgi</code> table now allows table values.
+    See <a href="scripts.html#parameters">Receiving parameters</a> for a more
+    detailed explanation.</li>
+    <li>The template tags are incompatible. See
+    <a href="scripts.html#templates">Lua pages</a> for a more detailed
+    explanation.</li>
+    <li>The use of <code>getenv</code> calls to obtain CGI variables
+    should be replaced by
+    <a href="reference.html#servervariable"><code>cgilua.servervariable</code></a>
+    calls.</li>
 </ul>
 
 
 
 <h2><a name="credits"></a>Credits</h2>
 
-<h4>CGILua 5.0</h4>
+<h3>CGILua 5.0</h3>
 <p>CGILua 5.0 was completely
 redesigned by Roberto Ierusalimschy,
 Andr&eacute; Carregal and Tom&aacute;s Guisasola as part of the
@@ -227,10 +212,9 @@ Comments are welcome!</p>
 </div> <!-- id="main" -->
 
 <div id="about">
-	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>
-	$Id: index.html,v 1.39 2005/05/24 23:27:26 carregal Exp $
-	</small></p>
+	<p><a href="http://validator.w3.org/check?uri=referer">
+    <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>$Id: index.html,v 1.40 2005/07/14 15:24:36 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
