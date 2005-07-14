@@ -2,7 +2,7 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>CGILua - Building Web Scripts with Lua</title>
+    <title>CGILua: Building Web Scripts with Lua</title>
     <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -94,30 +94,35 @@ page</p>
 
 
 <h2><a name="history"></a>History</h2>
-<ul>
-  <li>[23/Dec/2004] Version 5.0 beta 2 released
+
+<dl>
+    <dt><strong>Version 5.0 beta 2</strong> [23/Dec/2004]</dt>
+    <dd>
     <ul>
       <li>Distribution bug fix: stable.lua was missing</li>
     </ul>
-  </li>
-  <li>[15/Dec/2004] Version 5.0 beta released
-   <ul>
-    <li>New ISAPI and Servlet Launchers.</li>
-    <li>New Error Handling features.</li>
-    <li>New persistent data feature (<a href="libraries.html#stable">Stable</a>).</li>
-    <li>Uses the <a href="http://www.keplerproject.org/compat">package model</a>
-for Lua 5.1 (see <a href="manual.html#installation">Installation</a>
-for more details).</li>
-    <li>Simpler User <a href="libraries.html#session">Session</a> API.</li>
-    <li>Small bug corrections</li>
-   </ul>
-  </li>
-  <li>[8/Jun/2004] Version 5.0 alpha 3 released</li>
-  <li>[21/Apr/2004] Version 5.0 alpha released</li>
-</ul>
-
+    </dd>
+    <dt><strong>Version 5.0 beta</strong> [15/Dec/2004]</dt>
+    <dd>
+    <ul>
+        <li>New ISAPI and Servlet Launchers.</li>
+        <li>New Error Handling features.</li>
+        <li>New persistent data feature (<a href="libraries.html#stable">Stable</a>).</li>
+        <li>Uses the <a href="http://www.keplerproject.org/compat">package model</a>
+        for Lua 5.1 (see <a href="manual.html#installation">Installation</a>
+        for more details).</li>
+        <li>Simpler User <a href="libraries.html#session">Session</a> API.</li>
+        <li>Small bug corrections</li>
+    </ul>
+    </dd>
+  <dt><strong>Version 5.0 alpha 3</strong> [8/Jun/2004]</dt>
+  <dd></dd>
+  <dt><strong>Version 5.0 alpha</strong> [21/Apr/2004]</dt>
+  <dd></dd>
+</dl>
 
 <h2><a name="incompatibility"></a>Incompatibility with previous versions</h2>
+
 <ul>
     <li>CGILua 5.0 uses <a href="http://www.lua.org">Lua 5.0</a>.</li>
     <li><code>The cgi</code> table now allows table values.
@@ -132,42 +137,37 @@ for more details).</li>
     calls.</li>
 </ul>
 
-
-
 <h2><a name="credits"></a>Credits</h2>
 
-<h3>CGILua 5.0</h3>
-<p>CGILua 5.0 was completely
-redesigned by Roberto Ierusalimschy,
-Andr&eacute; Carregal and Tom&aacute;s Guisasola as part of the
-<a href="http://www.keplerproject.org">Kepler Project</a>.
-The implementation is compatible with Lua 5.0 and was coded by
-Tom&aacute;s Guisasola with invaluable contributions by Ana
-L&uacute;cia de Moura, F&aacute;bio Mascarenhas e Danilo Tuler.
-CGILua 5.0 development was sponsored by
-<a href="http://www.fabricadigital.com.br">F&aacute;brica Digital</a>
-and CNPq.</p>
-
-<h4>CGILua 4.0</h4>
-<p>Ana L&uacute;cia de Moura
-adapted CGILua to Lua 4.0,
-reimplemented some code and added a few improvements but this
-version was not officially distributed.</p>
-
-<h4>CGILua 3.x</h4>
-<p>CGILua was born as the
-evolution of an early system developed by
-Renato Ferreira Borges and Andr&eacute; Cl&iacute;nio at
-<a href="http://www.tecgraf.puc-rio.br">TeCGraf</a>.
-At the time there were no
-CGI tools, everything was done with shell scripts!</p>
-<p>However, the main contribution
-was done by Anna Hester, who
-consolidated the whole tool and developed a consistent distribution
-with versions 3.1 and 3.2 (the number was an effort to follow
-Lua version numbers). This version was widely used on a great
-variety of systems.
-</p>
+<dl>
+    <dt><strong>CGILua 5.0</strong></dt>
+    <dd>CGILua 5.0 was completely redesigned by Roberto Ierusalimschy,
+    Andr&eacute; Carregal and Tom&aacute;s Guisasola as part of the
+    <a href="http://www.keplerproject.org">Kepler Project</a>.
+    The implementation is compatible with Lua 5.0 and was coded by
+    Tom&aacute;s Guisasola with invaluable contributions by Ana
+    L&uacute;cia de Moura, F&aacute;bio Mascarenhas e Danilo Tuler.
+    CGILua 5.0 development was sponsored by
+    <a href="http://www.fabricadigital.com.br">F&aacute;brica Digital</a>
+    and CNPq.</dd>
+    
+    <dt><strong>CGILua 4.0</strong></dt>
+    <dd>Ana L&uacute;cia de Moura adapted CGILua 3.2 to Lua 4.0,
+    reimplemented some code and added a few improvements but this
+    version was not officially distributed.</dd>
+    
+    <dt><strong>CGILua 3.x</strong></dt>
+    <dd>CGILua was born as the evolution of an early system developed by
+    Renato Ferreira Borges and Andr&eacute; Cl&iacute;nio at
+    <a href="http://www.tecgraf.puc-rio.br">TeCGraf</a>.
+    At the time (circa 1995) there were no CGI tools available and everything
+    was done with shell scripts!<br />
+    However, the main contribution to CGILua 3 was done by Anna Hester, who
+    consolidated the whole tool and developed a consistent distribution
+    with versions 3.1 and 3.2 (the number was an effort to follow
+    Lua version numbers). This version was widely used on a great
+    variety of systems.</dd>
+</dl>
 
 
 <h2><a name="contact"></a>Contact us</h2>
@@ -183,7 +183,7 @@ Comments are welcome!</p>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: index.html,v 1.41 2005/07/14 15:50:37 carregal Exp $</small></p>
+	<p><small>$Id: index.html,v 1.42 2005/07/14 16:12:41 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
