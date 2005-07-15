@@ -75,54 +75,130 @@
 
 <h2>Server API</h2>
 
-<p>The Server API is a set of functions that encapsulate the web server and the
-used launcher. The functions are grouped into two groups:
-SAPI.Request and SAPI.Response.</p>
+<p>The Server API (SAPI) is a set of functions that encapsulate the web server
+and the used launcher. The functions are separated into two packages:
+<code>SAPI.Request</code> and <code>SAPI.Response</code>.</p>
 
-<p>The Server API allows the abstraction of a series of details and makes CGILua
-a lot more portable, since porting it means writing a SAPI Launcher for the
-target platform.</p>
+<p>SAPI allows the abstraction of a series of internal details and allows
+CGILua to be a lot more portable, since porting CGILua to a new platform
+means simply writing a SAPI Launcher for the target platform.</p>
 
 <p>CGILua currently supports Apache, Microsoft IIS, Tomcat and Xavante as web
 servers, and CGI, FastCGI, mod_lua, ISAPI and Servlets as Launchers.</p>
 
 <p>Here is the list of SAPI functions:</p>
 
-<ul>
-<li><b><code>SAPI.Response.contenttype (string)</code></b> Sends
-the <code>Content-type</code> header to the client. The given
-string is of the form "type/subtype". This function must be called
-before any output is generated.</li>
+<dl class="reference">
+    <dt><strong><code>SAPI.Request.getpostdata ([n])</code></strong></dt>
+    <dd>Gets a block of <em>POST data</em>. The optional parameter <em>n</em> is
+    the number of bytes to read (a default block size is used if no parameter is
+    passed). This function returns the block as a Lua string.</dd>
+    
+    <dt><strong><code>SAPI.Request.servervariable (string)</code></strong></dt>
+    <dd>Gets the value of a server environment variable. The argument can be
+    one of the defined
+    <a href="http://hoohoo.ncsa.uiuc.edu/cgi/env.html">CGI Variables</a>, although
+    not all servers implements the full set of variables. The set consists in:<br />
+    <ul>
+        <li><strong><code>AUTH_TYPE</code></strong> - If the server supports
+        user authentication, and the script is protected, this is the
+        protocol-specific authentication method used to validate the user.</li>
+        
+        <li><strong><code>CONTENT_LENGTH</code></strong> - The length of the
+        content itself as given by the client.</li>
+        
+        <li><strong><code>CONTENT_TYPE</code></strong> - For queries which
+        have attached information, such as HTTP POST and PUT, this is the
+        content type of the data.</li>
+        
+        <li><strong><code>GATEWAY_INTERFACE</code></strong> - The revision of
+        the CGI specification to which this server complies.
+        Format: CGI/revision</li>
+        
+        <li><strong><code>PATH_INFO</code></strong> - The extra path
+        information, as given by the client. In other words, scripts can be
+        accessed by their virtual pathname, followed by extra information at
+        the end of this path. The extra information is sent as PATH_INFO.
+        This information should be decoded by the server if it comes from a
+        URL before it is passed to the CGI script.</li>
+        
+        <li><strong><code>PATH_TRANSLATED</code></strong> - The server provides
+        a translated version of PATH_INFO, which takes the path and does any
+        virtual-to-physical mapping to it.</li>
+        
+        <li><strong><code>QUERY_STRING</code></strong> - The information which
+        follows the "?" in the URL which referenced this script. This is the
+        query information. It should not be decoded in any fashion. This variable
+        should always be set when there is query information, regardless of
+        command line decoding.</li>
+        
+        <li><strong><code>REMOTE_ADDR</code></strong> - The IP address of the
+        remote host making the request.</li>
+        
+        <li><strong><code>REMOTE_HOST</code></strong> - The hostname making
+        the request. If the server does not have this information, it should
+        set REMOTE_ADDR and leave this unset.</li>
+        
+        <li><strong><code>REMOTE_IDENT</code></strong> - If the HTTP server
+        supports RFC 931 identification, then this variable will be set to the
+        remote user name retrieved from the server. Usage of this variable
+        should be limited to logging only.</li>
+        
+        <li><strong><code>REMOTE_USER</code></strong> - If the server supports
+        user authentication, and the script is protected, this is the username
+        they have authenticated as.</li>
+        
+        <li><strong><code>REQUEST_METHOD</code></strong> - The method with which
+        the request was made. For HTTP, this is "GET", "HEAD", "POST", etc.</li>
+        
+        <li><strong><code>SCRIPT_NAME</code></strong> - A virtual path to the
+        script being executed, used for self-referencing URLs.</li>
+        
+        <li><strong><code>SERVER_NAME</code></strong> - The server's hostname,
+        DNS alias, or IP address as it would appear in self-referencing URLs.</li>
+        
+        <li><strong><code>SERVER_PORT</code></strong> - The port number to which
+        the request was sent.</li>
+        
+        <li><strong><code>SERVER_PROTOCOL</code></strong> - The name and revision
+        of the information protcol this request came in with.
+        Format: protocol/revision</li>
+        
+        <li><strong><code>SERVER_SOFTWARE</code></strong> - The name and version
+        of the web server software answering the request (and running the gateway).
+        Format: name/version</li>
+    </ul>
+    In addition to these, the header lines received from the client, if any, are
+    placed into the environment with the prefix <code>HTTP_</code> followed by the
+    header name. Any <code>-</code> characters in the header name are changed to
+    <code>_</code> characters. The server may exclude any headers which it has
+    already processed, such as <em>Authorization</em>, <em>Content-type</em>, and
+    <em>Content-length</em>. If necessary, the server may choose to exclude any
+    or all of these headers if including them would exceed any system environment
+    limits.</dd>
 
-<li><b><code>SAPI.Response.redirect (string)</code></b> Sends the
-<code>Location</code> header to the client. The given string should
-be a URL.</li>
+    <dt><strong><code>SAPI.Response.contenttype (string)</code></strong></dt>
+    <dd>Sends the <em>Content-type</em> header to the client. The given
+    string is of the form "<em>type</em>/<em>subtype</em>". This function must
+    be called before any output is sent using <code>SAPI.Response.write</code>.</dd>
+    
+    <dt><strong><code>SAPI.Response.errorlog (string)</code></strong></dt>
+    <dd>Generates error output using the given string.</dd>
 
-<li><b><code>SAPI.Response.header (header, value)</code></b> Sends
-a generic header to the client. The first argument must be the
-header name, such as "Set-Cookie". The second argument should be
-its value. This function should not be used to replace the
-<code>contenttype</code> nor the <code>redirect</code>
-functions.</li>
+    <dt><strong><code>SAPI.Response.header (header, value)</code></strong></dt>
+    <dd>Sends a generic header to the client. The first argument must be the
+    header name, such as "Set-Cookie". The second argument should be its value.
+    This function should not be used to replace the
+    <code>SAPI.Response.contenttype</code> nor the
+    <code>SAPI.Response.redirect</code> functions.</dd>
 
-<li><b><code>SAPI.Response.write (string)</code></b> Generates
-output.</li>
-
-<li><b><code>SAPI.Response.errorlog (string)</code></b> Generates
-error output.</li>
-</ul>
-
-<ul>
-<li><b><code>SAPI.Request.getpostdata ([n])</code></b> Gets a block
-of "POST data". The optional parameter is the number of bytes to
-read (a default block size is used instead). This function returns
-the block as a Lua string.</li>
-
-<li><b><code>SAPI.Request.servervariable (string)</code></b> Gets
-the value of an environment variable (<code>CONTENT_LENGTH</code>,
-<code>QUERY_STRING</code>, <code>REMOTE_ADDR</code> etc.). The
-argument must be a CGI variable.</li>
-</ul>
+    <dt><strong><code>SAPI.Response.redirect (string)</code></strong></dt>
+    <dd>Sends the <em>Location</em> header to the client. The given string should
+    be a URL.</dd>
+  
+    <dt><strong><code>SAPI.Response.write (string)</code></strong></dt>
+    <dd>Generates output using the given string.</dd>
+</dl>
 
 </div> <!-- id="content" -->
 
@@ -131,7 +207,7 @@ argument must be a CGI variable.</li>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: sapi.html,v 1.17 2005/07/14 17:25:24 carregal Exp $</small></p>
+	<p><small>$Id: sapi.html,v 1.18 2005/07/15 14:06:50 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
