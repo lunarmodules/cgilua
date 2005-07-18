@@ -48,7 +48,7 @@
 			<ul>
 				<li><a href="reference.html#headers">Headers</a></li>
 				<li><a href="reference.html#contents">Content Generation</a></li>
-				<li><a href="reference.html#prep">Templates</a></li>
+				<li><a href="reference.html#prep">Lua Pages</a></li>
 				<li><a href="reference.html#variables">CGILua Variables</a></li>
 				<li><a href="reference.html#error_handling">Error Handling</a></li>
 				<li><a href="reference.html#behavior">CGILua Behavior</a></li>
@@ -73,11 +73,13 @@
 
 
 <h2><a name="overview"></a>Overview</h2>
-<p>CGILua is a tool for creating dynamic web pages and manipulating input data
-from forms. It is simple yet powerful, allowing complex tasks to be carried
-out with minimum effort. Typical applications that can be developed with
-CGILua include web based information systems accessing external data
-(from files or databases for example) and gateways to existing systems.</p>
+<p>CGILua is a tool for creating dynamic Web pages and manipulating input data
+from Web forms. CGILua allows the separation of logic and data handling from
+the generation of pages, making it ease to develop web applications with Lua.
+
+One of advantages of CGILua is its abstraction of the underlying Web server.
+You can develop a CGILua application for one Web server and run it on any other
+Web server that supports CGILua. </p>
 
 <p>CGILua is free software and uses the same <a href="license.html">license</a>
 as Lua 5.0.</p>
@@ -87,7 +89,7 @@ as Lua 5.0.</p>
 
 <h2><a name="download"></a>Download</h2>
 
-<p>CGILua can be downloaded in source code from the
+<p>CGILua can be downloaded in source code from its
 <a href="http://luaforge.net/projects/cgilua/files">LuaForge</a> page</p>
 
 
@@ -97,11 +99,11 @@ as Lua 5.0.</p>
     <dt><strong>Version 5.0</strong> [18/Jul/2005]</dt>
     <dd>
     <ul>
-        <li>New distribution separating the launchers. CGILua now includes only
-        the Lua files while the launchers have been moved to Kepler.</li>
+        <li>CGILua distribution includes now only the Lua files, the launchers
+        have been moved to Kepler.</li>
         <li>The <a href="http://www.keplerproject.org/venv/manual.html#reference">Stable</a>
         library is now distributed with <a href="http://www.keplerproject.org/venv/">VEnv</a>.</li>
-        <li>Fixed an upload bug with the CGI and Xavante launchers.</li>
+        <li>Fixed a file upload bug in the CGI and Xavante launchers.</li>
         <li><code>cgilua.lp.include()</code> now accepts an environment to run
         the preprocessed file in it.</li>
     </ul>
@@ -137,7 +139,7 @@ as Lua 5.0.</p>
     <li><code>The cgi</code> table now allows table values.
     See <a href="manual.html#parameters">Receiving parameters</a> for a more
     detailed explanation.</li>
-    <li>The template tags are incompatible. See
+    <li>The template tags have changed. See
     <a href="manual.html#templates">Lua pages</a> for a more detailed
     explanation.</li>
     <li>The use of <code>getenv</code> calls to obtain CGI variables
@@ -155,10 +157,11 @@ as Lua 5.0.</p>
     <a href="http://www.keplerproject.org">Kepler Project</a>.
     The implementation is compatible with Lua 5.0 and was coded by
     Tom&aacute;s Guisasola with invaluable contributions by Ana
-    L&uacute;cia de Moura, F&aacute;bio Mascarenhas e Danilo Tuler.
+    L&uacute;cia de Moura, F&aacute;bio Mascarenhas and Danilo Tuler.
     CGILua 5.0 development was sponsored by
-    <a href="http://www.fabricadigital.com.br">F&aacute;brica Digital</a>
-    and CNPq.</dd>
+    <a href="http://www.fabricadigital.com.br">F&aacute;brica Digital</a>,
+    <a href="http://www.finep.gov.br/">FINEP</a> and
+    <a href="http://www.cnpq.br/">CNPq</a>.</dd>
     
     <dt><strong>CGILua 4.0</strong></dt>
     <dd>Ana L&uacute;cia de Moura adapted CGILua 3.2 to Lua 4.0,
@@ -192,7 +195,7 @@ Comments are welcome!</p>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: index.html,v 1.46 2005/07/16 18:44:34 carregal Exp $</small></p>
+	<p><small>$Id: index.html,v 1.47 2005/07/18 15:32:07 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->

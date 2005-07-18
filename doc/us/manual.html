@@ -48,7 +48,7 @@
 			<ul>
 				<li><a href="reference.html#headers">Headers</a></li>
 				<li><a href="reference.html#contents">Content Generation</a></li>
-				<li><a href="reference.html#prep">Templates</a></li>
+				<li><a href="reference.html#prep">Lua Pages</a></li>
 				<li><a href="reference.html#variables">CGILua Variables</a></li>
 				<li><a href="reference.html#error_handling">Error Handling</a></li>
 				<li><a href="reference.html#behavior">CGILua Behavior</a></li>
@@ -77,28 +77,33 @@
 language for creating dynamic Web pages. Both pure
 <a href="manual.html#scripts">Lua Scripts</a> and
 <a href="manual.html#templates">Lua Pages</a> (LP) are supported by CGILua.
-A Lua script is essentially a Lua program that creates the whole contents of
-a web page and returns it to the web server. A Lua Page is a conventional
+A Lua Script is essentially a Lua program that creates the whole contents of
+a web page and returns it to the client. A Lua Page is a conventional
 markup text (HTML, XML etc) file that embeds Lua code using some special
-tags.</p>
+tags. Those tags are processed by CGILua and resulting page is returned to the
+client.</p>
 
-<p>Lua scripts and Lua Pages are equally easy to use, and choosing one of them
-basically depends on the characteristics of a specific page. While Lua
-Pages are more convenient for the separation of content and format, where
-the format is usually manipulated with the help of a HTML editor, Lua scripts
-are more adequate for creating pages that are simpler in terms of its HTML
-structure, but require a significative amount of internal processing.</p>
+<p>Lua Scripts and Lua Pages are equally easy to use, and choosing one of them
+basically depends on the characteristics of the resulting page. While Lua
+Pages are more convenient for the separation of logic and format, Lua Scripts
+are more adequate for creating pages that are simpler in terms of its structure,
+but require a more significative amount of internal processing.</p>
 
 <p>Allowing these two methods to be intermixed, CGILua provides Web applications
 developers with great flexibility when both requirements are present. For a
 detailed description of both scripting methods and some examples of
-their use see <a href="manual.html">CGILua scripts</a>.</p>
+their use see <a href="#scripts">Lua Scripts</a> and
+<a href="#templates">Lua Pages</a>.</p>
 
-<p>CGILua's architecture is divided in two layers. The lower level
-one is represented by the Server API (<a href="sapi.html">SAPI</a>) and the
-higher level is represented by the CGILua API itself. The high level layer is
-implemented using only SAPI and is totally portable between the launchers.
-This way any CGILua script or CGILua page could be run by any launcher.</p>
+<p>CGILua architecture is divided in two layers. The lower level is represented
+by the Server API (<a href="sapi.html">SAPI</a>) and the higher level is
+represented by the CGILua API itself. SAPI is the interface between the web server
+and the CGILua API, so it needs to be implemented for each web server and launching
+method used.</p>
+
+<p>CGILua and the CGILua API are implemented using only SAPI and are totally portable
+between launchers and their supported web servers. This way any Lua Script or
+Lua Page could be used by any launcher.</p>
 
 <h2><a name="installation"></a>Installation</h2>
 
@@ -106,7 +111,7 @@ This way any CGILua script or CGILua page could be run by any launcher.</p>
 <a href="http://www.keplerproject.org/compat/">package model</a>
 for Lua 5.1, therefore it should be "installed". Refer to
 <a href="http://www.keplerproject.org/compat/manual.html#configuration">
-Compat-5.1 configuration</a> section about how to install the modules properly.</p>
+Compat-5.1 configuration</a> section about how to install the module properly.</p>
 
 
 <h2><a name="config"></a>Configuration</h2>
@@ -122,8 +127,8 @@ CGILua without overwriting your <code>config.lua</code>.</p>
     <dt><strong>Script Handlers</strong></dt>
     <dd>You can add new CGILua handlers using
     <a href="reference.html#addscripthandler"><code>cgilua.addscripthandler</code></a>
-    (see also <a href="reference.html#buildplainhandler">cgilua.buildplainhandler</a>
-    and <a href="reference.html#buildprocesshandler">cgilua.buildprocesshandler</a>
+    (see also <a href="reference.html#buildplainhandler"><code>cgilua.buildplainhandler</code></a>
+    and <a href="reference.html#buildprocesshandler"><code>cgilua.buildprocesshandler</code></a>
     for functions that build simple handlers).
     </dd>
     <dt><strong>POST Data Sizes</strong></dt>
@@ -132,29 +137,30 @@ CGILua without overwriting your <code>config.lua</code>.</p>
     <a href="reference.html#setmaxfilesize"><code>cgilua.setmaxfilesize</code></a>.
     </dd>
     <dt><strong>Opening and Closing Functions</strong></dt>
-    <dd>You add your functions to the life cycle of CGILua using
+    <dd>You can add your functions to the life cycle of CGILua using
     <a href="reference.html#addopenfunction"><code>cgilua.addopenfunction</code></a> and
     <a href="reference.html#addclosefunction"><code>cgilua.addclosefunction</code></a>.
     These functions are executed just before and after the script execution,
-    even when an error occurs.</dd>
+    even when an error occurs in the script processing.</dd>
 </dl>
 
 <h2><a name="error_handling"></a>Error Handling</h2>
 
-<p>There are three functions to handle errors in CGILua:</p>
+<p>There are three functions for error handling in CGILua:</p>
 
 <p>The function
 <a href="reference.html#seterrorhandler"><code>cgilua.seterrorhandler</code></a>
 defines the <em>error handler</em>, a function called by Lua when an error has
 just occurred. The error handler has access to the execution stack before the
-error is thrown and so it can build an error message using stack information.
+error is thrown so it can build an error message using stack information.
 Lua also provides a function to do that: <code>debug.traceback</code>.</p>
 
 <p>The function
 <a href="reference.html#seterroroutput"><code>cgilua.seterroroutput</code></a>
 defines the function that decides what to do with the error message. It could
-be sent to the client's browser, written to the log file or sent to an e-mail
-address (with the help of LuaSocket or 
+be sent to the client's browser, written to a log file or sent to an e-mail
+address (with the help of
+<a href="http://luasocket.luaforge.net/">LuaSocket</a> or 
 <a href="http://www.keplerproject.org/lualogging/">LuaLogging</a> for example).</p>
 
 <p>The function
@@ -163,70 +169,74 @@ is provided to write directly to the http server error log file.</p>
 
 <h2><a name="scripts"></a>Lua Scripts</h2>
 
-<p>Lua Scripts are text files containing valid sentences in Lua language. This
-kind of usage adopts a "traditional" form of programming, where a program is
-responsible for the entire generation of the resulting page. Lua Scripts have
-a default <code>.lua</code> extension.</p>
+<p>Lua Scripts are text files containing valid Lua code. This style of usage
+adopts a more "raw" form of web programming, where a program is responsible
+for the entire generation of the resulting page. Lua Scripts have a default
+<code>.lua</code> extension.</p>
 
-<p>To generate a valid web document (HTML, XML, WML, CSS etc) the script must
-follow the expected HTTP order to produce its output, first sending the correct
-header and then sending the actual document contents.</p>
+<p>To generate a valid web document (HTML, XML, WML, CSS etc) the Lua Script
+must follow the expected HTTP order to produce its output, first sending the
+correct <a href="reference.html#headers">headers</a> and then sending the
+actual document <a href="reference.html#contents">contents</a>.</p>
 
-<p>CGILua offers some functions to ease these tasks. The most common being
-<a href="reference.html#htmlheader"><code>cgilua.htmlheader</code></a> that
-produce the header for a HTML document
-(see <a href="reference.html#headers">Headers</a> for a complete list).
-The function used to send the document's contents (or part of it) is
-<a href="reference.html#put"><code>cgilua.put</code></a>.</p>
+<p>CGILua offers some functions to ease these tasks, such as
+<a href="reference.html#htmlheader"><code>cgilua.htmlheader</code></a> to
+produce the header for a HTML document and
+<a href="reference.html#put"><code>cgilua.put</code></a> to send the document
+contents (or part of it).</p>
 
 <p>For example, a HTML document which displays the sentence "Hello World!" can
-be generated with the following Lua script:</p>
+be generated with the following Lua Script:</p>
 
 <pre class="example">
 cgilua.htmlheader()
 cgilua.put([[
 &lt;html&gt;
-&lt;head&gt;&lt;title&gt;Hello World&lt;/title&gt;&lt;/head&gt;
+&lt;head&gt;
+  &lt;title&gt;Hello World&lt;/title&gt;
+&lt;/head&gt;
 &lt;body&gt;
-&lt;b&gt;Hello World!&lt;/b&gt;
+  &lt;strong&gt;Hello World!&lt;/strong&gt;
 &lt;/body&gt;
 &lt;/html&gt;]])
 </pre>
 
 <p>It should be noted that the above example generates a "fixed" page: even
 though the page is generated at execution time there is no "variable"
-information. The very same document could be generated directly with a simple
-HTML file. However, Lua scripts become especially useful when the document
-contains information which is not known beforehand, and it is necessary to
-generate a "dynamic" page.</p>
+information. That means that the very same document could be generated directly
+with a simple static HTML file. However, Lua Scripts become especially useful
+when the document contains information which is not known beforehand or changes
+according to passed parameters, and it is necessary to generate a "dynamic" page.</p>
 
 <p>Another easy example can be shown, this time using a Lua control structure,
 variables, and the concatenation operator:</p>
 
 <pre class="example">
 cgilua.htmlheader()  
-cgilua.put('&lt;html&gt;')  
 
 if cgi.language == 'english' then
-    greeting = 'Hello World!'
+  greeting = 'Hello World!'
 elseif cgi.language == 'portuguese' then
-    greeting = 'Ol&aacute; Mundo!'
+  greeting = 'Ol&aacute; Mundo!'
 else
-    greeting = '[unknown language]'
+  greeting = '[unknown language]'
 end
 
-cgilua.put('&lt;head&gt;&lt;title&gt;'..greeting..'&lt;/title&gt;&lt;/head&gt;')
+cgilua.put('&lt;html&gt;')  
+cgilua.put('&lt;head&gt;')
+cgilua.put('  &lt;title&gt;'..greeting..'&lt;/title&gt;')
+cgilua.put('&lt;/head&gt;')
 cgilua.put('&lt;body&gt;')
-cgilua.put('&lt;b&gt;'..greeting..'&lt;/b&gt;')
+cgilua.put('  &lt;strong&gt;'..greeting..'&lt;/strong&gt;')
 cgilua.put('&lt;/body&gt;')
 cgilua.put('&lt;/html&gt;')
 </pre>
 
-<p>The use of <code><em>cgi.language</em></code> indicates that a
-variable named "language" was passed to the script as a CGI
-<a href="manual.html#parameters">parameter</a>, coming from a HTML form field
+<p>In the above example the use of <code><em>cgi.language</em></code> indicates
+that <em>language</em> was passed to the Lua Script as a
+<a href="manual.html#parameters">CGILua parameter</a>, coming from a HTML form field
 (via POST) or from the URL used to activate it (via GET). CGILua automatically
-decodes such variables so you can use them at will.</p>
+decodes such parameters so you can use them at will on your Lua Scripts and Lua Pages.</p>
 
 <h2><a name="templates"></a>Lua Pages</h2>
 
@@ -237,93 +247,99 @@ code into the file. After all those markups are processed and merged with the
 template file, the results are sent to the client.</p>
 
 <p>Lua Pages have a default <code>.lp</code> extension. They are a simpler
-way to make a dynamic page because there is no need to send the HTTP header,
-usually Lua Pages are HTML pages so CGILua sends the HTML header automatically.
-But there are some restrictions on the use of Lua Pages and and sometimes
-a Lua Script will have to be used.</p>
+way to make a dynamic page because there is no need to send the HTTP headers.
+Usually Lua Pages are HTML pages so CGILua sends the HTML header automatically.</p>
 
-<p>The fundamental markups are:</p>
+<p>Since there are some restrictions on the uses of HTTP headers sometimes
+a Lua Script will have to be used instead of a Lua Page.</p>
+
+<p>The fundamental Lua Page markups are:</p>
 
 <dl>
-    <dt><strong><code>&lt;?lua <em>Lua chunk</em> ?&gt;</code></strong></dt>
-    <dd>Processes and merges the <em>Lua chunk</em> execution results where
+    <dt><strong><code>&lt;?lua <em>chunk</em> ?&gt;</code></strong></dt>
+    <dd>Processes and merges the Lua <em>chunk</em> execution results where
     the markup is located in the template. The alternative form
-    <code>&lt;% <em>Lua chunk</em> %&gt;</code> can also be used.</dd>
+    <code>&lt;% <em>chunk</em> %&gt;</code> can also be used.</dd>
     
-    <dt><strong><code>&lt;?lua= <em>Lua expression</em> ?&gt;</code></strong></dt>
-    <dd>Processes and merges the <em>Lua expression</em> evaluation where the
+    <dt><strong><code>&lt;?lua= <em>expression</em> ?&gt;</code></strong></dt>
+    <dd>Processes and merges the Lua <em>expression</em> evaluation where the
     markup is located in the template. The alternative form
-    <code>&lt;%= <em>Lua expression</em> %&gt;</code> can also be used.</dd>
-</ul>
+    <code>&lt;%= <em>expression</em> %&gt;</code> can also be used.</dd>
+</dl>
 
 <p>Note that the ending mark could not appear inside a Lua chunk or Lua
-expression even inside quotes. CGILua pre-processor just makes global
-substitutions searching for a pair of markups and building the corresponding
-Lua code to achieve the same result as the equivalent Lua Script.</p> 
+expression even inside quotes. The Lua Pages pre-processor just makes global
+substitutions on the template, searching for a matching pair of markups and
+generating the corresponding Lua code to achieve the same result as the
+equivalent Lua Script.</p> 
 
-<p>The example on the previous section could be written using a
-Lua Page:</p>
+<p>The second example on the previous section could be written using a
+Lua Page like:</p>
 
 <pre class="example">
 &lt;html&gt;
 &lt;?lua
 if cgi.language == 'english' then
-        greeting = 'Hello World!'
+  greeting = 'Hello World!'
 elseif cgi.language == 'portuguese' then
-        greeting = 'Ol&aacute; Mundo!'
+  greeting = 'Ol&aacute; Mundo!'
 else
-        greeting = '[unknown language]'
+  greeting = '[unknown language]'
 end
 ?&gt;
-&lt;head&gt;&lt;title&gt;&lt;%= greeting %&gt;&lt;/title&gt;&lt;/head&gt;
+&lt;head&gt;
+  &lt;title&gt;&lt;%= greeting %&gt;&lt;/title&gt;
+&lt;/head&gt;
 &lt;body&gt;
-&lt;b&gt;&lt;%= greeting %&gt;&lt;/b&gt;
+  &lt;&gt;strong&lt;%= greeting %&gt;&lt;/strong&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
 
-<p>As on other template languages, it's considered a best practice to not use
-explicit Lua logic on Lua Pages, the recommended aproach is to use only
-function calls that returns chunks of the page. So in this example, assuming
+<p>HTML tags and Lua Page tags can be freely intermixed. However, as on other
+template languages, it's considered a best practice to not use explicit
+Lua logic on templates. The recommended aproach is to use only
+function calls that returns content chunks, so in this example, assuming
 that function <code>getGreeting</code> was definied somewhere else as</p>
 
 <pre class="example">
 function getGreeting()
-    local greeting
-    if cgi.language == 'english' then
-            greeting = 'Hello World!'
-    elseif cgi.language == 'portuguese' then
-            greeting = 'Ol&aacute; Mundo!'
-    else
-            greeting = '[unknown language]'
-    end
-    return greeting
+  local greeting
+  if cgi.language == 'english' then
+    greeting = 'Hello World!'
+  elseif cgi.language == 'portuguese' then
+    greeting = 'Ol&aacute; Mundo!'
+  else
+    greeting = '[unknown language]'
+  end
+  return greeting
 end
 </pre>
 
-<p>The Lua Page could be rewriten as</p>
+<p>the Lua Page could be rewriten as:</p>
 
 <pre class="example">
 &lt;html&gt;
-&lt;head&gt;&lt;title&gt;&lt;%= getGreeting() %&gt;&lt;/title&gt;&lt;/head&gt;
+&lt;head&gt;
+  &lt;title&gt;&lt;%= getGreeting() %&gt;&lt;/title&gt;
+&lt;/head&gt;
 &lt;body&gt;
-&lt;b&gt;&lt;%= getGreeting() %&gt;&lt;/b&gt;
+  &lt;strong&gt;&lt;%= getGreeting() %&gt;&lt;/strong&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
 
 <h2><a name="parameters"></a>Receiving parameters: the <code>cgi</code> table</h2>
 
-<p>CGILua has an unified way of accessing data passed to the script
-despite the HTTP method used (GET or POST). No matter which method was used on
-the client, all parameters will be provided inside the <strong>cgi table</strong>.</p>
+<p>CGILua offers an unified way of accessing data passed to the scripts
+for both HTTP method used (GET or POST). No matter which method was used on
+the client, all parameters will be provided inside the <code>cgi</code> table.</p>
 
-<p>Almost all types of parameters will be available as strings. Even if
-the value of a parameter is a number, it will be converted to its
-string representation.</p>
+<p>Usually all types of parameters will be available as strings. If the value of
+a parameter is a number, it will be converted to its string representation.</p>
 
-<p>There are only two exceptions where the value will be a Lua table.
-The first case occurs on file uploads, where the table will have the
+<p>There are only two exceptions where the value will be a Lua table. The first
+case occurs on file uploads, where the corresponding table will have the
 following fields:</p>
 
 <dl>
@@ -344,7 +360,7 @@ name. This happens in the case of a selection list with multiple values; but it
 also occurs when the form (of the referrer) had two or more
 elements with the same <code>name</code> attribute (maybe because one was on a
 form and another was in the query string). All values will be inserted
-in an indexed table in the order in which they are treated.</p>
+in an indexed table in the order in which they are handled.</p>
 
 </div> <!-- id="content" -->
 
@@ -353,7 +369,7 @@ in an indexed table in the order in which they are treated.</p>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: manual.html,v 1.7 2005/07/16 18:23:58 carregal Exp $</small></p>
+	<p><small>$Id: manual.html,v 1.8 2005/07/18 15:32:07 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->

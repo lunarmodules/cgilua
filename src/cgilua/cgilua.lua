@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.20 2005/06/23 11:06:37 uid20013 Exp $
+-- $Id: cgilua.lua,v 1.21 2005/07/18 15:33:25 carregal Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.urlcode"
@@ -49,7 +49,7 @@ local maxinput = default_maxinput
 module (arg and arg[1])
 
 _COPYRIGHT = "Copyright (C) 2003-2005 Kepler Project"
-_DESCRIPTION = "CGILua is a tool for creating dynamic HTML pages and manipulating input data from forms"
+_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
 _VERSION = "CGILua 5.0"
 script_path = false
 

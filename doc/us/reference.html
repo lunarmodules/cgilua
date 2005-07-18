@@ -48,7 +48,7 @@
 			<ul>
 				<li><a href="reference.html#headers">Headers</a></li>
 				<li><a href="reference.html#contents">Content Generation</a></li>
-				<li><a href="reference.html#prep">Templates</a></li>
+				<li><a href="reference.html#prep">Lua Pages</a></li>
 				<li><a href="reference.html#variables">CGILua Variables</a></li>
 				<li><a href="reference.html#error_handling">Error Handling</a></li>
 				<li><a href="reference.html#behavior">CGILua Behavior</a></li>
@@ -75,7 +75,7 @@
 
 <h2><a name="headers"></a>Headers</h2>
 
-<p>Headers functions are used to change the HTTP response headers and consists of:</p>
+<p>Headers functions are used to change the HTTP response headers and consist of:</p>
 
 <dl class="reference">
     <dt><a name="contentheader"></a><strong><code>cgilua.contentheader (type, subtype)</code></strong></dt>
@@ -85,13 +85,19 @@
     <code>subtype</code> is the header sub-type.<br/>
     Returns nothing.</dd>
     
+    <dt><a name="header"></a><strong><code>cgilua.header (header, value)</code></strong></dt>
+    <dd>Sends a generic header. This function should <em>not</em> be used to
+    generate a <em>Content-type</em> nor a <em>Location</em> header.<br/>
+    Both arguments are strings: <code>header</code> is the name of the header;
+    <code>value</code> is its value.<br/>
+    Returns nothing.</dd>
+
     <dt><a name="htmlheader"></a><strong><code>cgilua.htmlheader ()</code></strong></dt>
-    <dd>Sends the header of a HTML file (<em>Content-type: text/html</em> followed
-    by two line-feeds).<br/>
+    <dd>Sends the header of an HTML file (<em>Content-type: text/html</em>).<br/>
     Returns nothing.</dd>
     
     <dt><a name="locationheader"></a><strong><code>cgilua.locationheader (url)</code></strong></dt>
-    <dd>Sends the header to force a redirection to the given URL.<br/>
+    <dd>Sends the <em>Location</em> header to force a redirection to the given URL.<br/>
     The argument <code>url</code> must be a string.<br/>
     Returns nothing.</dd>
     
@@ -103,20 +109,13 @@
     which could have pairs <em>name = value</em> that will be encoded to form
     a valid URL (see function <a href="#encodetable">cgilua.urlcode.encodetable</a>).<br/>
     Returns nothing.</dd>
-    
-    <dt><a name="header"></a><strong><code>cgilua.header (header, value)</code></strong></dt>
-    <dd>Sends a generic header. This function should <em>not</em> be used to
-    generate a <em>Content-type</em> nor a <em>Location</em> header.<br/>
-    Both arguments are strings: <code>header</code> is the name of the header;
-    <code>value</code> is its value.<br/>
-    Returns nothing.</dd>
 </dl>
 
 
 <h2><a name="contents"></a>Content Generation</h2>
 
 <p>Content generation functions are used to output text to the response and to
-generate URLs in the correct format. They consist of:</p>
+generate URLs in the CGILua format. They consist of:</p>
 
 <dl class="reference">
     <dt><a name="mkabsoluteurl"></a><strong><code>cgilua.mkabsoluteurl (path)</code></strong></dt>
@@ -140,13 +139,13 @@ generate URLs in the correct format. They consist of:</p>
 behavior of this processing. They consist of:</p>
 
 <dl class="reference">
-    <dt><a name="include"></a><strong><code>cgilua.lp.include (filename)</code></strong></dt>
-    <dd>Pre-processes the given HTML file and sends the result to the client.<br/>
-    Returns nothing.</dd>
-    
     <dt><a name="handlelp"></a><strong><code>cgilua.handlelp (filename)</code></strong></dt>
     <dd>Equivalent to <a href="include"><code>lp.include</code></a> but
     sends the HTML header before the pre-processed file.<br/>
+    Returns nothing.</dd>
+
+    <dt><a name="include"></a><strong><code>cgilua.lp.include (filename)</code></strong></dt>
+    <dd>Pre-processes a Lua Page template (given by <code>filename</code>) and sends the result to the client.<br/>
     Returns nothing.</dd>
     
     <dt><a name="setcompatmode"></a><strong><code>cgilua.lp.setcompatmode (boolean)</code></strong></dt>
@@ -156,8 +155,9 @@ behavior of this processing. They consist of:</p>
     Returns nothing.</dd>
     
     <dt><a name="setoutfunc"></a><strong><code>cgilua.lp.setoutfunc (funcname)</code></strong></dt>
-    <dd>Defines the output function. The Lua Pages preprocessor will
-    generate calls to the function with the given <code>funcname</code>.<br/>
+    <dd>Defines the name of the output function for templates. The Lua Pages
+    preprocessor will generate calls to the function with the given
+    <code>funcname</code> (a string).<br/>
     Returns nothing.</dd>
     
     <dt><a name="translate"></a><strong><code>cgilua.lp.translate (string)</code></strong></dt>
@@ -171,7 +171,8 @@ behavior of this processing. They consist of:</p>
 <h2><a name="variables"></a>CGILua Variables</h2>
 
 <p>CGILua Variables offers information about the script being processed and
-the CGI environment variables. They consist of both atributes and functions:</p>
+the <a href="sapi.html#servervariable">CGI environment variables</a>.
+They consist of both atributes and functions:</p>
 
 <dl class="reference">
     <dt><a name="script_file"></a><strong><code>cgilua.script_file</code></strong></dt>
@@ -180,7 +181,8 @@ the CGI environment variables. They consist of both atributes and functions:</p>
     
     <dt><a name="script_path"></a><strong><code>cgilua.script_path</code></strong></dt>
     <dd>The complete path of the running script. This variable is usually the
-    same as the CGI environment variable <code>PATH_TRANSLATED</code>.</dd>
+    same as the <a href="sapi.html#servervariable">CGI environment variable</a>
+    <code>PATH_TRANSLATED</code>.</dd>
     
     <dt><a name="script_pdir"></a><strong><code>cgilua.script_pdir</code></strong></dt>
     <dd>The directory of the running script. Obtained from
@@ -191,16 +193,18 @@ the CGI environment variables. They consist of both atributes and functions:</p>
     <a href="#script_vpath"><code>cgilua.script_vpath</code></a>.</dd>
     
     <dt><a name="script_vpath"></a><strong><code>cgilua.script_vpath</code></strong></dt>
-    <dd>The complete virtual path of the running script. Equivalent to the CGI
-    environment variable <code>PATH_INFO</code>.</dd>
+    <dd>The complete virtual path of the running script. Equivalent to the
+    <a href="sapi.html#servervariable">CGI environment variable</a>
+    <code>PATH_INFO</code>.</dd>
     
     <dt><a name="servervariable"></a><strong><code>cgilua.servervariable (varname)</code></strong></dt>
     <dd>Returns a string with the value of the CGI environment variable
     correspoding to <code>varname</code>. For a list of CGI variables please refer to
-    <a href="file:///s:/Kepler/work/carregal/cgilua/doc/us/sapi.html">SAPI.Request.servervariable</a></dd>
+    <a href="sapi.html#servervariable">SAPI.Request.servervariable</a></dd>
     
     <dt><a name="urlpath"></a><strong><code>cgilua.urlpath</code></strong></dt>
-    <dd>The name of the script. Equivalent to CGI environment variable
+    <dd>The name of the script. Equivalent to the
+    <a href="sapi.html#servervariable">CGI environment variable</a>
     <code>SCRIPT_NAME</code>.</dd>
 </dl>
 
@@ -232,13 +236,6 @@ handled and presented to the user. The consist of:</p>
 <p>The behavior of CGILua can be configured using this set of functions:</p>
 
 <dl class="reference">
-    <dt><a name="addscripthandler"></a><strong><code>cgilua.addscripthandler (ext, func)</code></strong></dt>
-    <dd>Defines a function (<code>func</code>) to pre-process files with a
-    certain extension (<code>ext</code>). The default configuration uses
-    <code>cgilua.doscript</code> to process Lua Scripts (<code>.lua</code> files) and
-    <code>cgilua.handlelp</code> to process Lua Pages (<code>.lp</code> files).<br/>
-    Returns nothing.</dd>
-    
     <dt><a name="addclosefunction"></a><strong><code>cgilua.addclosefunction (func)</code></strong></dt>
     <dd>Defines a function (<code>func</code>) to be called after the execution
     of CGILua.<br/>
@@ -248,7 +245,15 @@ handled and presented to the user. The consist of:</p>
     <dd>Defines a function (<code>func</code>) to be called before the execution
     of CGILua.<br/>
     Returns nothing.</dd>
-    
+
+    <dt><a name="addscripthandler"></a><strong><code>cgilua.addscripthandler (ext, func)</code></strong></dt>
+    <dd>Defines a function (<code>func</code>) to pre-process files with a
+    certain extension (<code>ext</code>). The default configuration uses
+    <a href="#doscript"><code>cgilua.doscript</code></a> to process Lua Scripts
+    (<code>.lua</code> files) and <a href="#handlelp"><code>cgilua.handlelp</code></a>
+    to process Lua Pages (<code>.lp</code> files).<br/>
+    Returns nothing.</dd>
+
     <dt><a name="buildplainhandler"></a><strong><code>cgilua.buildplainhandler (type, subtype)</code></strong></dt>
     <dd>Creates a <em>script handler</em> that sends the given header and the plain
     file requested. The <em>Content-type</em> header is formed by the two arguments;
@@ -287,7 +292,7 @@ handled and presented to the user. The consist of:</p>
 
 <h2><a name="urlcode"></a>URL encoding functions</h2>
 
-<p>URL enconding functions allow the processing of URL strings in a simple way:</p>
+<p>CGILua enconding functions allow the processing of URL strings in a simple way:</p>
 
 <dl class="reference">
     <dt><a name="encodetable"></a><strong><code>cgilua.urlcode.encodetable (table)</code></strong></dt>
@@ -383,7 +388,7 @@ handled and presented to the user. The consist of:</p>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: reference.html,v 1.29 2005/07/16 18:44:34 carregal Exp $</small></p>
+	<p><small>$Id: reference.html,v 1.30 2005/07/18 15:32:07 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
