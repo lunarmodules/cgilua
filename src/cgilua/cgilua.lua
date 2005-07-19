@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.21 2005/07/18 15:33:25 carregal Exp $
+-- $Id: cgilua.lua,v 1.22 2005/07/19 20:30:04 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.urlcode"
@@ -62,8 +62,6 @@ function contentheader (type, subtype)
 	SAPI.Response.contenttype (type..'/'..subtype)
 end
 
-locationheader = SAPI.Response.redirect
-
 function htmlheader()
 	SAPI.Response.contenttype ("text/html")
 end
@@ -77,9 +75,9 @@ function redirect (url, args)
 		if args then
 			params = "?"..urlcode.encodetable(args)
 		end
-		return locationheader(url..params)
+		return SAPI.Response.redirect(url..params)
 	else
-		return locationheader(mkabsoluteurl(mkurlpath(url,args)))
+		return SAPI.Response.redirect(mkabsoluteurl(mkurlpath(url,args)))
 	end
 end
 
