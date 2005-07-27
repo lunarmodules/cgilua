@@ -1,44 +1,37 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.8 2005/03/08 21:04:51 carregal Exp $
+-- $Id: session.lua,v 1.9 2005/07/27 21:29:32 tomas Exp $
 ----------------------------------------------------------------------------
+
+module (arg and arg[1])
 
 require"lfs"
 require"cgilua.serialize"
 
-local assert, loadfile, pairs, type = assert, loadfile, pairs, type
+local assert, ipairs, loadfile, pairs, tonumber, type = assert, ipairs, loadfile, pairs, tonumber, type
 local format, strfind, strrep, strsub = string.format, string.find, string.rep, string.sub
 local _open = io.open
-local remove = os.remove
-local dir = lfs.dir
+local date, remove = os.date, os.remove
+local rand, randseed = math.random, math.randomseed
+local attributes, dir = lfs.attributes, lfs.dir
 
 -- Internal state variables.
 local root_dir = nil
-local counter = 0
+local timeout = 10 * 60 -- 10 minutes
 
-module (arg and arg[1])
-
-----------------------------------------------------------------------------
--- Creates a new identifier.
-----------------------------------------------------------------------------
-local function new_id ()
-	counter = counter + 1
-	return format ("%08d", counter)
-end
-
-----------------------------------------------------------------------------
--- Checks identifier format.
-----------------------------------------------------------------------------
+--
+-- Checks identifier's format.
+--
 local function check_id (id)
-	return (strfind (id, strrep ("%d", 8)) ~= nil)
+	return (strfind (id, "^%d+$") ~= nil)
 end
 
-----------------------------------------------------------------------------
+--
 -- Produces a file name based on a session.
 -- @param id Session identification.
 -- @return String with the session file name.
-----------------------------------------------------------------------------
+--
 local function filename (id)
 	return root_dir..id..".lua"
 end
@@ -52,6 +45,34 @@ function delete (id)
 	remove (filename (id))
 end
 
+--
+-- Searches for a file in the root_dir
+--
+local function find (file)
+	for f in dir (root_dir) do
+		if f == file then
+			return true
+		end
+	end
+	return false
+end
+
+--
+-- Creates a new identifier.
+-- @param last_id Last session identifier
+-- @return New identifier.
+--
+local seed = false
+local function new_id (last_id)
+	if seed then
+		randseed (date"%S" * last_id)
+		seed = false
+	else
+		seed = true
+	end
+	return rand (2147483647)
+end
+
 ----------------------------------------------------------------------------
 -- Creates a new session identifier.
 -- @return Session identification.
@@ -61,14 +82,21 @@ function new ()
 	if not lfs.attributes (root_dir) then
 		assert (lfs.mkdir (root_dir))
 	end
-	for f in dir (root_dir) do
-		files[f] = true
-	end
 	local id = new_id ()
-	while files[id..".lua"] do
-		id = new_id ()
+	while find (id..".lua") do
+		id = new_id (id)
 	end
 	return id
+end
+
+----------------------------------------------------------------------------
+-- Changes the session identificator generator.
+-- @param func Function.
+----------------------------------------------------------------------------
+function setidgenerator (func)
+	if type (func) == "function" then
+		new_id = func
+	end
 end
 
 ----------------------------------------------------------------------------
@@ -100,6 +128,35 @@ function save (id, data)
 end
 
 ----------------------------------------------------------------------------
+-- Removes expired sessions.
+----------------------------------------------------------------------------
+function cleanup ()
+	local rem = {}
+	local now = tonumber (date ("%S"))
+	for file in dir (root_dir) do
+		local attr = attributes(file)
+		if attr and attr.mode == 'file' then
+			if attr.modification + timeout < now then
+				tinsert (rem, file)
+			end
+		end
+	end
+	for _, file in ipairs (rem) do
+		remove (root_dir.."/"..file)
+	end
+end
+
+----------------------------------------------------------------------------
+-- Changes the session timeout.
+-- @param t Number of seconds to maintain a session.
+----------------------------------------------------------------------------
+function setsessiontimeout (t)
+	if type (t) == "number" then
+		timeout = t
+	end
+end
+
+----------------------------------------------------------------------------
 -- Changes the session directory.
 -- @param path String with the new session directory.
 ----------------------------------------------------------------------------
@@ -127,6 +184,7 @@ function open ()
 		data[ID_NAME] = id
 		return mkurlpath (script, data)
 	end
+	cleanup()
 
 	id = cgi[ID_NAME] or cgilua.session.new()
 	if id then
