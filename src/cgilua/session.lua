@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.9 2005/07/27 21:29:32 tomas Exp $
+-- $Id: session.lua,v 1.10 2005/09/14 19:29:48 tomas Exp $
 ----------------------------------------------------------------------------
 
 module (arg and arg[1])
@@ -9,12 +9,13 @@ module (arg and arg[1])
 require"lfs"
 require"cgilua.serialize"
 
-local assert, ipairs, loadfile, pairs, tonumber, type = assert, ipairs, loadfile, pairs, tonumber, type
-local format, strfind, strrep, strsub = string.format, string.find, string.rep, string.sub
+local assert, ipairs, loadfile, tonumber, type = assert, ipairs, loadfile, tonumber, type
+local gsub, strfind, strsub = string.gsub, string.find, string.sub
 local _open = io.open
 local date, remove = os.date, os.remove
 local rand, randseed = math.random, math.randomseed
-local attributes, dir = lfs.attributes, lfs.dir
+local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
+local serializa = cgilua.serialize
 
 -- Internal state variables.
 local root_dir = nil
@@ -70,7 +71,7 @@ local function new_id (last_id)
 	else
 		seed = true
 	end
-	return rand (2147483647)
+	return gsub (rand (), "%D", "")
 end
 
 ----------------------------------------------------------------------------
@@ -79,8 +80,8 @@ end
 ----------------------------------------------------------------------------
 function new ()
 	local files = {}
-	if not lfs.attributes (root_dir) then
-		assert (lfs.mkdir (root_dir))
+	if not attributes (root_dir) then
+		assert (mkdir (root_dir))
 	end
 	local id = new_id ()
 	while find (id..".lua") do
@@ -123,7 +124,7 @@ function save (id, data)
 	assert (check_id (id))
 	local fh = assert (_open (filename (id), "w+"))
 	fh:write "return "
-	cgilua.serialize (data, function (s) fh:write(s) end)
+	serialize (data, function (s) fh:write(s) end)
 	fh:close()
 end
 
