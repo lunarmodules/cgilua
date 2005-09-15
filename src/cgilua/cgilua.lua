@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.22 2005/07/19 20:30:04 tomas Exp $
+-- $Id: cgilua.lua,v 1.23 2005/09/15 13:20:50 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.urlcode"
@@ -481,6 +481,7 @@ function main ()
 		"loadlib",
 		"cgilua.setlibdir",
 		"package",
+		"debug",
 	}
 	-- Defining directory variables and building `cgi' table
 	_G.cgi = {}
