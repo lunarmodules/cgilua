@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.10 2005/09/14 19:29:48 tomas Exp $
+-- $Id: session.lua,v 1.11 2005/09/15 13:21:26 tomas Exp $
 ----------------------------------------------------------------------------
 
 module (arg and arg[1])
@@ -15,7 +15,7 @@ local _open = io.open
 local date, remove = os.date, os.remove
 local rand, randseed = math.random, math.randomseed
 local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
-local serializa = cgilua.serialize
+local serialize = cgilua.serialize
 
 -- Internal state variables.
 local root_dir = nil
