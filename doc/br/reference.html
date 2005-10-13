@@ -167,7 +167,7 @@
     <dd>Define a tratador de erros como <code>func</code>. Esta fun&ccedil;&atilde;o &eacute; chamada pela Lua quando ocorre um erro. Ela recebe a mensagem de erro gerada pela Lua e &eacute; respons&aacute;vel por gerar e retornar o erro correto que deve ser usado pelo CGILua.<br/> N&atilde;o retorna nada.</dd>
     
     <dt><a name="seterroroutput"></a><strong><code>cgilua.seterroroutput (func)</code></strong></dt>
-    <dd>Define a fun&ccedil;&atilde;o respons&aacute;vel pela apresentaccedil;&atilde;o de erros como <code>func</code>. Esta fun&ccedil;&atilde;o &eacute; chamada pela Lua para gerar o resultado do erro.<br/> N&atilde;o retorna nada.</dd>
+    <dd>Define a fun&ccedil;&atilde;o respons&aacute;vel pela apresenta&ccedil;&atilde;o de erros como <code>func</code>. Esta fun&ccedil;&atilde;o &eacute; chamada pela Lua para gerar o resultado do erro.<br/> N&atilde;o retorna nada.</dd>
 </dl>
 
 <h2><a name="behavior"></a>Comportamento do CGILua</h2>
@@ -212,13 +212,13 @@
     <dd><em>Codifica em formato URL</em> uma <code>string</code>.<br/> Retorna a string codificada.</dd>
     
     <dt><a name="insertfield"></a><strong><code>cgilua.urlcode.insertfield (args, name, value)</code></strong></dt>
-    <dd>Adiciona o <code>valor</code> fornecido ao campo indexado pelo <code>nome</code> na tabela <code>args</code>. Se o campo j&aacute; tiver um valor, ser&aacute; transformado em uma tabela com esse valor no &iacute;ndice <code>1</code> e o novo valor no &iacute;ndice <code>2</code>. Outros valores ser&atilde;o acrescentados no final da <em>parte array</em> da tabela criada.<br/> N&atilde;o retorna nada.</dd>
+    <dd>Adiciona o valor (<code>value</code>) fornecido ao campo indexado por um nome (<code>nome</code>) na tabela <code>args</code>. Se o campo j&aacute; tiver um valor, ser&aacute; transformado em uma tabela com esse valor no &iacute;ndice <code>1</code> e o novo valor no &iacute;ndice <code>2</code>. Outros valores ser&atilde;o acrescentados no final da <em>parte array</em> da tabela criada.<br/> N&atilde;o retorna nada.</dd>
     
     <dt><a name="parsequery"></a><strong><code>cgilua.urlcode.parsequery (query, args)</code></strong></dt>
     <dd>Analisa os dados codificados em formato URL do pedido. Isso pode ser a parte <code>query</code> da URL do script ou dos dados POST codificados em URL. Cada par <em>nome = valor</em> codificado &eacute; inserido na tabela <code>args</code>.<br/> N&atilde;o retorna nada.</dd>
     
     <dt><a name="unescape"></a><strong><code>cgilua.urlcode.unescape (string)</code></strong></dt>
-    <dd><em>Codifica em formato URL</em> uma <code>string</code>.<br/> Retorna a string decodificada.</dd>
+    <dd>Decodifica uma <code>string</code> que usa o formato URL.<br/> Retorna a string decodificada.</dd>
 </dl>
 
 <h2><a name="auxiliar"></a>Fun&ccedil;&otilde;es auxiliares</h2>
@@ -244,7 +244,7 @@
 
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="XHTML 1.0 v&aacute;lido!" height="31" width="88" /></a></p>
-	<p><small>$Id: reference.html,v 1.2 2005/10/10 19:50:35 carregal Exp $</small></p>
+	<p><small>$Id: reference.html,v 1.3 2005/10/13 17:22:10 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
