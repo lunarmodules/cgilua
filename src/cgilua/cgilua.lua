@@ -1,33 +1,25 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.23 2005/09/15 13:20:50 tomas Exp $
+-- $Id: cgilua.lua,v 1.24 2005/10/31 16:12:40 tomas Exp $
 ----------------------------------------------------------------------------
 
-require"cgilua.urlcode"
-require"cgilua.lp"
-require"cgilua.post"
-require"lfs"
-
-local _require = require
-local _loadlib = loadlib
-
-local assert, error, _G, loadstring, loadfile, _pcall, type, unpack, xpcall = assert, error, _G, loadstring, loadfile, pcall, type, unpack, xpcall
+local urlcode = require"cgilua.urlcode"
+local lp = require"cgilua.lp"
+local post = require"cgilua.post"
+local lfs = require"lfs"
+local debug = require"debug"
+local assert, error, _pcall, type, unpack, xpcall = assert, error, pcall, type, unpack, xpcall
 local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
 local _open = io.open
 local getn, tinsert, tremove = table.getn, table.insert, table.remove
-local ap = ap
-local SAPI = SAPI
-local lfs = lfs
-local urlcode = cgilua.urlcode
-local post = cgilua.post
-local lp = cgilua.lp
-local translate = lp.translate
 
 lp.setoutfunc ("SAPI.Response.write")
 lp.setcompatmode (true)
 
 -- Internal state variables.
+local _G = nil
+local SAPI = nil
 local default_errorhandler = debug.traceback
 local errorhandler = default_errorhandler
 local default_erroroutput = function (msg)
@@ -45,18 +37,20 @@ local default_maxfilesize = 512 * 1024
 local maxfilesize = default_maxfilesize
 local default_maxinput = 1024 * 1024
 local maxinput = default_maxinput
+script_path = false
 
 module (arg and arg[1])
 
 _COPYRIGHT = "Copyright (C) 2003-2005 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
 _VERSION = "CGILua 5.0"
-script_path = false
 
 ----------------------------------------------------------------------------
 -- Header functions
 ----------------------------------------------------------------------------
-header = SAPI.Response.header
+function header (header, value)
+	SAPI.Response.header (header, value)
+end
 
 function contentheader (type, subtype)
 	SAPI.Response.contenttype (type..'/'..subtype)
@@ -65,6 +59,7 @@ end
 function htmlheader()
 	SAPI.Response.contenttype ("text/html")
 end
+local htmlheader = htmlheader
 
 ----------------------------------------------------------------------------
 -- Create an HTTP header redirecting the browser to another URL
@@ -84,12 +79,16 @@ end
 ----------------------------------------------------------------------------
 -- Returns a server variable
 ----------------------------------------------------------------------------
-servervariable = SAPI.Request.servervariable
+function servervariable (varname)
+	return SAPI.Request.servervariable (varname)
+end
 
 ----------------------------------------------------------------------------
 -- Primitive error output function
 ----------------------------------------------------------------------------
-errorlog = SAPI.Response.errorlog
+function errorlog (msg)
+	SAPI.Response.errorlog (msg)
+end
 
 ----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
@@ -98,7 +97,9 @@ errorlog = SAPI.Response.errorlog
 --  each of its arguments (strings or numbers) to file _OUTPUT (a file
 --  handle initialized with the file descriptor for stdout)
 ----------------------------------------------------------------------------
-put = SAPI.Response.write
+function put (...)
+	SAPI.Response.write (unpack(arg))
+end
 
 ----------------------------------------------------------------------------
 -- Remove globals not allowed in CGILua scripts
@@ -127,7 +128,7 @@ function pack (...) return arg end
 --  does not return
 ----------------------------------------------------------------------------
 function doscript (filename)
-	local res, err = loadfile(filename)
+	local res, err = _G.loadfile(filename)
 	if not res then
 		error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))
 	else
@@ -171,9 +172,9 @@ local function lp2func (filename)
     local fh = assert (_open (filename))
     local prog = fh:read("*a")
     fh:close()
-    prog = translate (prog, "file "..filename)
+    prog = lp.translate (prog, "file "..filename)
     if prog then
-        local f, err = loadstring (prog, "@"..filename)
+        local f, err = _G.loadstring (prog, "@"..filename)
         if f then
             return f
         else
@@ -188,15 +189,12 @@ end
 ----------------------------------------------------------------------------
 function lp.include (filename, env)
 	local prog = lp2func (filename)
-    local _env
-    if env then
-        _env = getfenv (prog)
-        setfenv (prog, env)
-    end
-    prog ()
-    if env then
-        setfenv (prog, _env)
-    end
+	local _env
+	if env then
+		_env = getfenv (prog)
+		setfenv (prog, env)
+	end
+	prog ()
 end
 
 ----------------------------------------------------------------------------
@@ -452,9 +450,19 @@ local function open()
 end
 
 ---------------------------------------------------------------------------
+-- Defines the table of globals.
+---------------------------------------------------------------------------
+function setglobalstable (ng)
+	_G = ng
+	SAPI = _G.SAPI
+end
+---------------------------------------------------------------------------
 -- Resets CGILua's state.
 ---------------------------------------------------------------------------
 local function reset ()
+	_G = nil
+	SAPI = nil
+	script_path = false
 	maxfilesize = default_maxfilesize
 	maxinput = default_maxinput
 	-- Error Handling
