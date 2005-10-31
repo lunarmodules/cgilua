@@ -1,13 +1,11 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.11 2005/09/15 13:21:26 tomas Exp $
+-- $Id: session.lua,v 1.12 2005/10/31 16:10:50 tomas Exp $
 ----------------------------------------------------------------------------
 
-module (arg and arg[1])
-
-require"lfs"
-require"cgilua.serialize"
+local lfs = require"lfs"
+local serialize = require"cgilua.serialize"
 
 local assert, ipairs, loadfile, tonumber, type = assert, ipairs, loadfile, tonumber, type
 local gsub, strfind, strsub = string.gsub, string.find, string.sub
@@ -15,7 +13,8 @@ local _open = io.open
 local date, remove = os.date, os.remove
 local rand, randseed = math.random, math.randomseed
 local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
-local serialize = cgilua.serialize
+
+module (arg and arg[1])
 
 -- Internal state variables.
 local root_dir = nil

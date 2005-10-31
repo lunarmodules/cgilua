@@ -1,9 +1,10 @@
 ----------------------------------------------------------------------------
--- $Id: urlcode.lua,v 1.3 2005/03/08 21:04:51 carregal Exp $
+-- $Id: urlcode.lua,v 1.4 2005/10/31 16:10:50 tomas Exp $
 ----------------------------------------------------------------------------
 
 local next, tonumber, type = next, tonumber, type
 local string = string
+local table = table
 
 module (arg and arg[1])
 
