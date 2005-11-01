@@ -87,14 +87,19 @@ of Cookies, Serialized Data and Sessions. To use these libraries just
     
     <dt><a name="set"></a><strong><code>cgilua.cookies.set (name, value[, options])</code></strong></dt>
     <dd>Sets the <code>value</code> of the cookie with a given
-    <code>name</code>. The field names and values in the <code>options</code>
-    table are used for the cookie attributes. This function should be called
+    <code>name</code>.
+    The optional table <code>options</code> is used to
+    give the values of the cookies attributes: expires, path, domain, secure.
+    This function should be called
     before the HTTP headers are sent and before any output is generated.<br/>
     Returns nothing.</dd>
     
     <dt><a name="sethtml"></a><strong><code>cgilua.cookies.sethtml (name, value[, options])</code></strong></dt>
     <dd>Sets the <code>value</code> of the cookie with a given
-    <code>name</code>. This function generates a <code>&lt;meta&gt;</code> HTML
+    <code>name</code>.
+    The optional table <code>options</code> is used to
+    give the values of the cookies attributes: expires, path, domain, secure.
+    This function generates a <code>&lt;meta&gt;</code> HTML
     element so it should be called after the <code>&lt;head&gt;</code> HTML tag was
     produced and before the corresponding <code>&lt;/head&gt;</code>.<br/>
     Returns nothing.</dd>
@@ -177,7 +182,7 @@ of Cookies, Serialized Data and Sessions. To use these libraries just
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: libraries.html,v 1.24 2005/10/10 19:50:35 carregal Exp $</small></p>
+	<p><small>$Id: libraries.html,v 1.25 2005/11/01 00:13:28 tomas Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
