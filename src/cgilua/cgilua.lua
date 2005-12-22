@@ -1,9 +1,10 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.24 2005/10/31 16:12:40 tomas Exp $
+-- $Id: cgilua.lua,v 1.25 2005/12/22 16:52:36 tomas Exp $
 ----------------------------------------------------------------------------
 
+local _G, SAPI = _G, SAPI
 local urlcode = require"cgilua.urlcode"
 local lp = require"cgilua.lp"
 local post = require"cgilua.post"
@@ -17,9 +18,9 @@ local getn, tinsert, tremove = table.getn, table.insert, table.remove
 lp.setoutfunc ("SAPI.Response.write")
 lp.setcompatmode (true)
 
+module (arg and arg[1])
+
 -- Internal state variables.
-local _G = nil
-local SAPI = nil
 local default_errorhandler = debug.traceback
 local errorhandler = default_errorhandler
 local default_erroroutput = function (msg)
@@ -38,8 +39,6 @@ local maxfilesize = default_maxfilesize
 local default_maxinput = 1024 * 1024
 local maxinput = default_maxinput
 script_path = false
-
-module (arg and arg[1])
 
 _COPYRIGHT = "Copyright (C) 2003-2005 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
@@ -450,18 +449,9 @@ local function open()
 end
 
 ---------------------------------------------------------------------------
--- Defines the table of globals.
----------------------------------------------------------------------------
-function setglobalstable (ng)
-	_G = ng
-	SAPI = _G.SAPI
-end
----------------------------------------------------------------------------
 -- Resets CGILua's state.
 ---------------------------------------------------------------------------
 local function reset ()
-	_G = nil
-	SAPI = nil
 	script_path = false
 	maxfilesize = default_maxfilesize
 	maxinput = default_maxinput
