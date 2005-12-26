@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.25 2005/12/22 16:52:36 tomas Exp $
+-- $Id: cgilua.lua,v 1.26 2005/12/26 17:30:03 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -47,9 +47,7 @@ _VERSION = "CGILua 5.0"
 ----------------------------------------------------------------------------
 -- Header functions
 ----------------------------------------------------------------------------
-function header (header, value)
-	SAPI.Response.header (header, value)
-end
+header = SAPI.Response.header
 
 function contentheader (type, subtype)
 	SAPI.Response.contenttype (type..'/'..subtype)
@@ -78,16 +76,12 @@ end
 ----------------------------------------------------------------------------
 -- Returns a server variable
 ----------------------------------------------------------------------------
-function servervariable (varname)
-	return SAPI.Request.servervariable (varname)
-end
+servervariable = SAPI.Request.servervariable
 
 ----------------------------------------------------------------------------
 -- Primitive error output function
 ----------------------------------------------------------------------------
-function errorlog (msg)
-	SAPI.Response.errorlog (msg)
-end
+errorlog = SAPI.Response.errorlog
 
 ----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
@@ -96,9 +90,7 @@ end
 --  each of its arguments (strings or numbers) to file _OUTPUT (a file
 --  handle initialized with the file descriptor for stdout)
 ----------------------------------------------------------------------------
-function put (...)
-	SAPI.Response.write (unpack(arg))
-end
+put = SAPI.Response.write
 
 ----------------------------------------------------------------------------
 -- Remove globals not allowed in CGILua scripts
