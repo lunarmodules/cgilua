@@ -14,7 +14,7 @@
 --		args = params,
 --	}
 ----------------------------------------------------------------------------
--- $Id: post.lua,v 1.7 2005/04/29 01:01:11 mascarenhas Exp $
+-- $Id: post.lua,v 1.8 2005/12/26 16:23:37 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.readuntil"
@@ -283,7 +283,7 @@ function parsedata (defs)
 		urlcode.parsequery (read (inputsize), defs.args)
 	elseif strfind(contenttype, "multipart/form%-data") then
 		Main (inputsize, defs.args)
-	elseif strfind (contenttype, "text/xml") then
+	elseif strfind (contenttype, "text/xml") or strfind (contenttype, "text/plain") then
 		tinsert (defs.args, read (inputsize))
 	else
 		error("Unsupported Media Type: "..contenttype)
