@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.27 2005/12/26 22:14:00 tomas Exp $
+-- $Id: cgilua.lua,v 1.28 2006/01/03 18:13:50 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -469,7 +469,6 @@ function main ()
 	removeglobals {
 		"os.execute",
 		"loadlib",
-		"cgilua.setlibdir",
 		"package",
 		"debug",
 	}
