@@ -1,6 +1,6 @@
 <?lua
 -- Tries to load known libraries
-for _, t in ipairs { "lxp", "luasql.postgres", "luasql.mysql", "luasql.oci8", "luasql.sqlite", "luasql.odbc", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", "zip", "stable", "venv", "copas", } do
+for _, t in ipairs { "lxp", "luasql.postgres", "luasql.mysql", "luasql.oci8", "luasql.sqlite", "luasql.odbc", "socket", "xmlrpc", "soap", "lualdap", "logging", "md5", "zip", "stable", "copas", } do
 	pcall (require, t)
 end
 
@@ -30,7 +30,6 @@ function idx (t, f) return _G[t][f] or _G[t]["_"..f] or "" end
 local support = {
 	{ "Lua", "_VERSION" },
 	{ "compat-5.1", "_COMPAT51" },
-	{ "venv", "_VENV" },
 }
 for _, l in ipairs (support) do bg = color()
 ?>
