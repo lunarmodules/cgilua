@@ -1,7 +1,7 @@
 function link_dir (dir, base)
 	local path = base.."/"..dir
-	local ok, err = pcall (lfs.dir, path)
-	if ok then
+	local mode = lfs.attributes (path).mode
+	if mode == "directory" then
 		return string.format ('<a href="%s">%s</a>',
 			cgilua.mkurlpath ("test_fs.lua", { dir = path }),
 			dir)
