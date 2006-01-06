@@ -1,8 +1,10 @@
 -- This file should be executed before any script in this directory
 -- according to the configuration (cgilua/conf.lua).
 
+local put, mkurlpath = cgilua.put, cgilua.mkurlpath
+
 cgilua.addclosefunction (function ()
-	cgilua.put [[
+	put [[
 <p>
 <small>
 <a href="test_main.html">Main</a>]]
@@ -14,9 +16,9 @@ cgilua.addclosefunction (function ()
 			{ "Session", "test_session.lua", },
 			{ "Variables", "test_variables.lp", },
 		} do
-		cgilua.put (string.format (' &middot; <a href="%s">%s</a>',
-			cgilua.mkurlpath (test[2], test[3]), test[1]))
+		put (string.format (' &middot; <a href="%s">%s</a>',
+			mkurlpath (test[2], test[3]), test[1]))
 	end
-	cgilua.put [[
+	put [[
 </small>]]
 end)
