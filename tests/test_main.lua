@@ -1,5 +1,4 @@
--- $Id: test_main.lua,v 1.10 2005/03/22 10:10:51 tomas Exp $
-if ap then handler = ap.handler() end
+-- $Id: test_main.lua,v 1.11 2006/01/06 16:33:57 tomas Exp $
 cgilua.htmlheader()
 cgilua.put[[
 <html>
@@ -25,7 +24,6 @@ cgilua.put "<br>\n"
 cgilua.put ("Is persistent = "..tostring (SAPI.Info.ispersistent).."<br>\n")
 cgilua.put ("ap="..tostring(ap).."<br>\n")
 cgilua.put ("lfcgi="..tostring(lfcgi).."<br>\n")
-if handler then cgilua.put (tostring(handler).."<br>\n") end
 
 -- Checking Virtual Environment
 local my_output = cgilua.put
@@ -44,6 +42,7 @@ assert (package == nil, "Access to <tt>package</tt> table allowed!")
 cgilua.put[[
 <p>
 </body>
-<small>$Id: test_main.lua,v 1.10 2005/03/22 10:10:51 tomas Exp $</small>
+<small>$Id: test_main.lua,v 1.11 2006/01/06 16:33:57 tomas Exp $</small>
 </html>
 ]]
+cgilua = nil
