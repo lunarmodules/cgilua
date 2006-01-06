@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.28 2006/01/03 18:13:50 tomas Exp $
+-- $Id: cgilua.lua,v 1.29 2006/01/06 16:25:04 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -14,6 +14,7 @@ local assert, error, _pcall, type, unpack, xpcall = assert, error, pcall, type, 
 local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
 local _open = io.open
 local getn, tinsert, tremove = table.getn, table.insert, table.remove
+local date = os.date
 
 lp.setoutfunc ("SAPI.Response.write")
 lp.setcompatmode (true)
@@ -27,10 +28,10 @@ local default_erroroutput = function (msg)
 	-- Logging error
 	SAPI.Response.errorlog (msg)
 	SAPI.Response.errorlog (SAPI.Request.servervariable"REMOTE_ADDR")
-	SAPI.Response.errorlog (os.date())
+	SAPI.Response.errorlog (date())
 	-- Building user message
 	SAPI.Response.contenttype ("text/html")
-	msg = string.gsub (string.gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
+	msg = gsub (gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
 	SAPI.Response.write (msg)
 end
 local erroroutput = default_erroroutput
