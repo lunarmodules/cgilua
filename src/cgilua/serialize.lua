@@ -2,7 +2,7 @@
 -- Serialize tables.
 -- It works only for tables without cycles and without functions or
 -- userdata inside it.
--- $Id: serialize.lua,v 1.5 2005/03/08 21:04:51 carregal Exp $
+-- $Id: serialize.lua,v 1.6 2006/01/06 17:52:18 tomas Exp $
 ----------------------------------------------------------------------------
 
 local ipairs, pairs, type = ipairs, pairs, type
@@ -109,3 +109,5 @@ end
 
 ----------------------------------------------------------------------------
 cgilua.serialize = tabledump
+
+return tabledump
