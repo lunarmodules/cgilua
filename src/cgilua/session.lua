@@ -1,14 +1,15 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.12 2005/10/31 16:10:50 tomas Exp $
+-- $Id: session.lua,v 1.13 2006/01/06 17:53:48 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
 local serialize = require"cgilua.serialize"
 
-local assert, ipairs, loadfile, tonumber, type = assert, ipairs, loadfile, tonumber, type
+local assert, ipairs, _G, loadfile, next, tonumber, type = assert, ipairs, _G, loadfile, next, tonumber, type
 local gsub, strfind, strsub = string.gsub, string.find, string.sub
+local tinsert = table.insert
 local _open = io.open
 local date, remove = os.date, os.remove
 local rand, randseed = math.random, math.randomseed
@@ -16,6 +17,7 @@ local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
 
 module (arg and arg[1])
 
+----------------------------------------------------------------------------
 -- Internal state variables.
 local root_dir = nil
 local timeout = 10 * 60 -- 10 minutes
@@ -132,9 +134,9 @@ end
 ----------------------------------------------------------------------------
 function cleanup ()
 	local rem = {}
-	local now = tonumber (date ("%S"))
+	local now = tonumber (date ("%s"))
 	for file in dir (root_dir) do
-		local attr = attributes(file)
+		local attr = attributes(root_dir.."/"..file)
 		if attr and attr.mode == 'file' then
 			if attr.modification + timeout < now then
 				tinsert (rem, file)
@@ -176,7 +178,7 @@ local id = nil
 -- This function should be called before the script is executed.
 ----------------------------------------------------------------------------
 function open ()
-	local mkurlpath = cgilua.mkurlpath
+	local mkurlpath = _G.cgilua.mkurlpath
 	function _G.cgilua.mkurlpath (script, data)
 		if not data then
 			data = {}
@@ -186,10 +188,10 @@ function open ()
 	end
 	cleanup()
 
-	id = cgi[ID_NAME] or cgilua.session.new()
+	id = _G.cgi[ID_NAME] or new()
 	if id then
 		_G.cgi[ID_NAME] = nil
-		_G.cgilua.data = cgilua.session.load (id) or {}
+		_G.cgilua.session.data = load (id) or {}
 	end
 end
 
@@ -198,8 +200,8 @@ end
 -- This function should be called after the script is executed.
 ----------------------------------------------------------------------------
 function close ()
-	if next (cgilua.data) then
-		cgilua.session.save (id, cgilua.data)
+	if next (_G.cgilua.session.data) then
+		save (id, _G.cgilua.session.data)
 		id = nil
 	end
 end
