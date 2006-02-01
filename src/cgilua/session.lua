@@ -1,14 +1,14 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.13 2006/01/06 17:53:48 tomas Exp $
+-- $Id: session.lua,v 1.14 2006/02/01 13:46:37 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
 local serialize = require"cgilua.serialize"
 
 local assert, ipairs, _G, loadfile, next, tonumber, type = assert, ipairs, _G, loadfile, next, tonumber, type
-local gsub, strfind, strsub = string.gsub, string.find, string.sub
+local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
 local tinsert = table.insert
 local _open = io.open
 local date, remove = os.date, os.remove
@@ -35,7 +35,7 @@ end
 -- @return String with the session file name.
 --
 local function filename (id)
-	return root_dir..id..".lua"
+	return format ("%s/%s.lua", root_dir, id)
 end
 
 ----------------------------------------------------------------------------
@@ -163,10 +163,7 @@ end
 -- @param path String with the new session directory.
 ----------------------------------------------------------------------------
 function setsessiondir (path)
-	if strsub (path, -2, -2) ~= '/' then
-		path = path..'/'
-	end
-	root_dir = path
+	root_dir = gsub (path, "[/\\]$", "")
 end
 
 ----------------------------------------------------------------------------
