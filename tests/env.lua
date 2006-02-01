@@ -1,6 +1,8 @@
 -- This file should be executed before any script in this directory
 -- according to the configuration (cgilua/conf.lua).
 
+pcall (cgilua.enablesession)
+
 local put, mkurlpath = cgilua.put, cgilua.mkurlpath
 
 cgilua.addclosefunction (function ()

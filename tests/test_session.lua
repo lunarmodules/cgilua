@@ -20,19 +20,22 @@ if cgi.field then
 	table.insert (cgilua.session.data.field, cgi.field)
 end
 cgilua.htmlheader()
-cgilua.put "cgi = {<br>\n"
-pt (cgi)
-cgilua.put "}<br>\n"
-cgilua.put "session.data = {<br>\n"
-pt (cgilua.session.data)
-cgilua.put "}<br>\n"
+if cgilua.session then
+	cgilua.put "cgi = {<br>\n"
+	pt (cgi)
+	cgilua.put "}<br>\n"
+	cgilua.put "cgilua.session.data = {<br>\n"
+	pt (cgilua.session.data)
+	cgilua.put "}<br>\n"
 
-cgilua.put [[
-<form action="]]
-cgilua.put (cgilua.mkurlpath"test_session.lua")
-cgilua.put [[" method="POST">
+	cgilua.put [[<form action="]]
+	cgilua.put (cgilua.mkurlpath"test_session.lua")
+	cgilua.put [[" method="POST">
   field: <input type="text" name="field" value="]]
-cgilua.put (cgi.field or "")
-cgilua.put [["><br>
+	cgilua.put (cgi.field or "")
+	cgilua.put [["><br>
   <input type="submit"><br>
 </form>]]
+else
+	cgilua.put "Sessions library is not available or not well configured"
+end
