@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.29 2006/01/06 16:25:04 tomas Exp $
+-- $Id: cgilua.lua,v 1.30 2006/02/07 03:08:11 uid20013 Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -16,11 +16,12 @@ local _open = io.open
 local getn, tinsert, tremove = table.getn, table.insert, table.remove
 local date = os.date
 
-lp.setoutfunc ("SAPI.Response.write")
+lp.setoutfunc ("cgilua.put")
 lp.setcompatmode (true)
 
 module (arg and arg[1])
 
+----------------------------------------------------------------------------
 -- Internal state variables.
 local default_errorhandler = debug.traceback
 local errorhandler = default_errorhandler
@@ -82,7 +83,14 @@ servervariable = SAPI.Request.servervariable
 ----------------------------------------------------------------------------
 -- Primitive error output function
 ----------------------------------------------------------------------------
-errorlog = SAPI.Response.errorlog
+function errorlog (msg, level)
+	local t = type(msg)
+	if t == "string" or t == "number" then
+		SAPI.Response.errorlog (msg, level)
+	else
+		error ("bad argument #1 to `cgilua.errorlog' (string expected, got "..t..")", 2)
+	end
+end
 
 ----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
@@ -91,7 +99,14 @@ errorlog = SAPI.Response.errorlog
 --  each of its arguments (strings or numbers) to file _OUTPUT (a file
 --  handle initialized with the file descriptor for stdout)
 ----------------------------------------------------------------------------
-put = SAPI.Response.write
+function put (s)
+	local t = type(s)
+	if t == "string" or t == "number" then
+		SAPI.Response.write (s)
+	else
+		error ("bad argument #1 to `cgilua.put' (string expected, got "..t..")", 2)
+	end
+end
 
 ----------------------------------------------------------------------------
 -- Remove globals not allowed in CGILua scripts
@@ -154,39 +169,6 @@ end
 ---------------------------------------------------------------------------
 function setmaxfilesize(nbytes)
 	maxfilesize = nbytes
-end
-
-----------------------------------------------------------------------------
--- Load the contents of an HTML template and process it.
---	Return the function which run the processed template.
-----------------------------------------------------------------------------
-local function lp2func (filename)
-    local fh = assert (_open (filename))
-    local prog = fh:read("*a")
-    fh:close()
-    prog = lp.translate (prog, "file "..filename)
-    if prog then
-        local f, err = _G.loadstring (prog, "@"..filename)
-        if f then
-            return f
-        else
-            error (err)
-        end
-    end
-end
-
-----------------------------------------------------------------------------
--- Preprocess and include the content of a mixed HTML file into the 
---  currently 'open' HTML document. 
-----------------------------------------------------------------------------
-function lp.include (filename, env)
-	local prog = lp2func (filename)
-	local _env
-	if env then
-		_env = getfenv (prog)
-		setfenv (prog, env)
-	end
-	prog ()
 end
 
 ----------------------------------------------------------------------------
