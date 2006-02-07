@@ -107,6 +107,20 @@ Lua Page could be used by any launcher.</p>
 
 <h2><a name="installation"></a>Installation</h2>
 
+<p>CGILua is composed by a set of Lua files:</p>
+<ul>
+  <li><code>cgilua.lua</code>
+  <li><code>config.lua</code>
+  <li><code>cookies.lua</code>
+  <li><code>lp.lua</code>
+  <li><code>post.lua</code>
+  <li><code>readuntil.lua</code>
+  <li><code>serialize.lua</code>
+  <li><code>session.lua</code>
+  <li><code>urlcode.lua</code>
+</ul>
+<p>These files should be copied to a directory called <code>cgilua</code>
+created in your <code>LUA_CPATH</code>.</p>
 <p>CGILua follows the
 <a href="http://www.keplerproject.org/compat/">package model</a>
 for Lua 5.1, therefore it should be "installed". Refer to
@@ -144,6 +158,58 @@ CGILua without overwriting your <code>config.lua</code>.</p>
     even when an error occurs in the script processing.</dd>
 </dl>
 
+<p>
+In particular,
+the last two functions mentioned above (for opening and closing) are
+very useful for many different things.
+Some examples of the <code>config.lua</code> are:</p>
+<ul>
+  <li>Emulating the old behavior of loading file <code>env.lua</code> from
+      the script's directory:
+<pre class="example">
+cgilua.addopenfunction (function ()
+	cgilua.doif ("env.lua")
+end)
+</pre>
+
+  <li>Loading the sessions library.
+      When all scripts processed by CGILua must be using this library,
+the configuration could be mandatory:
+<pre class="example">
+require"cgilua.session"
+cgilua.session.setsessiondir"/tmp/"
+cgilua.addopenfunction (cgilua.session.open)
+cgilua.addclosefunction (cgilua.session.close)
+</pre>
+      When some scripts may use the library but other may not,
+you could define an "enabling" function (which should be called at the
+very beginning of each script that needs to use sessions):
+<pre class="example">
+require"cgilua.session"
+cgilua.session.setsessiondir"/tmp/"
+cgilua.enablesession = function ()
+	cgilua.session.open ()
+	cgilua.addclosefunction (cgilua.session.close)
+end
+</pre>
+
+  <li>Configuring a specific directory for each application hosted in the
+server:
+<pre class="example">
+local app_lib_dir = {
+	["/virtual/path/"] = "/absolute/path/lib/",
+}
+local package = package
+cgilua.addopenfunction (function ()
+	local app = app_lib_dir[cgilua.script_vdir]
+	if app then
+		package.path = package.path..';'..app..'/?.lua'
+	end
+end)
+</pre>
+
+</ul>
+
 <h2><a name="error_handling"></a>Error Handling</h2>
 
 <p>There are three functions for error handling in CGILua:</p>
@@ -166,6 +232,78 @@ address (with the help of
 <p>The function
 <a href="reference.html#errorlog"><code>cgilua.errorlog</code></a>
 is provided to write directly to the http server error log file.</p>
+
+<p>
+An useful example of its use could be handling unexpected errors.
+Customizing unexpected error messages to the end user but giving all the
+information to the application's developers is the goal of the following
+piece of code:
+<pre class="example">
+local ip = cgilua.servervariable"REMOTE_ADDR"
+local developers_machines = {
+	["192.168.0.20"] = true,
+	["192.168.0.27"] = true,
+	["192.168.0.30"] = true,
+}
+local function mail (s)
+	require"cgilua.serialize"
+	require"socket.smtp"
+	-- Build the message
+	local msg = {}
+	table.insert (msg, tostring(s))
+	-- Tries to obtain the REFERER URL
+	table.insert (msg, tostring (cgilua.servervariable"HTTP_REFERER"))
+	table.insert (msg, cgilua.servervariable"SERVER_NAME"..
+		cgilua.servervariable"SCRIPT_NAME")
+	-- CGI parameters
+	table.insert (msg, "CGI")
+	cgilua.serialize(cgi, function (s) table.insert (msg, s) end)
+	table.insert (msg, tostring (os.date()))
+	table.insert (msg, tostring (ip))
+	table.insert (msg, "Cookies:")
+	table.insert (msg, tostring (cgilua.servervariable"HTTP_COOKIE" or "no cookies"))
+	-- Formats message according to LuaSocket-2.0b3
+	local source = socket.smtp.message {
+		headers = { subject = "Script Error", },
+		body = table.concat (msg, '\n'),
+	}
+	-- Envia a mensagem
+	local r, e = socket.smtp.send {
+		from = "sender@my.domain.net",
+		rcpt = "developers@my.domain.net",
+		source = source,
+	}
+end
+if developers_machines[ip] then
+	-- Developer's error treatment: write to the display
+	cgilua.seterroroutput (function (msg)
+		cgilua.errorlog (msg)
+		cgilua.errorlog (cgilua.servervariable"REMOTE_ADDR")
+		cgilua.errorlog (os.date())
+
+		cgilua.htmlheader ()
+		msg = string.gsub (string.gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
+		cgilua.put (msg)
+	end)
+else
+	-- User's error treatment: shows a standard page and sends an e-mail to
+	-- the developer
+	cgilua.seterroroutput (function (s)
+		cgilua.htmlheader ()
+		cgilua.put"&lt;h1&gt;An error occurred&lt;/h1&gt;\n"
+		cgilua.put"The responsible is being informed."
+		mail (s)
+	end)
+end
+</pre>
+<p>
+The message is written to the browser if the request comes from one of
+the developer's machines.
+If it is not the case,
+a simple polite message is given to the user and a message is sent to the
+developer's e-mail account containing all possible information to help
+reproduce the situation.
+
 
 <h2><a name="scripts"></a>Lua Scripts</h2>
 
@@ -369,7 +507,7 @@ in an indexed table in the order in which they are handled.</p>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: manual.html,v 1.10 2005/11/03 18:48:57 carregal Exp $</small></p>
+	<p><small>$Id: manual.html,v 1.11 2006/02/07 03:02:14 uid20013 Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
