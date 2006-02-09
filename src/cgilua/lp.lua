@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- HTML Preprocessor.
 --
--- $Id: lp.lua,v 1.3 2006/02/07 03:08:11 uid20013 Exp $
+-- $Id: lp.lua,v 1.4 2006/02/09 19:24:00 uid20013 Exp $
 ----------------------------------------------------------------------------
 
 local assert, loadstring = assert, loadstring
@@ -71,7 +71,7 @@ end
 local cache = {}
 
 ----------------------------------------------------------------------------
-function cachetranslate (string, chunkname)
+function compile (string, chunkname)
 	local f, err = cache[string]
 	if f then return f end
 	local prog = translate (string)
@@ -88,7 +88,7 @@ function include (filename, env)
 	local src = fh:read("*a")
 	fh:close()
 	-- translates the file into a function
-	local prog = cachetranslate (src, '@'..filename)
+	local prog = compile (src, '@'..filename)
 	local _env
 	if env then
 		_env = getfenv (prog)
