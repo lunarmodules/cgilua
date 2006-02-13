@@ -6,7 +6,6 @@ end)
 --]]
 
 -- Basic configuration for using sessions
---[[
 require"cgilua.session"
 cgilua.session.setsessiondir ("/tmp/")
 -- The following function must be called by every script that needs session.
@@ -14,7 +13,6 @@ function cgilua.enablesession ()
 	cgilua.session.open ()
 	cgilua.addclosefunction (cgilua.session.close)
 end
---]]
 
 -- Compatibility
 cgilua.preprocess = cgilua.handlelp
@@ -28,6 +26,6 @@ local package = package
 cgilua.addopenfunction (function ()
 	local app = app_lib_dir[cgilua.script_vdir]
 	if app then
-		package.path = package.path..';'..app..'/?.lua'
+		package.path = app.."/?.lua;"..package.path
 	end
 end)
