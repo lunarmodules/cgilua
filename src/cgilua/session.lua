@@ -1,13 +1,13 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.14 2006/02/01 13:46:37 tomas Exp $
+-- $Id: session.lua,v 1.15 2006/02/13 21:35:21 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
 local serialize = require"cgilua.serialize"
 
-local assert, ipairs, _G, loadfile, next, tonumber, type = assert, ipairs, _G, loadfile, next, tonumber, type
+local assert, error, ipairs, _G, loadfile, next, tonumber, tostring, type = assert, error, ipairs, _G, loadfile, next, tonumber, tostring, type
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
 local tinsert = table.insert
 local _open = io.open
@@ -51,28 +51,21 @@ end
 -- Searches for a file in the root_dir
 --
 local function find (file)
-	for f in dir (root_dir) do
-		if f == file then
-			return true
-		end
+	local fh = _open (root_dir.."/"..file)
+	if fh then
+		fh:close ()
+		return true
+	else
+		return false
 	end
-	return false
 end
 
 --
 -- Creates a new identifier.
--- @param last_id Last session identifier
 -- @return New identifier.
 --
-local seed = false
-local function new_id (last_id)
-	if seed then
-		randseed (date"%S" * last_id)
-		seed = false
-	else
-		seed = true
-	end
-	return gsub (rand (), "%D", "")
+local function new_id ()
+	return rand (999999999)
 end
 
 ----------------------------------------------------------------------------
@@ -80,13 +73,12 @@ end
 -- @return Session identification.
 ----------------------------------------------------------------------------
 function new ()
-	local files = {}
-	if not attributes (root_dir) then
-		assert (mkdir (root_dir))
-	end
 	local id = new_id ()
-	while find (id..".lua") do
-		id = new_id (id)
+	if find (id..".lua") then
+		repeat
+			id = new_id (id)
+		until not find (id..".lua")
+		randseed (mod (id, 999999999))
 	end
 	return id
 end
@@ -163,7 +155,21 @@ end
 -- @param path String with the new session directory.
 ----------------------------------------------------------------------------
 function setsessiondir (path)
-	root_dir = gsub (path, "[/\\]$", "")
+	path = gsub (path, "[/\\]$", "")
+	-- Make sure the given path is a directory
+	if not attributes (path, "mode") then
+		assert (mkdir (path))
+	end
+	-- Make sure it can create a new file in the given directory
+	local test_file = path.."/test"
+	local fh, err = _open (test_file, "w")
+	if not fh then
+		error ("Could not open a file in session directory: "..
+			tostring(err), 2)
+	end
+	fh:close ()
+	remove (test_file)
+	root_dir = path
 end
 
 ----------------------------------------------------------------------------
