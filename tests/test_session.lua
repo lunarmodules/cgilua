@@ -1,3 +1,5 @@
+cgilua.enablesession ()
+
 function pt (tab)
 	for i, v in pairs (tab) do
 		local vv = v
