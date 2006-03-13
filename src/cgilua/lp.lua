@@ -1,10 +1,10 @@
 ----------------------------------------------------------------------------
 -- HTML Preprocessor.
 --
--- $Id: lp.lua,v 1.4 2006/02/09 19:24:00 uid20013 Exp $
+-- $Id: lp.lua,v 1.5 2006/03/13 12:59:02 tomas Exp $
 ----------------------------------------------------------------------------
 
-local assert, loadstring = assert, loadstring
+local assert, error, loadstring = assert, error, loadstring
 local find, format, gsub, strsub = string.find, string.format, string.gsub, string.sub
 local concat, tinsert = table.concat, table.insert
 local open = io.open
