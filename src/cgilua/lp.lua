@@ -1,13 +1,14 @@
 ----------------------------------------------------------------------------
 -- HTML Preprocessor.
 --
--- $Id: lp.lua,v 1.5 2006/03/13 12:59:02 tomas Exp $
+-- $Id: lp.lua,v 1.6 2006/03/31 06:17:45 tuler Exp $
 ----------------------------------------------------------------------------
 
 local assert, error, loadstring = assert, error, loadstring
 local find, format, gsub, strsub = string.find, string.format, string.gsub, string.sub
 local concat, tinsert = table.concat, table.insert
 local open = io.open
+local getfenv, setfenv = getfenv, setfenv
 
 module (arg and arg[1])
 
