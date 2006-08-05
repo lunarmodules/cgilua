@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.15 2006/02/13 21:35:21 tomas Exp $
+-- $Id: session.lua,v 1.16 2006/08/05 04:21:55 carregal Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -15,7 +15,7 @@ local date, remove = os.date, os.remove
 local rand, randseed = math.random, math.randomseed
 local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
 
-module (arg and arg[1])
+module ("cgilua.session")
 
 ----------------------------------------------------------------------------
 -- Internal state variables.

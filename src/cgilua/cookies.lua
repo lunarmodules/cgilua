@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: cookies.lua,v 1.5 2005/03/08 21:04:51 carregal Exp $
+-- $Id: cookies.lua,v 1.6 2006/08/05 04:21:55 carregal Exp $
 --
 -- Cookies Library
 ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@ local escape, unescape = cgilua.urlcode.escape, cgilua.urlcode.unescape
 local header, write = SAPI.Response.header, SAPI.Response.write
 local servervariable = SAPI.Request.servervariable
 
-module (arg and arg[1])
+module ("cgilua.cookies")
 
 local function optional (what, name)
   if name ~= nil and name ~= "" then

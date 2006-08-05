@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.30 2006/02/07 03:08:11 uid20013 Exp $
+-- $Id: cgilua.lua,v 1.31 2006/08/05 04:21:55 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -19,7 +19,7 @@ local date = os.date
 lp.setoutfunc ("cgilua.put")
 lp.setcompatmode (true)
 
-module (arg and arg[1])
+module ("cgilua")
 
 ----------------------------------------------------------------------------
 -- Internal state variables.
@@ -42,7 +42,7 @@ local default_maxinput = 1024 * 1024
 local maxinput = default_maxinput
 script_path = false
 
-_COPYRIGHT = "Copyright (C) 2003-2005 Kepler Project"
+_COPYRIGHT = "Copyright (C) 2003-2006 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
 _VERSION = "CGILua 5.0.1"
 
@@ -448,6 +448,7 @@ function main ()
 	addscripthandler ("lp", handlelp)
 	-- Configuring CGILua (trying to load cgilua/config.lua)
 	pcall (_G.require, "cgilua.config")
+
 	-- Cleaning environment
 	removeglobals {
 		"os.execute",
@@ -465,6 +466,7 @@ function main ()
 	pcall (open)
 	-- Executing script
 	local result = pack (pcall (handle, script_file))
+
 	-- Closing function
 	pcall (close)
 	-- Cleanup

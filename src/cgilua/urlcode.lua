@@ -1,12 +1,12 @@
 ----------------------------------------------------------------------------
--- $Id: urlcode.lua,v 1.4 2005/10/31 16:10:50 tomas Exp $
+-- $Id: urlcode.lua,v 1.5 2006/08/05 04:21:55 carregal Exp $
 ----------------------------------------------------------------------------
 
 local next, tonumber, type = next, tonumber, type
 local string = string
 local table = table
 
-module (arg and arg[1])
+module ("cgilua.urlcode")
 
 ----------------------------------------------------------------------------
 -- Decode an URL-encoded string (see RFC 2396)

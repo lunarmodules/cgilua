@@ -1,10 +1,10 @@
 ----------------------------------------------------------------------------
--- $Id: readuntil.lua,v 1.3 2005/03/08 21:04:51 carregal Exp $
+-- $Id: readuntil.lua,v 1.4 2006/08/05 04:21:55 carregal Exp $
 ----------------------------------------------------------------------------
 
 local strsub, strfind, strlen = string.sub, string.find, string.len
 
-module (arg and arg[1])
+module ("cgilua.readuntil")
 
 function iterate (inp)
 	local current = ""

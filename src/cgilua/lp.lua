@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- HTML Preprocessor.
 --
--- $Id: lp.lua,v 1.6 2006/03/31 06:17:45 tuler Exp $
+-- $Id: lp.lua,v 1.7 2006/08/05 04:21:55 carregal Exp $
 ----------------------------------------------------------------------------
 
 local assert, error, loadstring = assert, error, loadstring
@@ -10,7 +10,7 @@ local concat, tinsert = table.concat, table.insert
 local open = io.open
 local getfenv, setfenv = getfenv, setfenv
 
-module (arg and arg[1])
+module ("cgilua.lp")
 
 ----------------------------------------------------------------------------
 -- function to do output
