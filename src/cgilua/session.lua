@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.16 2006/08/05 04:21:55 carregal Exp $
+-- $Id: session.lua,v 1.17 2006/08/10 12:03:43 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -12,7 +12,7 @@ local format, gsub, strfind, strsub = string.format, string.gsub, string.find, s
 local tinsert = table.insert
 local _open = io.open
 local date, remove = os.date, os.remove
-local rand, randseed = math.random, math.randomseed
+local mod, rand, randseed = math.mod, math.random, math.randomseed
 local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
 
 module ("cgilua.session")
