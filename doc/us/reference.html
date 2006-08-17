@@ -88,7 +88,8 @@
     
     <dt><a name="header"></a><strong><code>cgilua.header (header, value)</code></strong></dt>
     <dd>Sends a generic header. This function should <em>not</em> be used to
-    generate a <em>Content-type</em> nor a <em>Location</em> header.<br/>
+    generate a <em>Content-type</em> nor a <em>Location</em> header because
+    some launchers/web-servers use different functions for this purpose.<br/>
     Both arguments are strings: <code>header</code> is the name of the header;
     <code>value</code> is its value.<br/>
     Returns nothing.</dd>
@@ -329,10 +330,15 @@ handled and presented to the user. The consist of:</p>
 <h2><a name="auxiliar"></a>Auxiliar functions</h2>
 
 <dl class="reference">
+    <dt><a name="doif"></a><strong><code>cgilua.doif (filepath)</code></strong></dt>
+    <dd>Executes a file (given by <code>filepath</code>) if it exists. 
+    Returns the values returned by the execution, or
+    <tt>nil</tt> followed by an error message if the file does not exists.</dd>
+
     <dt><a name="doscript"></a><strong><code>cgilua.doscript (filepath)</code></strong></dt>
     <dd>Executes a file (given by <code>filepath</code>). Raises an error if it
     occurs. In case of success, returns the values returned by the execution.</dd>
-    
+
     <dt><a name="pack"></a><strong><code>cgilua.pack (...)</code></strong></dt>
     <dd>Returns a new table with all the passed arguments stored in it.</dd>
     
@@ -349,6 +355,7 @@ handled and presented to the user. The consist of:</p>
 <a href="#buildplainhandler">buildplainhandler</a><br/>
 <a href="#buildprocesshandler">buildprocesshandler</a><br/>
 <a href="#contentheader">contentheader</a><br/>
+<a href="#doif">doif</a><br/>
 <a href="#doscript">doscript</a><br/>
 <a href="#encodetable">encodetable (urlcode)</a><br/>
 <a href="#errorlog">errorlog</a><br/>
@@ -390,7 +397,7 @@ handled and presented to the user. The consist of:</p>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: reference.html,v 1.36 2006/08/17 00:52:57 carregal Exp $</small></p>
+	<p><small>$Id: reference.html,v 1.37 2006/08/17 15:20:15 tomas Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->

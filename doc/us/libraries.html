@@ -106,7 +106,9 @@ of Cookies, Serialized Data and Sessions. To use these libraries just
     
     <dt><a name="delete"></a><strong><code>cgilua.cookies.delete (name[, options])</code></strong></dt>
     <dd>Deletes a cookie with a given <code>name</code> (setting its value
-    to <code>xxx</code>).<br />
+    to <code>xxx</code>).
+    This function should be called
+    before the HTTP headers are sent and before any output is generated.<br/>
     Returns nothing.</dd>
 </dl>
 
@@ -182,7 +184,7 @@ of Cookies, Serialized Data and Sessions. To use these libraries just
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: libraries.html,v 1.27 2006/08/17 00:52:57 carregal Exp $</small></p>
+	<p><small>$Id: libraries.html,v 1.28 2006/08/17 15:20:15 tomas Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
