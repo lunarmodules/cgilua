@@ -86,22 +86,25 @@ of Cookies, Serialized Data and Sessions. To use these libraries just
     Returns a string with the value of the cookie.</dd>
     
     <dt><a name="set"></a><strong><code>cgilua.cookies.set (name, value[, options])</code></strong></dt>
-    <dd>Sets the <code>value</code> of the cookie with a given
-    <code>name</code>.
-    The optional table <code>options</code> is used to
-    give the values of the cookies attributes: expires, path, domain, secure.
-    This function should be called
-    before the HTTP headers are sent and before any output is generated.<br/>
+    <dd>Sets the <code>value</code> of the cookie with a given <code>name</code>.
+    The optional table <code>options</code> is used togive the values of
+    the cookies attributes: expires, path, domain, secure. This function
+    should be called before the HTTP headers are sent and before any output
+    is generated, so it must not be used inside a Lua Page.<br/>
+    This function sends a cookie with the response. If you need to create
+    a cookie inside the generated response or if the cookie needs to be set
+    inside the client, use <code>cgilua.cookies.sethtml</code> instead.<br/>
     Returns nothing.</dd>
     
     <dt><a name="sethtml"></a><strong><code>cgilua.cookies.sethtml (name, value[, options])</code></strong></dt>
-    <dd>Sets the <code>value</code> of the cookie with a given
-    <code>name</code>.
-    The optional table <code>options</code> is used to
-    give the values of the cookies attributes: expires, path, domain, secure.
-    This function generates a <code>&lt;meta&gt;</code> HTML
-    element so it should be called after the <code>&lt;head&gt;</code> HTML tag was
-    produced and before the corresponding <code>&lt;/head&gt;</code>.<br/>
+    <dd>Sets the <code>value</code> of the cookie with a given <code>name</code>.
+    The optional table <code>options</code> is used to give the values of
+    the cookies attributes: expires, path, domain, secure.<br/>
+    This function generates a <code>&lt;meta&gt;</code> HTML element so it
+    should be called after the <code>&lt;head&gt;</code> HTML tag and before
+    the corresponding <code>&lt;/head&gt;</code>.<br/>
+    This function creates a cookie in the client, if you need to send the cookie
+    with the response use <code>cgilua.cookies.set</code> instead.<br/>
     Returns nothing.</dd>
     
     <dt><a name="delete"></a><strong><code>cgilua.cookies.delete (name[, options])</code></strong></dt>
@@ -184,7 +187,7 @@ of Cookies, Serialized Data and Sessions. To use these libraries just
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: libraries.html,v 1.28 2006/08/17 15:20:15 tomas Exp $</small></p>
+	<p><small>$Id: libraries.html,v 1.29 2006/08/18 23:18:49 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
