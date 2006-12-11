@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.31 2006/08/05 04:21:55 carregal Exp $
+-- $Id: cgilua.lua,v 1.32 2006/12/11 17:32:35 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -11,7 +11,7 @@ local post = require"cgilua.post"
 local lfs = require"lfs"
 local debug = require"debug"
 local assert, error, _pcall, type, unpack, xpcall = assert, error, pcall, type, unpack, xpcall
-local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
+local gsub, format, strfind, strlower, strsub, tostring = string.gsub, string.format, string.find, string.lower, string.sub, tostring
 local _open = io.open
 local getn, tinsert, tremove = table.getn, table.insert, table.remove
 local date = os.date
@@ -26,10 +26,21 @@ module ("cgilua")
 local default_errorhandler = debug.traceback
 local errorhandler = default_errorhandler
 local default_erroroutput = function (msg)
+
+    if type(msg) ~= "string" and type(msg) ~= "number" then
+        msg = format ("bad argument #1 to 'error' (string expected, got %s)", type(msg))
+    end
+  
 	-- Logging error
 	SAPI.Response.errorlog (msg)
+	SAPI.Response.errorlog (" ")
+
 	SAPI.Response.errorlog (SAPI.Request.servervariable"REMOTE_ADDR")
+	SAPI.Response.errorlog (" ")
+
 	SAPI.Response.errorlog (date())
+	SAPI.Response.errorlog ("\n")
+
 	-- Building user message
 	SAPI.Response.contenttype ("text/html")
 	msg = gsub (gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
