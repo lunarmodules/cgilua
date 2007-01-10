@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.32 2006/12/11 17:32:35 carregal Exp $
+-- $Id: cgilua.lua,v 1.33 2007/01/10 22:10:06 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -259,7 +259,11 @@ end
 local function getparams (args)
 	-- Define variables.
 	script_path = script_path or servervariable"PATH_TRANSLATED"
-	script_pdir, script_file = splitpath (script_path)
+    if not script_path then
+        script_path = servervariable"DOCUMENT_ROOT" ..
+            servervariable"SCRIPT_NAME"
+    end
+    script_pdir, script_file = splitpath (script_path)
 	local vpath = servervariable"PATH_INFO"
 	script_vpath = vpath
 	if vpath and vpath ~= "" then
