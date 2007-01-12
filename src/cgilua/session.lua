@@ -1,17 +1,17 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.17 2006/08/10 12:03:43 tomas Exp $
+-- $Id: session.lua,v 1.18 2007/01/12 14:04:19 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
 local serialize = require"cgilua.serialize"
 
-local assert, error, ipairs, _G, loadfile, next, tonumber, tostring, type = assert, error, ipairs, _G, loadfile, next, tonumber, tostring, type
+local assert, error, ipairs, _G, loadfile, next, tostring, type = assert, error, ipairs, _G, loadfile, next, tostring, type
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
 local tinsert = table.insert
 local _open = io.open
-local date, remove = os.date, os.remove
+local remove, time = os.remove, os.time
 local mod, rand, randseed = math.mod, math.random, math.randomseed
 local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
 
@@ -126,7 +126,7 @@ end
 ----------------------------------------------------------------------------
 function cleanup ()
 	local rem = {}
-	local now = tonumber (date ("%s"))
+	local now = time ()
 	for file in dir (root_dir) do
 		local attr = attributes(root_dir.."/"..file)
 		if attr and attr.mode == 'file' then
