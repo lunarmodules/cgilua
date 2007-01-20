@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
--- $Id: urlcode.lua,v 1.5 2006/08/05 04:21:55 carregal Exp $
+-- $Id: urlcode.lua,v 1.6 2007/01/20 22:39:31 tomas Exp $
 ----------------------------------------------------------------------------
 
 local next, tonumber, type = next, tonumber, type
@@ -80,7 +80,7 @@ function encodetable (args)
     return ""
   end
   local strp = ""
-  for key,val in args do
+  for key,val in pairs(args) do
     strp = strp.."&"..escape(key).."="..escape(val)
   end
   -- remove first & 

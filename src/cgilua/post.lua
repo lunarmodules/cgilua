@@ -14,7 +14,7 @@
 --		args = params,
 --	}
 ----------------------------------------------------------------------------
--- $Id: post.lua,v 1.9 2006/08/05 04:21:55 carregal Exp $
+-- $Id: post.lua,v 1.10 2007/01/20 22:39:31 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.readuntil"
@@ -151,7 +151,7 @@ local function filevalue (filehandle, filename, filesize, headers)
                   filename = filename,
                   filesize = filesize }
   -- copy additional header values
-  for hdr, hdrval in headers do
+  for hdr, hdrval in pairs(headers) do
     if hdr ~= "content-disposition" then
       value[hdr] = hdrval
     end
