@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.33 2007/01/10 22:10:06 mascarenhas Exp $
+-- $Id: cgilua.lua,v 1.34 2007/01/21 01:25:03 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -134,11 +134,6 @@ function removeglobals (notallowed)
 		end
 	end
 end
-
-----------------------------------------------------------------------------
--- Pack results of a function call
-----------------------------------------------------------------------------
-function pack (...) return arg end
 
 ----------------------------------------------------------------------------
 -- Execute a script
@@ -373,8 +368,7 @@ end
 -- Executes a function with an error handler.
 ---------------------------------------------------------------------------
 function pcall (f, ...)
-	local result = pack (xpcall (function () return f(unpack(arg)) end,
-		errorhandler))
+	local result = { xpcall (function () return f(...) end, errorhandler) }
 	if not result[1] then
 		erroroutput (result[2])
 	end
@@ -480,7 +474,7 @@ function main ()
 	-- Opening function
 	pcall (open)
 	-- Executing script
-	local result = pack (pcall (handle, script_file))
+	local result = { pcall (handle, script_file) }
 
 	-- Closing function
 	pcall (close)
