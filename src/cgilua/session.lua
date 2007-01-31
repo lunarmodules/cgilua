@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.18 2007/01/12 14:04:19 tomas Exp $
+-- $Id: session.lua,v 1.19 2007/01/31 12:42:50 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -181,6 +181,7 @@ local id = nil
 -- This function should be called before the script is executed.
 ----------------------------------------------------------------------------
 function open ()
+	-- Redefine cgilua.mkurlpath to manage the session identification
 	local mkurlpath = _G.cgilua.mkurlpath
 	function _G.cgilua.mkurlpath (script, data)
 		if not data then
@@ -189,6 +190,11 @@ function open ()
 		data[ID_NAME] = id
 		return mkurlpath (script, data)
 	end
+	-- Define cgilua.session.destroy() to encapsulate the session id
+	_M.destroy = function ()
+		_M.delete (id)
+	end
+
 	cleanup()
 
 	id = _G.cgi[ID_NAME] or new()
