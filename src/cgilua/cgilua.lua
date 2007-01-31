@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.34 2007/01/21 01:25:03 tomas Exp $
+-- $Id: cgilua.lua,v 1.35 2007/01/31 13:50:42 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -15,6 +15,7 @@ local gsub, format, strfind, strlower, strsub, tostring = string.gsub, string.fo
 local _open = io.open
 local getn, tinsert, tremove = table.getn, table.insert, table.remove
 local date = os.date
+local seeall = package.seeall
 
 lp.setoutfunc ("cgilua.put")
 lp.setcompatmode (true)
@@ -465,6 +466,8 @@ function main ()
 		"package",
 		"debug",
 	}
+	-- Build fake package
+	_G.package = { seeall = seeall, }
 	-- Defining directory variables and building `cgi' table
 	_G.cgi = {}
 	pcall (getparams, _G.cgi)
