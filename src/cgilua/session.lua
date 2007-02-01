@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 ----------------------------------------------------------------------------
--- $Id: session.lua,v 1.19 2007/01/31 12:42:50 tomas Exp $
+-- $Id: session.lua,v 1.20 2007/02/01 11:29:30 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -192,6 +192,8 @@ function open ()
 	end
 	-- Define cgilua.session.destroy() to encapsulate the session id
 	_M.destroy = function ()
+		-- Remove data from session table to avoid recreation by `close'
+		_M.data = {}
 		_M.delete (id)
 	end
 
