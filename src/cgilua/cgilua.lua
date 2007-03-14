@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.35 2007/01/31 13:50:42 tomas Exp $
+-- $Id: cgilua.lua,v 1.36 2007/03/14 19:06:40 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -10,7 +10,7 @@ local lp = require"cgilua.lp"
 local post = require"cgilua.post"
 local lfs = require"lfs"
 local debug = require"debug"
-local assert, error, _pcall, type, unpack, xpcall = assert, error, pcall, type, unpack, xpcall
+local assert, error, _pcall, select, type, unpack, xpcall = assert, error, pcall, select, type, unpack, xpcall
 local gsub, format, strfind, strlower, strsub, tostring = string.gsub, string.format, string.find, string.lower, string.sub, tostring
 local _open = io.open
 local getn, tinsert, tremove = table.getn, table.insert, table.remove
@@ -369,7 +369,9 @@ end
 -- Executes a function with an error handler.
 ---------------------------------------------------------------------------
 function pcall (f, ...)
-	local result = { xpcall (function () return f(...) end, errorhandler) }
+	local arg = { ... }
+	local n = select ("#", ...)
+	local result = { xpcall (function () return f(unpack(arg, 1, n)) end, errorhandler) }
 	if not result[1] then
 		erroroutput (result[2])
 	end
