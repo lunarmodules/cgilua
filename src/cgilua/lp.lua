@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- HTML Preprocessor.
 --
--- $Id: lp.lua,v 1.7 2006/08/05 04:21:55 carregal Exp $
+-- $Id: lp.lua,v 1.8 2007/03/16 15:17:18 tomas Exp $
 ----------------------------------------------------------------------------
 
 local assert, error, loadstring = assert, error, loadstring
@@ -23,7 +23,7 @@ local function out (s, i, f)
 	s = strsub(s, i, f or -1)
 	if s == "" then return s end
 	-- we could use `%q' here, but this way we have better control
-	s = gsub(s, "([\\\n\'])", "\\%1")
+	s = gsub(s, "([\\\r\n\'])", "\\%1")
 	return format(" %s('%s'); ", outfunc, s)
 end
 
