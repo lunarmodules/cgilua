@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------
--- $Id: urlcode.lua,v 1.6 2007/01/20 22:39:31 tomas Exp $
+-- $Id: urlcode.lua,v 1.7 2007/03/16 15:18:16 tomas Exp $
 ----------------------------------------------------------------------------
 
-local next, tonumber, type = next, tonumber, type
+local next, pairs, tonumber, type = next, pairs, tonumber, type
 local string = string
 local table = table
 
