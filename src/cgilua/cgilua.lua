@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.36 2007/03/14 19:06:40 tomas Exp $
+-- $Id: cgilua.lua,v 1.37 2007/03/19 17:24:35 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -487,7 +487,8 @@ function main ()
 	reset ()
 	-- Changing to original directory
 	pcall (lfs.chdir, curr_dir)
-	-- Returning results to server
-	tremove (result, 1)
-	return unpack (result)
+	if tremove (result, 1) then -- script executed ok!
+		-- Returning results to server
+		return unpack (result)
+	end
 end
