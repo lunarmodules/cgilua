@@ -14,13 +14,13 @@
 --		args = params,
 --	}
 ----------------------------------------------------------------------------
--- $Id: post.lua,v 1.10 2007/01/20 22:39:31 tomas Exp $
+-- $Id: post.lua,v 1.11 2007/03/19 17:19:49 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.readuntil"
 require"cgilua.urlcode"
 
-local assert, error, tonumber, tostring, type = assert, error, tonumber, tostring, type
+local assert, error, pairs, tonumber, tostring, type = assert, error, pairs, tonumber, tostring, type
 local tmpfile = io.tmpfile
 local getn, tinsert = table.getn, table.insert
 local format, gsub, strfind, strlower, strlen = string.format, string.gsub, string.find, string.lower, string.len
