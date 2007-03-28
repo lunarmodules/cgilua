@@ -3,7 +3,7 @@
 --
 -- @class module
 -- @name cgilua.lp
--- @release $Id: lp.lua,v 1.9 2007/03/23 19:27:25 tomas Exp $
+-- @release $Id: lp.lua,v 1.10 2007/03/28 12:47:27 tomas Exp $
 ----------------------------------------------------------------------------
 
 local assert, error, getfenv, loadstring, setfenv = assert, error, getfenv, loadstring, setfenv
@@ -11,7 +11,7 @@ local find, format, gsub, strsub = string.find, string.format, string.gsub, stri
 local concat, tinsert = table.concat, table.insert
 local open = io.open
 
-module ("cgilua.lp")
+module (...)
 
 ----------------------------------------------------------------------------
 -- function to do output
@@ -29,8 +29,10 @@ local compatmode = true
 local function out (s, i, f)
 	s = strsub(s, i, f or -1)
 	if s == "" then return s end
+	-- substitute '\r' by '\'+'r' and let `loadstring' reconstruct it
+	s = gsub(s, "\r", "\\r")
 	-- we could use `%q' here, but this way we have better control
-	s = gsub(s, "([\\\r\n\'])", "\\%1")
+	s = gsub(s, "([\\\n\'])", "\\%1")
 	return format(" %s('%s'); ", outfunc, s)
 end
 
