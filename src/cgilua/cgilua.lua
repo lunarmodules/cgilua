@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.37 2007/03/19 17:24:35 tomas Exp $
+-- $Id: cgilua.lua,v 1.38 2007/03/28 13:22:11 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -10,10 +10,10 @@ local lp = require"cgilua.lp"
 local post = require"cgilua.post"
 local lfs = require"lfs"
 local debug = require"debug"
-local assert, error, _pcall, select, type, unpack, xpcall = assert, error, pcall, select, type, unpack, xpcall
+local assert, error, ipairs, type, xpcall = assert, error, ipairs, type, xpcall
 local gsub, format, strfind, strlower, strsub, tostring = string.gsub, string.format, string.find, string.lower, string.sub, tostring
 local _open = io.open
-local getn, tinsert, tremove = table.getn, table.insert, table.remove
+local tinsert, tremove = table.insert, table.remove
 local date = os.date
 local seeall = package.seeall
 
@@ -124,8 +124,7 @@ end
 -- Remove globals not allowed in CGILua scripts
 ----------------------------------------------------------------------------
 function removeglobals (notallowed)
-	for i=1,getn(notallowed) do
-		local g = notallowed[i]
+	for _, g in ipairs(notallowed) do
 		if type(_G[g]) ~= "function" then
 			_G[g] = nil
 		else
@@ -368,14 +367,13 @@ end
 ---------------------------------------------------------------------------
 -- Executes a function with an error handler.
 ---------------------------------------------------------------------------
-function pcall (f, ...)
-	local arg = { ... }
-	local n = select ("#", ...)
-	local result = { xpcall (function () return f(unpack(arg, 1, n)) end, errorhandler) }
-	if not result[1] then
-		erroroutput (result[2])
+local function _xpcall (f)
+	local ok, result = xpcall (f, errorhandler)
+	if ok then
+		return result
+	else
+		erroroutput (result)
 	end
-	return unpack (result)
 end
 
 ----------------------------------------------------------------------------
@@ -401,7 +399,7 @@ end
 -- Close function.
 ---------------------------------------------------------------------------
 local function close()
-	for i = getn(close_functions), 1, -1 do
+	for i = #close_functions, 1, -1 do
 		close_functions[i]()
 	end
 end
@@ -416,6 +414,7 @@ local open_functions = {
 --
 -- This function will be called before the user script (and environment)
 -- execution
+-- @param f Function to be registered.
 ---------------------------------------------------------------------------
 function addopenfunction (f)
 	local tf = type(f)
@@ -428,9 +427,10 @@ end
 
 ---------------------------------------------------------------------------
 -- Open function.
+-- Call all defined open-functions in the order they were created.
 ---------------------------------------------------------------------------
 local function open()
-	for i = getn(open_functions), 1, -1 do
+	for i = #open_functions, 1, -1 do
 		open_functions[i]()
 	end
 end
@@ -459,7 +459,7 @@ function main ()
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
 	-- Configuring CGILua (trying to load cgilua/config.lua)
-	pcall (_G.require, "cgilua.config")
+	_xpcall (function () _G.require"cgilua.config" end)
 
 	-- Cleaning environment
 	removeglobals {
@@ -472,23 +472,22 @@ function main ()
 	_G.package = { seeall = seeall, }
 	-- Defining directory variables and building `cgi' table
 	_G.cgi = {}
-	pcall (getparams, _G.cgi)
+	_xpcall (function () getparams (_G.cgi) end)
 	-- Changing curent directory to the script's "physical" dir
 	local curr_dir = lfs.currentdir ()
-	pcall (lfs.chdir, script_pdir)
+	_xpcall (function () lfs.chdir (script_pdir) end)
 	-- Opening function
-	pcall (open)
+	_xpcall (open)
 	-- Executing script
-	local result = { pcall (handle, script_file) }
+	local result = _xpcall (function () handle (script_file) end)
 
 	-- Closing function
-	pcall (close)
+	_xpcall (close)
 	-- Cleanup
 	reset ()
 	-- Changing to original directory
-	pcall (lfs.chdir, curr_dir)
-	if tremove (result, 1) then -- script executed ok!
-		-- Returning results to server
-		return unpack (result)
+	_xpcall (function () lfs.chdir (curr_dir) end)
+	if result then -- script executed ok!
+		return result
 	end
 end
