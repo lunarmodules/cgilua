@@ -3,7 +3,7 @@
 --
 -- @class module
 -- @name cgilua.lp
--- @release $Id: lp.lua,v 1.10 2007/03/28 12:47:27 tomas Exp $
+-- @release $Id: lp.lua,v 1.11 2007/04/02 19:10:25 tomas Exp $
 ----------------------------------------------------------------------------
 
 local assert, error, getfenv, loadstring, setfenv = assert, error, getfenv, loadstring, setfenv
@@ -29,10 +29,10 @@ local compatmode = true
 local function out (s, i, f)
 	s = strsub(s, i, f or -1)
 	if s == "" then return s end
-	-- substitute '\r' by '\'+'r' and let `loadstring' reconstruct it
-	s = gsub(s, "\r", "\\r")
 	-- we could use `%q' here, but this way we have better control
 	s = gsub(s, "([\\\n\'])", "\\%1")
+	-- substitute '\r' by '\'+'r' and let `loadstring' reconstruct it
+	s = gsub(s, "\r", "\\r")
 	return format(" %s('%s'); ", outfunc, s)
 end
 
