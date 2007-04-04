@@ -1,7 +1,9 @@
 ----------------------------------------------------------------------------
 -- Session library.
-----------------------------------------------------------------------------
--- $Id: session.lua,v 1.20 2007/02/01 11:29:30 tomas Exp $
+--
+-- @class module.
+-- @name cgilua.session.
+-- @release $Id: session.lua,v 1.21 2007/04/04 04:36:21 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -96,7 +98,8 @@ end
 ----------------------------------------------------------------------------
 -- Loads data from a session.
 -- @param id Session identification.
--- @return Table with session data.
+-- @return Table with session data or nil in case of error.
+-- @return In case of error, also returns the error message.
 ----------------------------------------------------------------------------
 function load (id)
 	assert (check_id (id))

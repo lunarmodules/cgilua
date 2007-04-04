@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- $Id: cgilua.lua,v 1.38 2007/03/28 13:22:11 tomas Exp $
+-- $Id: cgilua.lua,v 1.39 2007/04/04 04:36:21 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -22,7 +22,7 @@ lp.setcompatmode (true)
 
 module ("cgilua")
 
-----------------------------------------------------------------------------
+--
 -- Internal state variables.
 local default_errorhandler = debug.traceback
 local errorhandler = default_errorhandler
@@ -58,22 +58,37 @@ _COPYRIGHT = "Copyright (C) 2003-2006 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
 _VERSION = "CGILua 5.0.1"
 
-----------------------------------------------------------------------------
+--
 -- Header functions
+
+----------------------------------------------------------------------------
+-- Sends a header.
+-- @param header String with the header.
+-- @param value String with the corresponding value.
 ----------------------------------------------------------------------------
 header = SAPI.Response.header
 
+----------------------------------------------------------------------------
+-- Sends a Content-type header.
+-- @param type String with the type of the header.
+-- @param subtype String with the subtype of the header.
+----------------------------------------------------------------------------
 function contentheader (type, subtype)
 	SAPI.Response.contenttype (type..'/'..subtype)
 end
 
+----------------------------------------------------------------------------
+-- Sends the HTTP header "text/html".
+----------------------------------------------------------------------------
 function htmlheader()
 	SAPI.Response.contenttype ("text/html")
 end
 local htmlheader = htmlheader
 
 ----------------------------------------------------------------------------
--- Create an HTTP header redirecting the browser to another URL
+-- Sends an HTTP header redirecting the browser to another URL
+-- @param url String with the URL.
+-- @param args Table with the arguments (optional).
 ----------------------------------------------------------------------------
 function redirect (url, args)
 	if strfind(url,"^https?:") then
@@ -89,11 +104,15 @@ end
 
 ----------------------------------------------------------------------------
 -- Returns a server variable
+-- @param name String with the name of the server variable.
+-- @return String with the value of the server variable.
 ----------------------------------------------------------------------------
 servervariable = SAPI.Request.servervariable
 
 ----------------------------------------------------------------------------
 -- Primitive error output function
+-- @param msg String (or number) with the message.
+-- @param level String with the error level (optional).
 ----------------------------------------------------------------------------
 function errorlog (msg, level)
 	local t = type(msg)
@@ -110,6 +129,7 @@ end
 -- Its basic implementation is to use Lua function 'write', which writes
 --  each of its arguments (strings or numbers) to file _OUTPUT (a file
 --  handle initialized with the file descriptor for stdout)
+-- @param s String (or number) with output.
 ----------------------------------------------------------------------------
 function put (s)
 	local t = type(s)
@@ -121,7 +141,8 @@ function put (s)
 end
 
 ----------------------------------------------------------------------------
--- Remove globals not allowed in CGILua scripts
+-- Remove globals not allowed in CGILua scripts.
+-- @param notallowed Array of Strings with the names to be removed.
 ----------------------------------------------------------------------------
 function removeglobals (notallowed)
 	for _, g in ipairs(notallowed) do
@@ -139,6 +160,8 @@ end
 -- Execute a script
 --  If an error is found, Lua's error handler is called and this function
 --  does not return
+-- @param filename String with the name of the file to be processed.
+-- @return The result of the execution of the file.
 ----------------------------------------------------------------------------
 function doscript (filename)
 	local res, err = _G.loadfile(filename)
@@ -153,6 +176,10 @@ end
 -- Execute the file if there is no "file error".
 --  If an error is found, and it is not a "file error", Lua 'error'
 --  is called and this function does not return
+-- @param filename String with the name of the file to be processed.
+-- @return The result of the execution of the file or nil (in case the
+--	file does not exists or if it cannot be opened).
+-- @return It could return an error message if the file cannot be opened.
 ----------------------------------------------------------------------------
 function doif (filename)
 	if not filename then return end    -- no file
@@ -164,6 +191,7 @@ end
 
 ---------------------------------------------------------------------------
 -- Set the maximum "total" input size allowed (in bytes)
+-- @param nbytes Number of the maximum size (in bytes) of the whole POST data.
 ---------------------------------------------------------------------------
 function setmaxinput(nbytes)
 	maxinput = nbytes
@@ -172,6 +200,7 @@ end
 ---------------------------------------------------------------------------
 -- Set the maximum size for an "uploaded" file (in bytes)
 -- Might be less or equal than maxinput.
+-- @param nbytes Number of the maximum size (in bytes) of a file.
 ---------------------------------------------------------------------------
 function setmaxfilesize(nbytes)
 	maxfilesize = nbytes
@@ -181,6 +210,7 @@ end
 -- Preprocess the content of a mixed HTML file and output a complete
 --   HTML document ( a 'Content-type' header is inserted before the
 --   preprocessed HTML )
+-- @param filename String with the name of the file to be processed.
 ----------------------------------------------------------------------------
 function handlelp (filename)
 	htmlheader ()
@@ -190,6 +220,10 @@ end
 ----------------------------------------------------------------------------
 -- Builds a handler that sends a header and the contents of the given file.
 -- Sends the contents of the file to the output without processing it.
+-- @param type String with the type of the header.
+-- @param subtype String with the subtype of the header.
+-- @return Function (which receives a filename as argument) that produces
+--	the header and copies the content of the given file.
 ----------------------------------------------------------------------------
 function buildplainhandler (type, subtype)
 	return function (filename)
@@ -203,7 +237,11 @@ end
 
 ----------------------------------------------------------------------------
 -- Builds a handler that sends a header and the processed file.
--- Sends the contents of the file to the output without processing it.
+-- Processes the file as a Lua Page.
+-- @param type String with the type of the header.
+-- @param subtype String with the subtype of the header.
+-- @return Function (which receives a filename as argument) that produces
+--	the header and processes the given file.
 ----------------------------------------------------------------------------
 function buildprocesshandler (type, subtype)
 	return function (filename)
@@ -214,6 +252,9 @@ end
 
 ----------------------------------------------------------------------------
 -- Create an URL path to be used as a link to a CGILua script
+-- @param script String with the name of the script.
+-- @param args Table with arguments to script (optional).
+-- @return String in URL format.
 ----------------------------------------------------------------------------
 function mkurlpath (script, args)
 	-- URL-encode the parameters to be passed do the script
@@ -230,6 +271,9 @@ end
 
 ----------------------------------------------------------------------------
 -- Create an absolute URL containing the given URL path
+-- @param path String with the path.
+-- @param protocol String with the name of the protocol (default = "http").
+-- @return String in URL format.
 ----------------------------------------------------------------------------
 function mkabsoluteurl (path, protocol)
 	if not protocol then protocol = "http" end
@@ -242,15 +286,19 @@ end
 
 ----------------------------------------------------------------------------
 -- Extract the "directory" and "file" parts of a path
+-- @param path String with a path.
+-- @return String with the directory part.
+-- @return String with the file part.
 ----------------------------------------------------------------------------
 function splitpath (path)
 	local _,_,dir,file = strfind(path,"^(.-)([^:/\\]*)$")
 	return dir,file
 end
 
-----------------------------------------------------------------------------
+--
 -- Define variables and build `cgi' table.
-----------------------------------------------------------------------------
+-- @param args Table where to store the parameters (the actual `cgi' table).
+--
 local function getparams (args)
 	-- Define variables.
 	script_path = script_path or servervariable"PATH_TRANSLATED"
@@ -283,15 +331,16 @@ local function getparams (args)
 	urlcode.parsequery (servervariable"QUERY_STRING", args)
 end
 
-----------------------------------------------------------------------------
+--
 -- Stores all script handlers and the file extensions used to identify
 -- them.
 local script_handlers = {}
 
-----------------------------------------------------------------------------
+--
 -- Default handler.
 -- Sends the contents of the file to the output without processing it.
-----------------------------------------------------------------------------
+-- @param filename String with the name of the file.
+--
 local function default_handler (filename)
 	htmlheader ()
 	local fh = assert (_open (filename))
@@ -341,6 +390,7 @@ end
 -- This function is called by Lua when an error occurs.
 -- It receives the error message generated by Lua and it is resposible
 -- for the final message which should be returned.
+-- @param Function.
 ---------------------------------------------------------------------------
 function seterrorhandler (f)
 	local tf = type(f)
@@ -352,8 +402,9 @@ function seterrorhandler (f)
 end
 
 ---------------------------------------------------------------------------
--- Sets "erroroutput" function
+-- Defines the "erroroutput" function
 -- This function is called to generate the error output.
+-- @param Function.
 ---------------------------------------------------------------------------
 function seterroroutput (f)
 	local tf = type(f)
@@ -364,9 +415,10 @@ function seterroroutput (f)
 	end
 end
 
----------------------------------------------------------------------------
+--
 -- Executes a function with an error handler.
----------------------------------------------------------------------------
+-- @param f Function to be called.
+--
 local function _xpcall (f)
 	local ok, result = xpcall (f, errorhandler)
 	if ok then
@@ -376,15 +428,14 @@ local function _xpcall (f)
 	end
 end
 
-----------------------------------------------------------------------------
+--
 -- Stores all close functions in order they are set.
 local close_functions = {
 }
 
 ---------------------------------------------------------------------------
--- Set "close" function
---
--- This function will be called after the user script execution
+-- Adds a function to be executed after the script.
+-- @param f Function to be registered.
 ---------------------------------------------------------------------------
 function addclosefunction (f)
 	local tf = type(f)
@@ -395,25 +446,22 @@ function addclosefunction (f)
 	end
 end
 
----------------------------------------------------------------------------
+--
 -- Close function.
----------------------------------------------------------------------------
+--
 local function close()
 	for i = #close_functions, 1, -1 do
 		close_functions[i]()
 	end
 end
 
-----------------------------------------------------------------------------
+--
 -- Stores all open functions in order they are set.
 local open_functions = {
 }
 
 ---------------------------------------------------------------------------
--- Set "open" function
---
--- This function will be called before the user script (and environment)
--- execution
+-- Adds a function to be executed before the script.
 -- @param f Function to be registered.
 ---------------------------------------------------------------------------
 function addopenfunction (f)
@@ -425,19 +473,19 @@ function addopenfunction (f)
 	end
 end
 
----------------------------------------------------------------------------
+--
 -- Open function.
 -- Call all defined open-functions in the order they were created.
----------------------------------------------------------------------------
+--
 local function open()
 	for i = #open_functions, 1, -1 do
 		open_functions[i]()
 	end
 end
 
----------------------------------------------------------------------------
+--
 -- Resets CGILua's state.
----------------------------------------------------------------------------
+--
 local function reset ()
 	script_path = false
 	maxfilesize = default_maxfilesize
