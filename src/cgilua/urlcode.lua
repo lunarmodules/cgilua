@@ -1,5 +1,7 @@
 ----------------------------------------------------------------------------
--- $Id: urlcode.lua,v 1.7 2007/03/16 15:18:16 tomas Exp $
+-- Utility functions for encoding/decoding of URLs.
+--
+-- @release $Id: urlcode.lua,v 1.8 2007/04/16 14:01:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 local next, pairs, tonumber, type = next, pairs, tonumber, type
@@ -60,6 +62,8 @@ end
 --   (the query part of the script URL or url-encoded post data)
 --
 --  Each decoded (name=value) pair is inserted into table [[args]]
+-- @param query String to be parsed.
+-- @param args Table where to store the pairs.
 ----------------------------------------------------------------------------
 function parsequery (query, args)
 	if type(query) == "string" then
@@ -74,6 +78,8 @@ end
 ----------------------------------------------------------------------------
 -- URL-encode the elements of a table creating a string to be used in a
 --   URL for passing data/parameters to another script
+-- @param args Table where to extract the pairs (name=value).
+-- @return String with the resulting encoding.
 ----------------------------------------------------------------------------
 function encodetable (args)
   if args == nil or next(args) == nil then   -- no args or empty args?

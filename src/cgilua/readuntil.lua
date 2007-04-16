@@ -1,11 +1,19 @@
 ----------------------------------------------------------------------------
--- $Id: readuntil.lua,v 1.4 2006/08/05 04:21:55 carregal Exp $
+-- Reads an input until a given character.
+--
+-- @release $Id: readuntil.lua,v 1.5 2007/04/16 14:01:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 local strsub, strfind, strlen = string.sub, string.find, string.len
 
 module ("cgilua.readuntil")
 
+----------------------------------------------------------------------------
+-- Creates a function which reads an input until a given character.
+-- @param inp Function which reads the input.
+-- @return Function which receives a delimiter character and an output
+--	function.
+----------------------------------------------------------------------------
 function iterate (inp)
 	local current = ""
 	return function (del, out)

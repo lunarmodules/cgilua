@@ -2,22 +2,22 @@
 -- Serialize tables.
 -- It works only for tables without cycles and without functions or
 -- userdata inside it.
--- $Id: serialize.lua,v 1.6 2006/01/06 17:52:18 tomas Exp $
+-- @release $Id: serialize.lua,v 1.7 2007/04/16 14:01:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 local ipairs, pairs, type = ipairs, pairs, type
 local format = string.format
 local sort, tinsert = table.sort, table.insert
 
-----------------------------------------------------------------------------
+--
 local value = nil
 
 ----------------------------------------------------------------------------
 -- Serializes a table.
 -- @param tab Table representing the session.
 -- @param outf Function used to generate the output.
--- @param ind String with indentation pattern.
--- @param pre String with indentation prefix.
+-- @param ind String with indentation pattern (default = "").
+-- @param pre String with indentation prefix (default = "").
 ----------------------------------------------------------------------------
 local function tabledump (tab, outf, ind, pre)
 	local sep_n, sep, _n = ",\n", ", ", "\n"
@@ -89,9 +89,9 @@ local function tabledump (tab, outf, ind, pre)
 end
 
 
-----------------------------------------------------------------------------
+--
 -- Serializes a value.
-----------------------------------------------------------------------------
+--
 value = function (v, outf, ind, pre)
 	local t = type (v)
 	if t == "string" then

@@ -13,8 +13,8 @@
 --		maxfilesize = 512 * 1024,
 --		args = params,
 --	}
-----------------------------------------------------------------------------
--- $Id: post.lua,v 1.11 2007/03/19 17:19:49 tomas Exp $
+--
+-- @release $Id: post.lua,v 1.12 2007/04/16 14:01:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.readuntil"
@@ -42,17 +42,17 @@ local read = nil          -- basic read function
 
 module ("cgilua.post")
 
-----------------------------------------------------------------------------
+--
 -- Extract the boundary string from CONTENT_TYPE metavariable
-----------------------------------------------------------------------------
+--
 local function getboundary ()
   local _,_,boundary = strfind (content_type, "boundary%=(.-)$")
   return  "--"..boundary 
 end
 
-----------------------------------------------------------------------------
+--
 -- Create a table containing the headers of a multipart/form-data field
-----------------------------------------------------------------------------
+--
 local function breakheaders (hdrdata)
   local headers = {}
   gsub (hdrdata, '([^%c%s:]+):%s+([^\n]+)', function(type,val)
@@ -62,13 +62,13 @@ local function breakheaders (hdrdata)
   return headers
 end
 
-----------------------------------------------------------------------------
+--
 -- Read the headers of the next multipart/form-data field 
 --
 --  This function returns a table containing the headers values. Each header
 --  value is indexed by the corresponding header "type". 
 --  If end of input is reached (no more fields to process) it returns nil.
-----------------------------------------------------------------------------
+--
 local function readfieldheaders ()
 	local EOH = "\r\n\r\n" -- <CR><LF><CR><LF>
 	local hdrdata = ""
@@ -82,9 +82,9 @@ local function readfieldheaders ()
 	end
 end
 
-----------------------------------------------------------------------------
+--
 -- Extract a field name (and possible filename) from its disposition header
-----------------------------------------------------------------------------
+--
 local function getfieldnames (headers)
   local disposition_hdr = headers["content-disposition"]
   local attrs = {}
@@ -99,9 +99,9 @@ local function getfieldnames (headers)
   return attrs.name, attrs.filename
 end
 
-----------------------------------------------------------------------------
+--
 -- Read the contents of a 'regular' field to a string
-----------------------------------------------------------------------------
+--
 local function readfieldcontents ()
 	local value = ""
 	local boundaryline = "\r\n"..boundary
@@ -113,9 +113,9 @@ local function readfieldcontents ()
 	end
 end
 
-----------------------------------------------------------------------------
+--
 -- Read the contents of a 'file' field to a temporary file (file upload)
-----------------------------------------------------------------------------
+--
 local function fileupload (filename)
 	-- create a temporary file for uploading the file field
 	local file, err = tmpfile()
@@ -142,9 +142,9 @@ local function fileupload (filename)
 	end
 end
 
-----------------------------------------------------------------------------
+--
 -- Compose a file field 'value' 
-----------------------------------------------------------------------------
+--
 local function filevalue (filehandle, filename, filesize, headers)
   -- the temporary file handle
   local value = { file = filehandle,
@@ -159,7 +159,7 @@ local function filevalue (filehandle, filename, filesize, headers)
   return value
 end
 
-----------------------------------------------------------------------------
+--
 -- Process multipart/form-data 
 --
 -- This function receives the total size of the incoming multipart/form-data, 
@@ -180,7 +180,7 @@ end
 --
 -- If the field is not of type 'file', [[value]] contains the field 
 -- contents.
-----------------------------------------------------------------------------
+--
 local function Main (inputsize, args)
 
 	-- create a temporary file for processing input data
@@ -218,7 +218,7 @@ local function Main (inputsize, args)
 	end
 end
 
----------------------------------------------------------------------------
+--
 -- Initialize the library by setting the dependent functions:
 --	content_type            = value of "Content-type" header
 --	content_length          = value of "Content-length" header
@@ -226,7 +226,7 @@ end
 --	discardinput (optional) = function that discard POST data
 --	maxinput (optional)     = limit of POST data (in bytes)
 --	maxfilesize (optional)  = limit of uploaded file(s) (in bytes)
----------------------------------------------------------------------------
+--
 local function init (defs)
 	assert (defs.read)
 	assert (defs.content_type)

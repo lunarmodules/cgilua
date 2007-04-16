@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
--- $Id: cookies.lua,v 1.6 2006/08/05 04:21:55 carregal Exp $
---
 -- Cookies Library
+--
+-- @release $Id: cookies.lua,v 1.7 2007/04/16 14:01:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.urlcode"
@@ -41,16 +41,35 @@ local function build (name, value, options)
 end
 
 
+----------------------------------------------------------------------------
+-- Sets a value to a cookie, with the given options.
+-- Generates a header "Set-Cookie", thus it can only be used in Lua Scripts.
+-- @param name String with the name of the cookie.
+-- @param value String with the value of the cookie.
+-- @param options Table with the options (optional).
+
 function set (name, value, options)
   header("Set-Cookie", build(name, value, options))
 end
 
+
+----------------------------------------------------------------------------
+-- Sets a value to a cookie, with the given options.
+-- Generates an HTML META tag, thus it can be used in Lua Pages.
+-- @param name String with the name of the cookie.
+-- @param value String with the value of the cookie.
+-- @param options Table with the options (optional).
 
 function sethtml (name, value, options)
   write(format('<meta http-equiv="Set-Cookie" content="%s">', 
                 build(name, value, options)))
 end
 
+
+----------------------------------------------------------------------------
+-- Gets the value of a cookie.
+-- @param name String with the name of the cookie.
+-- @return String with the value associated with the cookie.
 
 function get (name)
   local cookies = servervariable"HTTP_COOKIE" or ""
@@ -61,6 +80,11 @@ function get (name)
   return value and unescape(value)
 end
 
+
+----------------------------------------------------------------------------
+-- Deletes a cookie, by setting its value to "xxx".
+-- @param name String with the name of the cookie.
+-- @param options Table with the options (optional).
 
 function delete (name, options)
   options = options or {}

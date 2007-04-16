@@ -1,9 +1,7 @@
 ----------------------------------------------------------------------------
--- Template Preprocessor.
+-- Lua Pages Template Preprocessor.
 --
--- @class module
--- @name cgilua.lp
--- @release $Id: lp.lua,v 1.11 2007/04/02 19:10:25 tomas Exp $
+-- @release $Id: lp.lua,v 1.12 2007/04/16 14:01:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 local assert, error, getfenv, loadstring, setfenv = assert, error, getfenv, loadstring, setfenv
