@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.40 2007/04/16 14:01:32 tomas Exp $
+-- @release $Id: cgilua.lua,v 1.41 2007/05/05 13:51:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -276,7 +276,10 @@ end
 -- @return String in URL format.
 ----------------------------------------------------------------------------
 function mkabsoluteurl (path, protocol)
-	if not protocol then protocol = "http" end
+	protocol = protocol or "http"
+	if path:sub(1,1) ~= '/' then
+		path = '/'..path
+	end
 	return format("%s://%s:%s%s",
 		protocol,
 		servervariable"SERVER_NAME",
