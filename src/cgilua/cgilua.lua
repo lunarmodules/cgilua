@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.41 2007/05/05 13:51:32 tomas Exp $
+-- @release $Id: cgilua.lua,v 1.42 2007/05/14 14:56:12 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -530,7 +530,7 @@ function main ()
 	-- Opening function
 	_xpcall (open)
 	-- Executing script
-	local result = _xpcall (function () handle (script_file) end)
+	local result = _xpcall (function () return handle (script_file) end)
 
 	-- Closing function
 	_xpcall (close)
