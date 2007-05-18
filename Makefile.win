@@ -1,12 +1,14 @@
-# $Id: Makefile.win,v 1.4 2007/03/15 21:27:58 carregal Exp $
+# $Id: Makefile.win,v 1.5 2007/05/18 21:08:20 hisham Exp $
 
 LUA_DIR= c:\lua5.1\lua
 CGILUA_DIR= $(LUA_DIR)\cgilua
+CGILUA_LUAS= src\cgilua\cookies.lua src\cgilua\lp.lua src\cgilua\post.lua src\cgilua\readuntil.lua src\cgilua\serialize.lua src\cgilua\session.lua src\cgilua\urlcode.lua
+ROOT_LUAS= src\cgilua\cgilua.lua
 CONFIG_FILE= config.lua
 
-clean:
-
 install:
+	IF NOT EXIST $(LUA_DIR) mkdir $(LUA_DIR)
 	IF NOT EXIST $(CGILUA_DIR) mkdir $(CGILUA_DIR)
-	copy src\cgilua\*.lua $(CGILUA_DIR)
-
+	copy $(CGILUA_LUAS) $(CGILUA_DIR)
+	copy $(ROOT_LUAS) $(LUA_DIR)
+	IF NOT EXIST $(CGILUA_DIR)\$(CONFIG_FILE) copy src\cgilua\$(CONFIG_FILE) $(CGILUA_DIR)
