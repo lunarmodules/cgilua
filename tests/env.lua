@@ -10,7 +10,7 @@ cgilua.addclosefunction (function ()
 <p>
 <small>
 <a href="test_main.html">Main</a>]]
-	for _, test in {
+	for _, test in ipairs{
 			{ "Get", "test_main.lua", {ab = "cd", ef = "gh"} },
 			{ "Cookies", "test_cookies.lua", },
 			{ "FileSystem", "test_fs.lua", },
