@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.43 2007/07/14 11:19:54 tomas Exp $
+-- @release $Id: cgilua.lua,v 1.44 2007/07/14 11:52:54 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -10,8 +10,8 @@ local lp = require"cgilua.lp"
 local post = require"cgilua.post"
 local lfs = require"lfs"
 local debug = require"debug"
-local assert, error, ipairs, type, xpcall = assert, error, ipairs, type, xpcall
-local gsub, format, strfind, strlower, strsub, tostring = string.gsub, string.format, string.find, string.lower, string.sub, tostring
+local assert, error, ipairs, select, tostring, type, unpack, xpcall = assert, error, ipairs, select, tostring, type, unpack, xpcall
+local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
 local _open = io.open
 local tinsert, tremove = table.insert, table.remove
 local date = os.date
@@ -124,6 +124,17 @@ function errorlog (msg, level)
 end
 
 ----------------------------------------------------------------------------
+-- Converts all its arguments to strings before sending them to the server.
+----------------------------------------------------------------------------
+function print (...)
+	local args = { ... }
+	for i = 1, select("#",...) do
+		args[i] = tostring(args[i])
+	end
+	SAPI.Response.write (unpack(args))
+end
+
+----------------------------------------------------------------------------
 -- Function 'put' sends its arguments (basically strings of HTML text)
 --  to the server
 -- Its basic implementation is to use Lua function 'write', which writes
@@ -131,14 +142,7 @@ end
 --  handle initialized with the file descriptor for stdout)
 -- @param s String (or number) with output.
 ----------------------------------------------------------------------------
-function put (s)
-	local t = type(s)
-	if t == "string" or t == "number" then
-		SAPI.Response.write (s)
-	else
-		error ("bad argument #1 to `cgilua.put' (string expected, got "..t..")", 2)
-	end
-end
+put = SAPI.Response.write
 
 ----------------------------------------------------------------------------
 -- Remove globals not allowed in CGILua scripts.
