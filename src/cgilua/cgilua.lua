@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.42 2007/05/14 14:56:12 tomas Exp $
+-- @release $Id: cgilua.lua,v 1.43 2007/07/14 11:19:54 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -54,9 +54,9 @@ local default_maxinput = 1024 * 1024
 local maxinput = default_maxinput
 script_path = false
 
-_COPYRIGHT = "Copyright (C) 2003-2006 Kepler Project"
+_COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
-_VERSION = "CGILua 5.0.1"
+_VERSION = "CGILua 5.1.0"
 
 --
 -- Header functions
