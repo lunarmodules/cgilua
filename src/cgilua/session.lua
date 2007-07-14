@@ -1,9 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 --
--- @class module.
--- @name cgilua.session.
--- @release $Id: session.lua,v 1.21 2007/04/04 04:36:21 tomas Exp $
+-- @release $Id: session.lua,v 1.22 2007/07/14 11:18:31 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
