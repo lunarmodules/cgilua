@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 --
--- @release $Id: session.lua,v 1.22 2007/07/14 11:18:31 tomas Exp $
+-- @release $Id: session.lua,v 1.23 2007/07/19 19:59:32 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -16,6 +16,8 @@ local mod, rand, randseed = math.mod, math.random, math.randomseed
 local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
 
 module ("cgilua.session")
+
+local INVALID_SESSION_ID = "Invalid session identification"
 
 ----------------------------------------------------------------------------
 -- Internal state variables.
@@ -43,7 +45,9 @@ end
 -- @param id Session identification.
 ----------------------------------------------------------------------------
 function delete (id)
-	assert (check_id (id))
+	if not check_id (id) then
+		return nil, INVALID_SESSION_ID
+	end
 	remove (filename (id))
 end
 
@@ -100,7 +104,9 @@ end
 -- @return In case of error, also returns the error message.
 ----------------------------------------------------------------------------
 function load (id)
-	assert (check_id (id))
+	if not check_id (id) then
+		return nil, INVALID_SESSION_ID
+	end
 	local f, err = loadfile (filename (id))
 	if not f then
 		return nil, err
@@ -115,7 +121,9 @@ end
 -- @param data Table with session data to be saved.
 ----------------------------------------------------------------------------
 function save (id, data)
-	assert (check_id (id))
+	if not check_id (id) then
+		return nil, INVALID_SESSION_ID
+	end
 	local fh = assert (_open (filename (id), "w+"))
 	fh:write "return "
 	serialize (data, function (s) fh:write(s) end)
