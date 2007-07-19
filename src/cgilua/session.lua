@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 --
--- @release $Id: session.lua,v 1.24 2007/07/19 20:07:40 tomas Exp $
+-- @release $Id: session.lua,v 1.25 2007/07/19 20:29:29 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -28,7 +28,7 @@ local timeout = 10 * 60 -- 10 minutes
 -- Checks identifier's format.
 --
 local function check_id (id)
-	return (strfind (id, "^%d+$") ~= nil)
+	return id and (strfind (id, "^%d+$") ~= nil)
 end
 
 --
@@ -186,6 +186,14 @@ local ID_NAME = "cgilua session identification"
 local id = nil
 
 ----------------------------------------------------------------------------
+-- Destroys the session.
+----------------------------------------------------------------------------
+function destroy ()
+	data = {} -- removes data from session table to avoid recreation by `close'
+	delete (id)
+end
+
+----------------------------------------------------------------------------
 -- Open user session.
 -- This function should be called before the script is executed.
 ----------------------------------------------------------------------------
@@ -198,12 +206,6 @@ function open ()
 		end
 		data[ID_NAME] = id
 		return mkurlpath (script, data)
-	end
-	-- Define cgilua.session.destroy() to encapsulate the session id
-	_M.destroy = function ()
-		-- Remove data from session table to avoid recreation by `close'
-		_M.data = {}
-		_M.delete (id)
 	end
 
 	cleanup()
