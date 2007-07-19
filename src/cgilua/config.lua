@@ -1,5 +1,5 @@
 -- CGILua configuration file
--- $Id: config.lua,v 1.9 2006/12/13 13:12:38 tomas Exp $
+-- $Id: config.lua,v 1.10 2007/07/19 20:07:40 tomas Exp $
 
 -- Emulating old behavior loading file "env.lua" from the script's directory
 --[[
@@ -10,24 +10,15 @@ end)
 
 -- Basic configuration for using sessions
 require"cgilua.session"
-cgilua.session.setsessiondir ("/tmp/")
--- The following function must be called by every script that needs session.
-local already_enabled = false
-function cgilua.enablesession ()
-	if already_enabled then
-		return
-	else
-		already_enabled = true
-	end
-	cgilua.session.open ()
-	cgilua.addclosefunction (cgilua.session.close)
-end
+cgilua.session.setsessiondir ("/tmp/cgilua/")
+-- Add cgilua.enablesession() at the beginning of every script which depends
+-- on sessions.
 
 -- Compatibility
 cgilua.preprocess = cgilua.handlelp
 cgilua.includehtml = cgilua.lp.include
 
--- Directories for specific applications' libraries.
+-- Directories for applications' libraries.
 -- The following table should be indexed by the virtual path of the application
 -- and contain the absolute path of the application's Lua-library directory.
 local app_lib_dir = {

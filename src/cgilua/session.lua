@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 --
--- @release $Id: session.lua,v 1.23 2007/07/19 19:59:32 tomas Exp $
+-- @release $Id: session.lua,v 1.24 2007/07/19 20:07:40 tomas Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -225,3 +225,21 @@ function close ()
 		id = nil
 	end
 end
+
+local already_enabled = false
+----------------------------------------------------------------------------
+-- Enables the use of sessions.
+-- This function must be called by every script that needs sessions.
+-- It just calls the `open' function and register the `close' function
+-- to be called at the end of the execution.
+----------------------------------------------------------------------------
+function _G.cgilua.enablesession ()
+	if already_enabled then -- avoid misuse when a script calls another one
+		return
+	else
+		already_enabled = true
+	end
+	open ()
+	_G.cgilua.addclosefunction (close)
+end
+
