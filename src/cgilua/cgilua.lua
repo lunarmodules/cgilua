@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.44 2007/07/14 11:52:54 tomas Exp $
+-- @release $Id: cgilua.lua,v 1.45 2007/08/20 20:47:58 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -12,6 +12,7 @@ local lfs = require"lfs"
 local debug = require"debug"
 local assert, error, ipairs, select, tostring, type, unpack, xpcall = assert, error, ipairs, select, tostring, type, unpack, xpcall
 local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
+local setmetatable = setmetatable
 local _open = io.open
 local tinsert, tremove = table.insert, table.remove
 local date = os.date
@@ -303,7 +304,7 @@ function splitpath (path)
 end
 
 --
--- Define variables and build `cgi' table.
+-- Define variables and build the cgilua.POST, cgilua.GET and the global `cgi' table.
 -- @param args Table where to store the parameters (the actual `cgi' table).
 --
 local function getparams (args)
@@ -323,7 +324,8 @@ local function getparams (args)
 		script_vdir = splitpath (servervariable"SCRIPT_NAME")
 		urlpath = ""
 	end
-	-- Fill in args table.
+	-- Fill in the POST table.
+	POST = {}
 	if servervariable"REQUEST_METHOD" == "POST" then
 		post.parsedata {
 			read = SAPI.Request.getpostdata,
@@ -332,10 +334,16 @@ local function getparams (args)
 			content_length = servervariable"CONTENT_LENGTH",
 			maxinput = maxinput,
 			maxfilesize = maxfilesize,
-			args = args,
+			args = POST,
 		}
 	end
-	urlcode.parsequery (servervariable"QUERY_STRING", args)
+	-- Fill in the GET table.
+	GET = {}
+	urlcode.parsequery (servervariable"QUERY_STRING", GET)
+	-- Copies POST and GET data to the cgi table for backward compatibility
+	local mt = {}
+	mt.__index = function(t,v) return POST[v] or GET[v] end
+	setmetatable(args, mt)
 end
 
 --
