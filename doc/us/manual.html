@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <title>CGILua: Building Web Scripts with Lua</title>
     <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
@@ -133,7 +133,7 @@ request:
     <li>Add default handlers such as LuaScripts and Lua Pages.</li>
     <li>Execute the <code>config.lua</code> file, allowing the customization of the next steps.</li>
     <li>Remove dangerous globals (such as <code>debug</code>) from the user script environment.</li>
-    <li>Build the <code>cgi</code> table (processing POST and GET data).</li>
+    <li>Build the <code>cgilua.POST</code> and <code>cgilua.QUERY</code> tables (processing POST and QUERY data).</li>
     <li>Change to user script directory.</li>
     <li>Execute the registered <em>open</em> functions.</li>
     <li>Execute the requested script with the correct environment.</li>
@@ -156,16 +156,13 @@ abstractions over the whole CGILua way of live, like MVC-frameworks such as Orbi
 <p>
 CGILua follows the
 <a href="http://www.inf.puc-rio.br/~roberto/pil2/chapter15.pdf">package model</a>
-for Lua 5.1, therefore it should be "installed".
-Refer to <a href="http://www.keplerproject.org/compat/manual.html#configuration">
-Compat-5.1 configuration</a> section about how to install the modules properly
-in a Lua 5.0 environment.
+for Lua 5.1, therefore it should be "installed" in your <code>package.path</code>.
 </p>
 
 <h2><a name="config"></a>Configuration</h2>
 
 <p>
-CGILua 5.0 offers a single configuration file, called <code>config.lua</code>
+CGILua 5.1 offers a single configuration file, called <code>config.lua</code>
 and a set of functions to alter the default CGILua behaviour. This file can
 be placed anywhere in the Lua Path, but to make easier to upgrade
 CGILua without overwriting your <code>config.lua</code> you can use a separate
@@ -201,6 +198,13 @@ files. For more details on this usage of Lua Path please check the Kepler docume
     <a href="reference.html#addclosefunction"><code>cgilua.addclosefunction</code></a>.
     These functions are executed just before and just after the script execution,
     even when an error occurs in the script processing.</dd>
+
+    <dt><strong>Defining the <code>cgi</code> global</strong></dt>
+    <dd>Although CGILua 5.1 uses the <code>cgilua.POST</code> and <code>cgilua.QUERY</code> tables
+    to offer the request data, you may want to use a global table called <code>cgi</code> to access
+    both types of data, just as in the previous versions. Note that this is considered a deprecated
+    feature and is not considered a safe approach to request data handling since you cannot know
+    if it came from a form or from the Query string.</dd>
 </dl>
 
 <p>
@@ -210,7 +214,7 @@ Some examples of the use of such functions in <code>config.lua</code> are shown 
 
 <p>
 Previous versions of CGILua loaded a <code>env.lua</code> file from the
-script directory before processing it. To emulate this with CGILua 5.0 you can
+script directory before processing it. To emulate this with CGILua 5.1 you can
 use something like:
 </p>
 
@@ -335,9 +339,9 @@ variables, and the concatenation operator:
 <pre class="example">
 cgilua.htmlheader()  
 
-if cgi.language == 'english' then
+if cgilua.QUERY.language == 'english' then
   greeting = 'Hello World!'
-elseif cgi.language == 'portuguese' then
+elseif cgilua.QUERY.language == 'portuguese' then
   greeting = 'Ol&aacute; Mundo!'
 else
   greeting = '[unknown language]'
@@ -354,11 +358,13 @@ cgilua.put('&lt;/html&gt;')
 </pre>
 
 <p>
-In the above example the use of <code><em>cgi.language</em></code> indicates
+In the above example the use of <code><em>cgilua.QUERY.language</em></code> indicates
 that <em>language</em> was passed to the Lua Script as a
-<a href="manual.html#parameters">CGILua parameter</a>, coming from a HTML form field
-(via POST) or from the URL used to activate it (via GET). CGILua automatically
-decodes such parameters so you can use them at will on your Lua Scripts and Lua Pages.
+<a href="manual.html#parameters">CGILua parameter</a>, coming from the URL used to activate it
+(via GET). If you were using a form, the parameter would be available in
+<code><em>cgilua.POST.language</em></code>. CGILua automatically decodes such
+QUERY and POST parameters so you can use them at will on your
+Lua Scripts and Lua Pages.
 </p>
 
 <h2><a name="templates"></a>Lua Pages</h2>
@@ -412,9 +418,9 @@ Lua Page like:
 <pre class="example">
 &lt;html&gt;
 &lt;?lua
-if cgi.language == 'english' then
+if cgilua.QUERY.language == 'english' then
   greeting = 'Hello World!'
-elseif cgi.language == 'portuguese' then
+elseif cgilua.QUERY.language == 'portuguese' then
   greeting = 'Ol&aacute; Mundo!'
 else
   greeting = '[unknown language]'
@@ -441,9 +447,9 @@ was definied in file <code>functions.lua</code> as follows:
 <pre class="example">
 function getGreeting()
   local greeting
-  if cgi.language == 'english' then
+  if cgilua.QUERY.language == 'english' then
     greeting = 'Hello World!'
-  elseif cgi.language == 'portuguese' then
+  elseif cgilua.QUERY.language == 'portuguese' then
     greeting = 'Ol&aacute; Mundo!'
   else
     greeting = '[unknown language]'
@@ -492,18 +498,17 @@ The equivalent loop in Lua Page would be:
 
 <pre class="example">
 &lt;ul&gt;
-    <% for i, item in ipairs(list) do %>
+    &lt;% for i, item in ipairs(list) do %&gt;
     &lt;li&gt;&lt;%= item %&gt;&lt;/li&gt;
-    <% end %>
+    &lt;% end %&gt;
 &lt;/ul&gt;
 </pre>
 
-<h2><a name="parameters"></a>Receiving parameters: the <code>cgi</code> table</h2>
+<h2><a name="parameters"></a>Receiving parameters: the <code>QUERY</code> and <code>POST</code> tables</h2>
 
 <p>
-CGILua offers an unified way of accessing data passed to the scripts
-for both HTTP method used (GET or POST). No matter which method was used on
-the client, all parameters will be provided inside the <code>cgi</code> table.
+CGILua offers both types of request parameters (QUERY strings and POST data) in the
+<code>cgilua.QUERY</code> and <code>cgilua.POST</code> tables.
 </p>
 
 <p>
@@ -647,7 +652,7 @@ containing all possible information to help reproduce the situation.
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: manual.html,v 1.17 2006/08/22 02:01:48 carregal Exp $</small></p>
+	<p><small>$Id: manual.html,v 1.18 2007/08/21 21:34:36 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
