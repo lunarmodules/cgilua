@@ -1,5 +1,5 @@
 -- CGILua configuration file
--- $Id: config.lua,v 1.10 2007/07/19 20:07:40 tomas Exp $
+-- $Id: config.lua,v 1.11 2007/08/21 20:15:55 carregal Exp $
 
 -- Emulating old behavior loading file "env.lua" from the script's directory
 --[[
@@ -7,6 +7,9 @@ cgilua.addopenfunction (function ()
 	cgilua.doif ("env.lua")
 end)
 --]]
+
+-- Optional backward compatibility with the global cgi table
+-- cgi = cgilua.CGI
 
 -- Basic configuration for using sessions
 require"cgilua.session"

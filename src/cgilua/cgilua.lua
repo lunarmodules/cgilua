@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.45 2007/08/20 20:47:58 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.46 2007/08/21 20:15:55 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -307,7 +307,7 @@ end
 -- Define variables and build the cgilua.POST, cgilua.GET and the global `cgi' table.
 -- @param args Table where to store the parameters (the actual `cgi' table).
 --
-local function getparams (args)
+local function getparams ()
 	-- Define variables.
 	script_path = script_path or servervariable"PATH_TRANSLATED"
     if not script_path then
@@ -337,13 +337,13 @@ local function getparams (args)
 			args = POST,
 		}
 	end
-	-- Fill in the GET table.
-	GET = {}
-	urlcode.parsequery (servervariable"QUERY_STRING", GET)
-	-- Copies POST and GET data to the cgi table for backward compatibility
+	-- Fill in the QUERY table.
+	QUERY = {}
+	urlcode.parsequery (servervariable"QUERY_STRING", QUERY)
+	-- Links POST and QUERY data to the CGI table for backward compatibility
 	local mt = {}
-	mt.__index = function(t,v) return POST[v] or GET[v] end
-	setmetatable(args, mt)
+	mt.__index = function(t,v) return POST[v] or QUERY[v] end
+	setmetatable(CGI, mt)
 end
 
 --
@@ -521,6 +521,7 @@ function main ()
 	-- Default values
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
+	CGI = {}
 	-- Configuring CGILua (trying to load cgilua/config.lua)
 	_xpcall (function () _G.require"cgilua.config" end)
 
@@ -533,9 +534,7 @@ function main ()
 	}
 	-- Build fake package
 	_G.package = { seeall = seeall, }
-	-- Defining directory variables and building `cgi' table
-	_G.cgi = {}
-	_xpcall (function () getparams (_G.cgi) end)
+	_xpcall (getparams)
 	-- Changing curent directory to the script's "physical" dir
 	local curr_dir = lfs.currentdir ()
 	_xpcall (function () lfs.chdir (script_pdir) end)
