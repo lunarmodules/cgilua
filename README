@@ -1,0 +1,39 @@
+CGILua 5.1
+http://keplerproject.org/cgilua
+
+CGILua is a tool for creating dynamic Web pages and manipulating input
+data from Web forms. CGILua allows the separation of logic and data
+handling from the generation of pages, making it easy to develop web
+applications with Lua.
+
+One of advantages of CGILua is its abstraction of the underlying Web server.
+You can develop a CGILua application for one Web server and run it on any
+other Web server that supports CGILua, even if using a different launching model.
+
+CGILua can be used with a variety of Web servers and, for each server,
+with different launchers. A launcher is responsible for the interaction of
+CGILua and the Web server, for example using ISAPI on IIS or mod_lua on Apache.
+The reference implementation of CGILua launchers is Kepler.
+
+CGILua is free software and uses the same license as Lua 5.1. 
+
+Installation
+CGILua follows the package model for Lua 5.1, therefore it should be "installed" in your package.path. 
+
+History
+Version 5.1.0 [21/Aug/2007]
+* Uses Lua 5.1
+* Added function cgilua.print (that uses tostring on its parameters)
+* Added a generic dispatcher and the concept of CGILua Apps
+* Replaced the cgi table used until CGILua 5.0 by two others cgilua.QUERY and cgilua.POST)
+* Added fake "package" table to enable the user/programmer to create modules with global visibility
+* Bug fix: return of HTTP status code
+* Bug fix: close method was recreating the session file
+* Correcting how LP handles strings with CR characters (Lua 5.0 would not mind, but Lua 5.1 does)
+* Fixed a bug with lighttpd
+
+Incompatibility with previous CGILua versions (5.0, 4.0 and 3.x)
+* CGILua 5.1 uses Lua 5.1.
+* The cgi table is now deprecated. See Receiving parameters for a more detailed explanation.
+* The template tags have changed. See Lua pages for a more detailed explanation.
+* The use of getenv calls to obtain CGI variables should be replaced by cgilua.servervariable calls.
