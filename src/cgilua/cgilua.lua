@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.47 2007/09/04 12:29:19 tomas Exp $
+-- @release $Id: cgilua.lua,v 1.48 2007/09/18 14:43:10 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -304,8 +304,7 @@ function splitpath (path)
 end
 
 --
--- Define variables and build the cgilua.POST, cgilua.GET and the global `cgi' table.
--- @param args Table where to store the parameters (the actual `cgi' table).
+-- Define variables and build the cgilua.POST, cgilua.QUERY and cgilua.CGI tables.
 --
 local function getparams ()
 	-- Define variables.

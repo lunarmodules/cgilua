@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 --
--- @release $Id: session.lua,v 1.25 2007/07/19 20:29:29 tomas Exp $
+-- @release $Id: session.lua,v 1.26 2007/09/18 14:43:10 carregal Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -210,9 +210,9 @@ function open ()
 
 	cleanup()
 
-	id = _G.cgi[ID_NAME] or new()
+	id = _G.cgilua.QUERY[ID_NAME] or new()
 	if id then
-		_G.cgi[ID_NAME] = nil
+		_G.cgilua.QUERY[ID_NAME] = nil
 		_G.cgilua.session.data = load (id) or {}
 	end
 end
