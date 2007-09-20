@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Session library.
 --
--- @release $Id: session.lua,v 1.26 2007/09/18 14:43:10 carregal Exp $
+-- @release $Id: session.lua,v 1.27 2007/09/20 13:26:52 carregal Exp $
 ----------------------------------------------------------------------------
 
 local lfs = require"lfs"
@@ -170,7 +170,7 @@ function setsessiondir (path)
 		assert (mkdir (path))
 	end
 	-- Make sure it can create a new file in the given directory
-	local test_file = path.."/test"
+	local test_file = path.."/"..os.tmpname()
 	local fh, err = _open (test_file, "w")
 	if not fh then
 		error ("Could not open a file in session directory: "..
