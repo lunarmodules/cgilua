@@ -1,8 +1,8 @@
-# $Id: Makefile.win,v 1.6 2007/05/18 22:19:33 carregal Exp $
+# $Id: Makefile.win,v 1.7 2007/09/25 23:17:56 carregal Exp $
 
 LUA_DIR= c:\lua5.1\lua
 CGILUA_DIR= $(LUA_DIR)\cgilua
-CGILUA_LUAS= src\cgilua\cookies.lua src\cgilua\lp.lua src\cgilua\post.lua src\cgilua\readuntil.lua src\cgilua\serialize.lua src\cgilua\session.lua src\cgilua\urlcode.lua
+CGILUA_LUAS= src\cgilua\cookies.lua src\cgilua\lp.lua src\cgilua\mime.lua src\cgilua\post.lua src\cgilua\readuntil.lua src\cgilua\serialize.lua src\cgilua\session.lua src\cgilua\urlcode.lua
 ROOT_LUAS= src\cgilua\cgilua.lua
 CONFIG_FILE= config.lua
 

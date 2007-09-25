@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.49 2007/09/24 22:05:52 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.50 2007/09/25 23:17:56 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -10,7 +10,8 @@ local lp = require"cgilua.lp"
 local lfs = require"lfs"
 local debug = require"debug"
 local assert, error, ipairs, select, tostring, type, unpack, xpcall = assert, error, ipairs, select, tostring, type, unpack, xpcall
-local gsub, format, strfind, strlower, strsub = string.gsub, string.format, string.find, string.lower, string.sub
+local pairs = pairs
+local gsub, format, strfind, strlower, strsub, match = string.gsub, string.format, string.find, string.lower, string.sub, string.match
 local setmetatable = setmetatable
 local _open = io.open
 local tinsert, tremove = table.insert, table.remove
@@ -255,10 +256,11 @@ end
 ----------------------------------------------------------------------------
 function buildplainhandler (type, subtype)
 	return function (filename)
-		contentheader (type, subtype)
-		local fh = assert (_open (filename))
+		local fh = assert (_open (filename, "rb"))
 		local prog = fh:read("*a")
 		fh:close()
+        header("Content-Lenght", #prog)
+		contentheader (type, subtype)
 		put (prog)
 	end
 end
@@ -276,6 +278,17 @@ function buildprocesshandler (type, subtype)
 		contentheader (type, subtype)
 		lp.include (filename)
 	end
+end
+
+----------------------------------------------------------------------------
+-- Builds the default handler table from cgilua.mime
+----------------------------------------------------------------------------
+local function buildhandlers()
+    local mime = _G.require "cgilua.mime"
+    for ext, mediatype in pairs(mime) do
+        local t, st = match(mediatype, "([^/]*)/([^/]*)")
+        addscripthandler(ext, buildplainhandler(t, st))
+    end
 end
 
 ----------------------------------------------------------------------------
@@ -371,19 +384,21 @@ end
 
 --
 -- Stores all script handlers and the file extensions used to identify
--- them.
+-- them. Loads the default 
 local script_handlers = {}
-
 --
 -- Default handler.
 -- Sends the contents of the file to the output without processing it.
+-- This relies in the browser being able to discover the content type
+-- which is not reliable.
 -- @param filename String with the name of the file.
 --
 local function default_handler (filename)
-	htmlheader ()
 	local fh = assert (_open (filename))
 	local prog = fh:read("*a")
 	fh:close()
+    header("Content-Lenght", #prog)
+    put ("\n")
 	put (prog)
 end
 
@@ -419,8 +434,8 @@ end
 -- @return The returned values from the script.
 ---------------------------------------------------------------------------
 function handle (path)
-	local h = assert (getscripthandler (path), "There is no handler defined to process this kind of file ("..path..")")
-	return h (path)
+	local h = getscripthandler (path) or default_handler
+    return h (path)
 end
 
 ---------------------------------------------------------------------------
@@ -549,7 +564,8 @@ end
 -- Request processing.
 ---------------------------------------------------------------------------
 function main ()
-	-- Default values
+    buildhandlers()    
+	-- Default handler values
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
 	CGI = {}
