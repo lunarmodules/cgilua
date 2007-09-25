@@ -1,5 +1,5 @@
 -- CGILua configuration file
--- $Id: config.lua,v 1.12 2007/09/18 14:43:10 carregal Exp $
+-- $Id: config.lua,v 1.13 2007/09/25 23:25:17 carregal Exp $
 
 -- Emulating old behavior loading file "env.lua" from the script's directory
 --[[
@@ -13,7 +13,7 @@ end)
 
 -- Basic configuration for using sessions
 -- require"cgilua.session"
--- cgilua.session.setsessiondir ("/tmp/cgilua/")
+-- cgilua.session.setsessiondir (CGILUA_TMP)
 -- Add cgilua.enablesession() at the beginning of every script which depends
 -- on sessions.
 
