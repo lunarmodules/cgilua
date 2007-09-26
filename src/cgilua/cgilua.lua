@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.51 2007/09/26 00:43:26 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.52 2007/09/26 00:58:07 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -157,15 +157,17 @@ put = SAPI.Response.write
 ----------------------------------------------------------------------------
 function removeglobals (notallowed)
 	for _, g in ipairs(notallowed) do
-		if _G[g] and type(_G[g]) ~= "function" then
+		if _G[g] and type(_G[g]) == "table" then
 			_G[g] = {}
             setmetatable(_G[g], {__index = function()
 				 error(g.." use is not allowed in CGILua scripts.")
 			end})
-		else
+		elseif _G[g] and type(_G[g]) == "function" then
 			_G[g] = function()
 				 error("Function '"..g.."' is not allowed in CGILua scripts.")
 			end
+        else
+            _G[g] = nil
 		end
 	end
 end
