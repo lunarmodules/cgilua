@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.50 2007/09/25 23:17:56 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.51 2007/09/26 00:43:26 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -157,8 +157,11 @@ put = SAPI.Response.write
 ----------------------------------------------------------------------------
 function removeglobals (notallowed)
 	for _, g in ipairs(notallowed) do
-		if type(_G[g]) ~= "function" then
-			_G[g] = nil
+		if _G[g] and type(_G[g]) ~= "function" then
+			_G[g] = {}
+            setmetatable(_G[g], {__index = function()
+				 error(g.." use is not allowed in CGILua scripts.")
+			end})
 		else
 			_G[g] = function()
 				 error("Function '"..g.."' is not allowed in CGILua scripts.")
@@ -575,14 +578,15 @@ function main ()
 	_xpcall (function () _G.require"cgilua.post" end)
     
 	-- Cleaning environment
+    _G.os.execute = nil
 	removeglobals {
-		"os.execute",
 		"loadlib",
 		"package",
 		"debug",
 	}
-	-- Build fake package
-	_G.package = { seeall = seeall, }
+	-- Allow access to package.seeall in order to be used by user modules
+	_G.package.seeall = seeall
+    
 	_xpcall (getparams)
 	-- Changing curent directory to the script's "physical" dir
 	local curr_dir = lfs.currentdir ()
