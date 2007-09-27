@@ -1,8 +1,8 @@
-# $Id: Makefile,v 1.41 2007/09/25 23:17:56 carregal Exp $
+# $Id: Makefile,v 1.42 2007/09/27 14:25:18 hisham Exp $
 
 LUA_DIR= /usr/local/share/lua/5.1
 CGILUA_DIR= $(LUA_DIR)/cgilua
-CGILUA_LUAS= src/cgilua/cookies.lua src/cgilua/lp.lua src\cgilua\mime.lua src/cgilua/post.lua src/cgilua/readuntil.lua src/cgilua/serialize.lua src/cgilua/session.lua src/cgilua/urlcode.lua
+CGILUA_LUAS= src/cgilua/cookies.lua src/cgilua/lp.lua src/cgilua/mime.lua src/cgilua/post.lua src/cgilua/readuntil.lua src/cgilua/serialize.lua src/cgilua/session.lua src/cgilua/urlcode.lua
 ROOT_LUAS= src/cgilua/cgilua.lua
 CONFIG_FILE= config.lua
 
