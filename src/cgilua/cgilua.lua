@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.52 2007/09/26 00:58:07 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.53 2007/09/27 21:10:22 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -153,23 +153,28 @@ put = SAPI.Response.write
 
 ----------------------------------------------------------------------------
 -- Remove globals not allowed in CGILua scripts.
--- @param notallowed Array of Strings with the names to be removed.
 ----------------------------------------------------------------------------
-function removeglobals (notallowed)
-	for _, g in ipairs(notallowed) do
-		if _G[g] and type(_G[g]) == "table" then
-			_G[g] = {}
-            setmetatable(_G[g], {__index = function()
-				 error(g.." use is not allowed in CGILua scripts.")
-			end})
-		elseif _G[g] and type(_G[g]) == "function" then
-			_G[g] = function()
-				 error("Function '"..g.."' is not allowed in CGILua scripts.")
-			end
-        else
-            _G[g] = nil
+function removeglobals ()
+	local notallowed = {"package", "package", "debug"}
+
+	local function invalid(name)
+		error("Function '"..name.."' is not allowed in CGILua scripts.")
+	end
+	
+    _G.os.execute = invalid("execute")
+    _G.loadlib = invalid("loadlib")
+    
+	for _, t in ipairs(notallowed) do
+		for k, _ in pairs(_G[t]) do
+			_G[t][k] = nil
 		end
 	end
+	-- Allow access to package.seeall in order to be used by user modules
+	_G.package.seeall = seeall
+	
+    for _, t in ipairs(notallowed) do
+    	setmetatable(_G[t], {__index = function (t, k) invalid(k) end})
+    end
 end
 
 ----------------------------------------------------------------------------
@@ -579,15 +584,8 @@ function main ()
     -- post.lua needs to be loaded after cgilua.lua is compiled
 	_xpcall (function () _G.require"cgilua.post" end)
     
-	-- Cleaning environment
-    _G.os.execute = nil
-	removeglobals {
-		"loadlib",
-		"package",
-		"debug",
-	}
-	-- Allow access to package.seeall in order to be used by user modules
-	_G.package.seeall = seeall
+	-- Securing the environment
+	removeglobals()
     
 	_xpcall (getparams)
 	-- Changing curent directory to the script's "physical" dir
