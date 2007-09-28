@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.53 2007/09/27 21:10:22 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.54 2007/09/28 20:50:14 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -155,12 +155,12 @@ put = SAPI.Response.write
 -- Remove globals not allowed in CGILua scripts.
 ----------------------------------------------------------------------------
 function removeglobals ()
-	local notallowed = {"package", "package", "debug"}
+	local notallowed = {"debug"}
 
-	local function invalid(name)
-		error("Function '"..name.."' is not allowed in CGILua scripts.")
-	end
-	
+    local function invalid(name)
+        return function() error("Function '"..name.."' is not allowed in CGILua scripts.") end
+    end
+    
     _G.os.execute = invalid("execute")
     _G.loadlib = invalid("loadlib")
     
@@ -238,7 +238,7 @@ function tmpfile(dir, namefunction)
     dir = dir or tmp_path
     namefunction = namefunction or tmp_name
     local filename = dir.."/"..namefunction()
-    local file, err = _open(filename, "wb")
+    local file, err = _open(filename, "wb+")
     if file then
         tinsert(_tmpfiles, {name = filename, file = file})
     end
