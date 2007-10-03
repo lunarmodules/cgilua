@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.55 2007/10/03 01:11:00 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.56 2007/10/03 22:37:12 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -29,9 +29,9 @@ module ("cgilua")
 
 --
 -- Internal state variables.
-local default_errorhandler = debug.traceback
-local errorhandler = default_errorhandler
-local default_erroroutput = function (msg)
+local _default_errorhandler = debug.traceback
+local _errorhandler = _default_errorhandler
+local _default_erroroutput = function (msg)
 
     if type(msg) ~= "string" and type(msg) ~= "number" then
         msg = format ("bad argument #1 to 'error' (string expected, got %s)", type(msg))
@@ -52,11 +52,11 @@ local default_erroroutput = function (msg)
 	msg = gsub (gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
 	SAPI.Response.write (msg)
 end
-local erroroutput = default_erroroutput
-local default_maxfilesize = 512 * 1024
-local maxfilesize = default_maxfilesize
-local default_maxinput = 1024 * 1024
-local maxinput = default_maxinput
+local _erroroutput = _default_erroroutput
+local _default_maxfilesize = 512 * 1024
+local _maxfilesize = _default_maxfilesize
+local _default_maxinput = 1024 * 1024
+local _maxinput = _default_maxinput
 script_path = false
 
 _COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
@@ -213,16 +213,16 @@ end
 -- @param nbytes Number of the maximum size (in bytes) of the whole POST data.
 ---------------------------------------------------------------------------
 function setmaxinput(nbytes)
-	maxinput = nbytes
+	_maxinput = nbytes
 end
 
 ---------------------------------------------------------------------------
 -- Set the maximum size for an "uploaded" file (in bytes)
--- Might be less or equal than maxinput.
+-- Might be less or equal than _maxinput.
 -- @param nbytes Number of the maximum size (in bytes) of a file.
 ---------------------------------------------------------------------------
 function setmaxfilesize(nbytes)
-	maxfilesize = nbytes
+	_maxfilesize = nbytes
 end
 
 
@@ -391,8 +391,8 @@ local function getparams ()
 			discardinput = ap and ap.discard_request_body,
 			content_type = servervariable"CONTENT_TYPE",
 			content_length = servervariable"CONTENT_LENGTH",
-			maxinput = maxinput,
-			maxfilesize = maxfilesize,
+			maxinput = _maxinput,
+			maxfilesize = _maxfilesize,
 			args = POST,
 		}
 	end
@@ -408,7 +408,7 @@ end
 --
 -- Stores all script handlers and the file extensions used to identify
 -- them. Loads the default 
-local script_handlers = {}
+local _script_handlers = {}
 --
 -- Default handler.
 -- Sends the contents of the file to the output without processing it.
@@ -438,7 +438,7 @@ function addscripthandler (file_extension, func)
 	file_extension = strlower(file_extension)
 	assert (type(func) == "function", "Handler must be a function")
 
-	script_handlers[file_extension] = func
+	_script_handlers[file_extension] = func
 end
 
 ---------------------------------------------------------------------------
@@ -448,7 +448,7 @@ end
 ----------------------------------------------------------------------------
 function getscripthandler (path)
 	local i,f, ext = strfind (path, "%.([^.]+)$")
-	return script_handlers[strlower(ext or '')]
+	return _script_handlers[strlower(ext or '')]
 end
 
 ---------------------------------------------------------------------------
@@ -471,7 +471,7 @@ end
 function seterrorhandler (f)
 	local tf = type(f)
 	if tf == "function" then
-		errorhandler = f
+		_errorhandler = f
 	else
 		error (format ("Invalid type: expected `function', got `%s'", tf))
 	end
@@ -485,7 +485,7 @@ end
 function seterroroutput (f)
 	local tf = type(f)
 	if tf == "function" then
-		erroroutput = f
+		_erroroutput = f
 	else
 		error (format ("Invalid type: expected `function', got `%s'", tf))
 	end
@@ -496,17 +496,17 @@ end
 -- @param f Function to be called.
 --
 local function _xpcall (f)
-	local ok, result = xpcall (f, errorhandler)
+	local ok, result = xpcall (f, _errorhandler)
 	if ok then
 		return result
 	else
-		erroroutput (result)
+		_erroroutput (result)
 	end
 end
 
 --
 -- Stores all close functions in order they are set.
-local close_functions = {
+local _close_functions = {
 }
 
 ---------------------------------------------------------------------------
@@ -516,7 +516,7 @@ local close_functions = {
 function addclosefunction (f)
 	local tf = type(f)
 	if tf == "function" then
-		tinsert (close_functions, f)
+		tinsert (_close_functions, f)
 	else
 		error (format ("Invalid type: expected `function', got `%s'", tf))
 	end
@@ -526,14 +526,14 @@ end
 -- Close function.
 --
 local function close()
-	for i = #close_functions, 1, -1 do
-		close_functions[i]()
+	for i = #_close_functions, 1, -1 do
+		_close_functions[i]()
 	end
 end
 
 --
 -- Stores all open functions in order they are set.
-local open_functions = {
+local _open_functions = {
 }
 
 ---------------------------------------------------------------------------
@@ -543,7 +543,7 @@ local open_functions = {
 function addopenfunction (f)
 	local tf = type(f)
 	if tf == "function" then
-		tinsert (open_functions, f)
+		tinsert (_open_functions, f)
 	else
 		error (format ("Invalid type: expected `function', got `%s'", tf))
 	end
@@ -554,8 +554,8 @@ end
 -- Call all defined open-functions in the order they were created.
 --
 local function open()
-	for i = #open_functions, 1, -1 do
-		open_functions[i]()
+	for i = #_open_functions, 1, -1 do
+		_open_functions[i]()
 	end
 end
 
@@ -564,15 +564,15 @@ end
 --
 local function reset ()
 	script_path = false
-	maxfilesize = default_maxfilesize
-	maxinput = default_maxinput
+	_maxfilesize = _default_maxfilesize
+	_maxinput = _default_maxinput
 	-- Error Handling
-	errorhandler = default_errorhandler
-	erroroutput = default_erroroutput
+	_errorhandler = _default_errorhandler
+	_erroroutput = _default_erroroutput
 	-- Handlers
-	script_handlers = {}
-	open_function = {}
-	close_functions = {}
+	_script_handlers = {}
+	_open_functions = {}
+	_close_functions = {}
     -- clean temporary files
     foreachi(_tmpfiles, function (i, v)
         v.file:close()
