@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.54 2007/09/28 20:50:14 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.55 2007/10/03 01:11:00 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -58,8 +58,6 @@ local maxfilesize = default_maxfilesize
 local default_maxinput = 1024 * 1024
 local maxinput = default_maxinput
 script_path = false
-tmp_path = getenv("TEMP") or getenv ("TMP")
-tmp_name = tmpname
 
 _COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
@@ -228,7 +226,20 @@ function setmaxfilesize(nbytes)
 end
 
 
+-- Default path for temporary files
+tmp_path = getenv("TEMP") or getenv ("TMP") or "/tmp"
+
+-- Default function for temporaty names
+tmp_name = function()
+    local tempname = tmpname()
+    -- Lua tmpname returns a full path in Unix, but not in Windows
+    -- so we strip the eventual prefix
+    tempname = gsub(tempname, "(/tmp/)", "")
+    return tempname
+end
+
 local _tmpfiles = {}
+
 ---------------------------------------------------------------------------
 -- Returns a temporary file in a directory using a name generator
 -- @param dir Base directory for the temporary file
@@ -237,13 +248,15 @@ local _tmpfiles = {}
 function tmpfile(dir, namefunction)
     dir = dir or tmp_path
     namefunction = namefunction or tmp_name
-    local filename = dir.."/"..namefunction()
+    local tempname = namefunction()
+    local filename = dir.."/"..tempname
     local file, err = _open(filename, "wb+")
     if file then
         tinsert(_tmpfiles, {name = filename, file = file})
     end
     return file, err
 end
+
 
 ----------------------------------------------------------------------------
 -- Preprocess the content of a mixed HTML file and output a complete
