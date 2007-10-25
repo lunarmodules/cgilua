@@ -1,4 +1,4 @@
-# $Id: Makefile.win,v 1.7 2007/09/25 23:17:56 carregal Exp $
+# $Id: Makefile.win,v 1.8 2007/10/25 14:55:40 hisham Exp $
 
 LUA_DIR= c:\lua5.1\lua
 CGILUA_DIR= $(LUA_DIR)\cgilua
@@ -7,8 +7,8 @@ ROOT_LUAS= src\cgilua\cgilua.lua
 CONFIG_FILE= config.lua
 
 install:
-	IF NOT EXIST $(LUA_DIR) mkdir $(LUA_DIR)
-	IF NOT EXIST $(CGILUA_DIR) mkdir $(CGILUA_DIR)
-	FOR %F IN ($(CGILUA_LUAS)) DO copy %F $(CGILUA_DIR)
-    FOR %F IN ($(ROOT_LUAS)) DO copy %F $(LUA_DIR)
-	IF NOT EXIST $(CGILUA_DIR)\$(CONFIG_FILE) xcopy src\cgilua\$(CONFIG_FILE) $(CGILUA_DIR)
+	IF NOT EXIST "$(LUA_DIR)" mkdir "$(LUA_DIR)"
+	IF NOT EXIST "$(CGILUA_DIR)" mkdir "$(CGILUA_DIR)"
+	FOR %F IN ($(CGILUA_LUAS)) DO copy %F "$(CGILUA_DIR)"
+	FOR %F IN ($(ROOT_LUAS)) DO copy %F "$(LUA_DIR)"
+	IF NOT EXIST "$(CGILUA_DIR)\$(CONFIG_FILE)" xcopy "src\cgilua\$(CONFIG_FILE)" "$(CGILUA_DIR)"
