@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.57 2007/10/05 02:03:23 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.58 2007/10/30 23:40:34 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -368,11 +368,11 @@ end
 --
 local function getparams ()
 	-- Define variables.
-	script_path = script_path or servervariable"PATH_TRANSLATED"
-    if not script_path then
-        script_path = servervariable"DOCUMENT_ROOT" ..
-            servervariable"SCRIPT_NAME"
-    end
+	script_path = script_path or
+        servervariable"PATH_TRANSLATED" or
+        servervariable"SCRIPT_FILE_NAME" or
+        (servervariable"DOCUMENT_ROOT" .. servervariable"SCRIPT_NAME")
+
     script_pdir, script_file = splitpath (script_path)
 	local vpath = servervariable"PATH_INFO"
 	script_vpath = vpath
@@ -592,8 +592,8 @@ function main ()
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
 	CGI = {}
-	-- Configuring CGILua (trying to load cgilua/config.lua)
-	_xpcall (function () _G.require"cgilua.config" end)
+	-- Tries to load cgilua/loader.lua
+	_xpcall (function () _G.require"cgilua.loader" end)
     -- post.lua needs to be loaded after cgilua.lua is compiled
 	_xpcall (function () _G.require"cgilua.post" end)
     

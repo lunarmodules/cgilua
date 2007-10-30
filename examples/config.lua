@@ -1,7 +1,11 @@
--- CGILua configuration file
--- $Id: config.lua,v 1.13 2007/09/25 23:25:17 carregal Exp $
+-- CGILua example configuration file
+-- $Id: config.lua,v 1.1 2007/10/30 23:40:34 carregal Exp $
+--
+-- You may want to use parts of the this file in your CGILua configuration
+--
+--
 
--- Emulating old behavior loading file "env.lua" from the script's directory
+-- Emulating previous CGILua behavior loading file "env.lua" from the script's directory
 --[[
 cgilua.addopenfunction (function ()
 	cgilua.doif ("env.lua")
