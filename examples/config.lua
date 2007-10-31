@@ -1,5 +1,5 @@
 -- CGILua example configuration file
--- $Id: config.lua,v 1.1 2007/10/30 23:40:34 carregal Exp $
+-- $Id: config.lua,v 1.2 2007/10/31 20:50:53 carregal Exp $
 --
 -- You may want to use parts of the this file in your CGILua configuration
 --
@@ -13,7 +13,13 @@ end)
 --]]
 
 -- Optional backward compatibility with the global cgi table
--- cgi = cgilua.CGI
+--cgi = {}
+--for i,v in pairs(cgilua.POST) do
+--       cgilua.urlcode.insertfield (cgi, i, v)
+--end
+--for i,v in pairs(cgilua.QUERY) do
+--       cgilua.urlcode.insertfield (cgi, i, v)
+--end
 
 -- Basic configuration for using sessions
 -- require"cgilua.session"
