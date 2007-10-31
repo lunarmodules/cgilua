@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.58 2007/10/30 23:40:34 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.59 2007/10/31 16:24:57 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -370,7 +370,7 @@ local function getparams ()
 	-- Define variables.
 	script_path = script_path or
         servervariable"PATH_TRANSLATED" or
-        servervariable"SCRIPT_FILE_NAME" or
+        servervariable"SCRIPT_FILENAME" or
         (servervariable"DOCUMENT_ROOT" .. servervariable"SCRIPT_NAME")
 
     script_pdir, script_file = splitpath (script_path)
@@ -383,9 +383,10 @@ local function getparams ()
 		script_vdir = splitpath (servervariable"SCRIPT_NAME")
 		urlpath = ""
 	end
+    requestmethod = servervariable"REQUEST_METHOD"
 	-- Fill in the POST table.
 	POST = {}
-	if servervariable"REQUEST_METHOD" == "POST" then
+	if  requestmethod == "POST" then
 		post.parsedata {
 			read = SAPI.Request.getpostdata,
 			discardinput = ap and ap.discard_request_body,
@@ -399,10 +400,6 @@ local function getparams ()
 	-- Fill in the QUERY table.
 	QUERY = {}
 	urlcode.parsequery (servervariable"QUERY_STRING", QUERY)
-	-- Links POST and QUERY data to the CGI table for backward compatibility
-	local mt = {}
-	mt.__index = function(t,v) return POST[v] or QUERY[v] end
-	setmetatable(CGI, mt)
 end
 
 --
