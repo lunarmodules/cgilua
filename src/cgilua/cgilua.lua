@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.59 2007/10/31 16:24:57 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.60 2007/11/01 23:57:29 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -279,12 +279,17 @@ end
 ----------------------------------------------------------------------------
 function buildplainhandler (type, subtype)
 	return function (filename)
-		local fh = assert (_open (filename, "rb"))
-		local prog = fh:read("*a")
-		fh:close()
-        header("Content-Lenght", #prog)
+		local fh, err = _open (filename, "rb")
+        local contents = ""
+        if fh then
+            contents = fh:read("*a")
+            fh:close()
+        else
+            error(err)
+        end
+        header("Content-Lenght", #contents)
 		contentheader (type, subtype)
-		put (prog)
+		put (contents)
 	end
 end
 
@@ -358,8 +363,19 @@ end
 -- @return String with the file part.
 ----------------------------------------------------------------------------
 function splitpath (path)
-	local _,_,dir,file = strfind(path,"^(.-)([^:/\\]*)$")
+	local dir,file = match(path,"^(.-)([^:/\\]*)$")
 	return dir,file
+end
+
+----------------------------------------------------------------------------
+-- Extracts the first part of a path
+-- @param path String with a path.
+-- @return String with the extracted part.
+-- @return String with the remaining path.
+----------------------------------------------------------------------------
+function splitfirst(path)
+    local first, rest = match(path, "^/([^:/\\]*)(.*)")
+    return first, rest
 end
 
 --
@@ -374,7 +390,7 @@ local function getparams ()
         (servervariable"DOCUMENT_ROOT" .. servervariable"SCRIPT_NAME")
 
     script_pdir, script_file = splitpath (script_path)
-	local vpath = servervariable"PATH_INFO"
+	local vpath = vpath or servervariable"PATH_INFO"
 	script_vpath = vpath
 	if vpath and vpath ~= "" then
 		script_vdir = splitpath (vpath)
@@ -414,12 +430,17 @@ local _script_handlers = {}
 -- @param filename String with the name of the file.
 --
 local function default_handler (filename)
-	local fh = assert (_open (filename))
-	local prog = fh:read("*a")
-	fh:close()
-    header("Content-Lenght", #prog)
+	local fh, err = _open (filename, "rb")
+    local contents
+    if fh then
+        contents = fh:read("*a")
+        fh:close()
+    else
+        error(err)
+    end
+    header("Content-Lenght", #contents)
     put ("\n")
-	put (prog)
+	put (contents)
 end
 
 ----------------------------------------------------------------------------
@@ -588,7 +609,6 @@ function main ()
 	-- Default handler values
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
-	CGI = {}
 	-- Tries to load cgilua/loader.lua
 	_xpcall (function () _G.require"cgilua.loader" end)
     -- post.lua needs to be loaded after cgilua.lua is compiled
