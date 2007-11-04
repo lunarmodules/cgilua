@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.60 2007/11/01 23:57:29 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.61 2007/11/04 23:51:26 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -611,6 +611,7 @@ function main ()
 	addscripthandler ("lp", handlelp)
 	-- Tries to load cgilua/loader.lua
 	_xpcall (function () _G.require"cgilua.loader" end)
+
     -- post.lua needs to be loaded after cgilua.lua is compiled
 	_xpcall (function () _G.require"cgilua.post" end)
     
@@ -618,20 +619,34 @@ function main ()
 	removeglobals()
     
 	_xpcall (getparams)
-	-- Changing curent directory to the script's "physical" dir
-	local curr_dir = lfs.currentdir ()
-	_xpcall (function () lfs.chdir (script_pdir) end)
-	-- Opening function
-	_xpcall (open)
-	-- Executing script
-	local result = _xpcall (function () return handle (script_file) end)
-
-	-- Closing function
-	_xpcall (close)
-	-- Cleanup
-	reset ()
-	-- Changing to original directory
-	_xpcall (function () lfs.chdir (curr_dir) end)
+	
+	local result
+	local response = script_response -- defined by loader.lua
+	if response then
+		-- Opening function
+		_xpcall (open)
+		-- Calls the dispatched function
+		result = response()
+		-- Closing function
+		_xpcall (close)
+		-- Cleanup
+		reset ()
+	else
+		-- Changing curent directory to the script's "physical" dir
+		local curr_dir = lfs.currentdir ()
+		_xpcall (function () lfs.chdir (script_pdir) end)
+		-- Opening function
+		_xpcall (open)
+		-- Executing script
+		result = _xpcall (function () return handle (script_file) end)
+	
+		-- Closing function
+		_xpcall (close)
+		-- Cleanup
+		reset ()
+		-- Changing to original directory
+		_xpcall (function () lfs.chdir (curr_dir) end)
+	end
 	if result then -- script executed ok!
 		return result
 	end
