@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.61 2007/11/04 23:51:26 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.62 2007/11/05 22:59:01 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -48,8 +48,8 @@ local _default_erroroutput = function (msg)
 	SAPI.Response.errorlog ("\n")
 
 	-- Building user message
-	SAPI.Response.contenttype ("text/html")
 	msg = gsub (gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
+	SAPI.Response.contenttype ("text/html")
 	SAPI.Response.write (msg)
 end
 local _erroroutput = _default_erroroutput
@@ -175,6 +175,24 @@ function removeglobals ()
     end
 end
 
+-- Returns the current errorhandler
+function _geterrorhandler(msg)
+    return _errorhandler(msg)
+end
+
+--
+-- Executes a function with an error handler.
+-- @param f Function to be called.
+--
+local function _xpcall (f)
+	local ok, result = xpcall (f, _geterrorhandler)
+	if ok then
+		return result
+	else
+		_erroroutput (result)
+	end
+end
+
 ----------------------------------------------------------------------------
 -- Execute a script
 --  If an error is found, Lua's error handler is called and this function
@@ -187,7 +205,7 @@ function doscript (filename)
 	if not res then
 		error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))
 	else
-		return res ()
+        return _xpcall(res)
 	end
 end
 
@@ -510,19 +528,6 @@ function seterroroutput (f)
 end
 
 --
--- Executes a function with an error handler.
--- @param f Function to be called.
---
-local function _xpcall (f)
-	local ok, result = xpcall (f, _errorhandler)
-	if ok then
-		return result
-	else
-		_erroroutput (result)
-	end
-end
-
---
 -- Stores all close functions in order they are set.
 local _close_functions = {
 }
@@ -614,39 +619,36 @@ function main ()
 
     -- post.lua needs to be loaded after cgilua.lua is compiled
 	_xpcall (function () _G.require"cgilua.post" end)
+
+	local response = loader.run()
     
 	-- Securing the environment
 	removeglobals()
     
 	_xpcall (getparams)
-	
 	local result
-	local response = script_response -- defined by loader.lua
-	if response then
+	if response and type(response) == "function" then
 		-- Opening function
 		_xpcall (open)
 		-- Calls the dispatched function
-		result = response()
+		result, err = _xpcall (function () return response() end)
 		-- Closing function
 		_xpcall (close)
-		-- Cleanup
-		reset ()
 	else
 		-- Changing curent directory to the script's "physical" dir
 		local curr_dir = lfs.currentdir ()
 		_xpcall (function () lfs.chdir (script_pdir) end)
-		-- Opening function
+        -- Opening function
 		_xpcall (open)
-		-- Executing script
-		result = _xpcall (function () return handle (script_file) end)
-	
+        -- Executing script
+		result, err = _xpcall (function () return handle (script_file) end)
 		-- Closing function
 		_xpcall (close)
-		-- Cleanup
-		reset ()
 		-- Changing to original directory
 		_xpcall (function () lfs.chdir (curr_dir) end)
 	end
+    -- Cleanup
+    reset ()
 	if result then -- script executed ok!
 		return result
 	end
