@@ -42,7 +42,7 @@ end
 -- Defines the routing using a table of URLs
 function route(URLs)
     route_URLs = URLs
-    f, args = route_map(cgilua.vpath)
+    f, args = route_map(cgilua.script_vpath)
 
     if f then
         return true, function() f(args) end
