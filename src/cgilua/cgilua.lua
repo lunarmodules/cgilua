@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.62 2007/11/05 22:59:01 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.63 2007/11/08 22:43:54 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -281,10 +281,11 @@ end
 --   HTML document ( a 'Content-type' header is inserted before the
 --   preprocessed HTML )
 -- @param filename String with the name of the file to be processed.
+-- @param env Optional environment
 ----------------------------------------------------------------------------
-function handlelp (filename)
+function handlelp (filename, env)
 	htmlheader ()
-	lp.include (filename)
+	lp.include (filename, env)
 end
 
 ----------------------------------------------------------------------------
@@ -397,26 +398,9 @@ function splitfirst(path)
 end
 
 --
--- Define variables and build the cgilua.POST, cgilua.GET and the global `cgi' table.
--- @param args Table where to store the parameters (the actual `cgi' table).
+-- Define variables and build the cgilua.POST, cgilua.GET tables.
 --
 local function getparams ()
-	-- Define variables.
-	script_path = script_path or
-        servervariable"PATH_TRANSLATED" or
-        servervariable"SCRIPT_FILENAME" or
-        (servervariable"DOCUMENT_ROOT" .. servervariable"SCRIPT_NAME")
-
-    script_pdir, script_file = splitpath (script_path)
-	local vpath = vpath or servervariable"PATH_INFO"
-	script_vpath = vpath
-	if vpath and vpath ~= "" then
-		script_vdir = splitpath (vpath)
-		urlpath = servervariable"SCRIPT_NAME"
-	else
-		script_vdir = splitpath (servervariable"SCRIPT_NAME")
-		urlpath = ""
-	end
     requestmethod = servervariable"REQUEST_METHOD"
 	-- Fill in the POST table.
 	POST = {}
@@ -620,33 +604,35 @@ function main ()
     -- post.lua needs to be loaded after cgilua.lua is compiled
 	_xpcall (function () _G.require"cgilua.post" end)
 
-	local response = loader.run()
+	local response = loader and loader.run()
     
 	-- Securing the environment
 	removeglobals()
     
+    -- Build QUERY/POST tables
 	_xpcall (getparams)
+
 	local result
+
+    -- Changing curent directory to the script's "physical" dir
+    local curr_dir = lfs.currentdir ()
+    _xpcall (function () lfs.chdir (script_pdir) end)
+    -- Opening functions
+    _xpcall (open)
+
 	if response and type(response) == "function" then
-		-- Opening function
-		_xpcall (open)
-		-- Calls the dispatched function
+		-- Calls the response function
 		result, err = _xpcall (function () return response() end)
-		-- Closing function
-		_xpcall (close)
 	else
-		-- Changing curent directory to the script's "physical" dir
-		local curr_dir = lfs.currentdir ()
-		_xpcall (function () lfs.chdir (script_pdir) end)
-        -- Opening function
-		_xpcall (open)
-        -- Executing script
+        -- Executes the script
 		result, err = _xpcall (function () return handle (script_file) end)
-		-- Closing function
-		_xpcall (close)
-		-- Changing to original directory
-		_xpcall (function () lfs.chdir (curr_dir) end)
 	end
+    
+    -- Closing functions
+    _xpcall (close)
+    -- Changing to original directory
+    _xpcall (function () lfs.chdir (curr_dir) end)
+
     -- Cleanup
     reset ()
 	if result then -- script executed ok!
