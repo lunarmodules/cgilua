@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.63 2007/11/08 22:43:54 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.64 2007/11/11 20:30:19 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -181,15 +181,17 @@ function _geterrorhandler(msg)
 end
 
 --
--- Executes a function with an error handler.
+-- Executes a function using the CGILua error handler.
 -- @param f Function to be called.
 --
-local function _xpcall (f)
-	local ok, result = xpcall (f, _geterrorhandler)
+function pcall (f)
+	local results = {xpcall (f, _geterrorhandler)}
+	local ok = results[1]
+	tremove(results, 1)
 	if ok then
-		return result
+		return unpack(results)
 	else
-		_erroroutput (result)
+		_erroroutput (unpack(results))
 	end
 end
 
@@ -201,11 +203,11 @@ end
 -- @return The result of the execution of the file.
 ----------------------------------------------------------------------------
 function doscript (filename)
-	local res, err = _G.loadfile(filename)
-	if not res then
+	local f, err = _G.loadfile(filename)
+	if not f then
 		error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))
 	else
-        return _xpcall(res)
+        return pcall(f)
 	end
 end
 
@@ -599,39 +601,36 @@ function main ()
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
 	-- Tries to load cgilua/loader.lua
-	_xpcall (function () _G.require"cgilua.loader" end)
+	pcall (function () _G.require"cgilua.loader" end)
 
     -- post.lua needs to be loaded after cgilua.lua is compiled
-	_xpcall (function () _G.require"cgilua.post" end)
+	pcall (function () _G.require"cgilua.post" end)
 
 	local response = loader and loader.run()
-    
-	-- Securing the environment
-	removeglobals()
-    
+	    
     -- Build QUERY/POST tables
-	_xpcall (getparams)
+	pcall (getparams)
 
 	local result
 
     -- Changing curent directory to the script's "physical" dir
     local curr_dir = lfs.currentdir ()
-    _xpcall (function () lfs.chdir (script_pdir) end)
+    pcall (function () lfs.chdir (script_pdir) end)
     -- Opening functions
-    _xpcall (open)
+    pcall (open)
 
 	if response and type(response) == "function" then
 		-- Calls the response function
-		result, err = _xpcall (function () return response() end)
+		result, err = pcall (function () return response() end)
 	else
-        -- Executes the script
-		result, err = _xpcall (function () return handle (script_file) end)
+	    -- Executes the script
+		result, err = pcall (function () return handle (script_file) end)
 	end
     
     -- Closing functions
-    _xpcall (close)
+    pcall (close)
     -- Changing to original directory
-    _xpcall (function () lfs.chdir (curr_dir) end)
+    pcall (function () lfs.chdir (curr_dir) end)
 
     -- Cleanup
     reset ()
