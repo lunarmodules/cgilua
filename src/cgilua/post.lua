@@ -14,7 +14,7 @@
 --		args = params,
 --	}
 --
--- @release $Id: post.lua,v 1.15 2007/10/03 01:11:00 carregal Exp $
+-- @release $Id: post.lua,v 1.16 2007/11/12 16:34:27 carregal Exp $
 ----------------------------------------------------------------------------
 
 require"cgilua.readuntil"
@@ -234,8 +234,9 @@ local function init (defs)
         if bytesleft then
             if bytesleft <= 0 then return nil end
             local n = min (bytesleft, 2^13) -- 2^13 == 8192
-            bytesleft = bytesleft - n
-            return read (n)
+            local bytes = read (n)
+            bytesleft = bytesleft - #bytes
+            return bytes
         end
 	end)
 	if defs.discard_function then
