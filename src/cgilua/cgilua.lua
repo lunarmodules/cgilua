@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.64 2007/11/11 20:30:19 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.65 2007/11/12 16:38:26 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -148,32 +148,6 @@ end
 -- @param s String (or number) with output.
 ----------------------------------------------------------------------------
 put = SAPI.Response.write
-
-----------------------------------------------------------------------------
--- Remove globals not allowed in CGILua scripts.
-----------------------------------------------------------------------------
-function removeglobals ()
-	local notallowed = {"debug"}
-
-    local function invalid(name)
-        return function() error("Function '"..name.."' is not allowed in CGILua scripts.") end
-    end
-    
-    _G.os.execute = invalid("execute")
-    _G.loadlib = invalid("loadlib")
-    
-	for _, t in ipairs(notallowed) do
-		for k, _ in pairs(_G[t]) do
-			_G[t][k] = nil
-		end
-	end
-	-- Allow access to package.seeall in order to be used by user modules
-	_G.package.seeall = seeall
-	
-    for _, t in ipairs(notallowed) do
-    	setmetatable(_G[t], {__index = function (t, k) invalid(k) end})
-    end
-end
 
 -- Returns the current errorhandler
 function _geterrorhandler(msg)
