@@ -45,7 +45,7 @@ function route(URLs)
     f, args = route_map(cgilua.script_vpath)
 
     if f then
-        return true, function() f(args) end
+        return f(args)
     else
         error("Missing page parameters")
     end
