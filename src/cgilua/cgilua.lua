@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.65 2007/11/12 16:38:26 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.66 2007/11/13 20:23:58 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -574,18 +574,22 @@ function main ()
 	-- Default handler values
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
-	-- Tries to load cgilua/loader.lua
+	-- Looks for an optional loader module
 	pcall (function () _G.require"cgilua.loader" end)
 
     -- post.lua needs to be loaded after cgilua.lua is compiled
 	pcall (function () _G.require"cgilua.post" end)
 
-	local response = loader and loader.run()
-	    
+    if loader then
+        loader.init()
+    end
+    
     -- Build QUERY/POST tables
 	pcall (getparams)
 
 	local result
+    -- Executes the optional loader module
+	local response = loader and loader.run()
 
     -- Changing curent directory to the script's "physical" dir
     local curr_dir = lfs.currentdir ()
