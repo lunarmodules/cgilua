@@ -144,7 +144,7 @@ generate URLs in the CGILua format. They consist of:</p>
 behavior of this processing. They consist of:</p>
 
 <dl class="reference">
-    <dt><a name="handlelp"></a><strong><code>cgilua.handlelp (filename)</code></strong></dt>
+    <dt><a name="handlelp"></a><strong><code>cgilua.handlelp (filename[, env])</code></strong></dt>
     <dd>Equivalent to <a href="include"><code>cgilua.lp.include</code></a> but
     sends the HTML header before the pre-processed file.<br/>
     Returns nothing.</dd>
@@ -159,11 +159,11 @@ behavior of this processing. They consist of:</p>
     code is given.<br/>
     Returns a function.</dd>
 
-    <dt><a name="include"></a><strong><code>cgilua.lp.include (filename)</code></strong></dt>
-    <dd>Pre-processes a Lua Page template (given by <code>filename</code>)
-    and sends the result to the client.
-    The file content is processed by
-    <a href="#compile"><code>cgilua.lp.compile</code></a> and no headers are sent.<br/>
+    <dt><a name="include"></a><strong><code>cgilua.lp.include (filename[, env])</code></strong></dt>
+    <dd>Pre-processes a Lua Page template (given by <code>filename</code>) and sends the results
+    to the client. The file content is processed by <a href="#compile"><code>cgilua.lp.compile</code></a>
+    and no headers are sent. If an optional environment table is passed, the file is executed with this
+    environment instead of the global one. This can be used to sandbox your scripts.<br/>
     Returns nothing.</dd>
     
     <dt><a name="setcompatmode"></a><strong><code>cgilua.lp.setcompatmode (boolean)</code></strong></dt>
@@ -221,6 +221,11 @@ They consist of both atributes and functions:</p>
     <dd>Returns a string with the value of the CGI environment variable
     correspoding to <code>varname</code>. For a list of CGI variables please refer to
     <a href="sapi.html#servervariable">SAPI.Request.servervariable</a></dd>
+
+    <dt><a name="tmp_path"></a><strong><code>cgilua.tmp_path</code></strong></dt>
+    <dd>The directory used by <a href="#tmpfile"><code>cgilua.tmpfile</code></a>.
+    Obtained by checking <code>os.getenv("TEMP")</code>, <code>os.getenv ("TMP")</code> and
+    <code>"/tmp"</code> in that order.</dd>
     
     <dt><a name="urlpath"></a><strong><code>cgilua.urlpath</code></strong></dt>
     <dd>The name of the script. Equivalent to the
@@ -351,10 +356,26 @@ handled and presented to the user. The consist of:</p>
 
     <dt><a name="pack"></a><strong><code>cgilua.pack (...)</code></strong></dt>
     <dd>Returns a new table with all the passed arguments stored in it.</dd>
+
+    <dt><a name="splitonfirst"></a><strong><code>cgilua.splitfirst (path)</code></strong></dt>
+    <dd>Returns two strings with the "first directory" and the "remaining paht" of the given
+    <code>path</code> string splitted on the first separator ("/" or "\").</dd>
     
-    <dt><a name="splitpath"></a><strong><code>cgilua.splitpath (path)</code></strong></dt>
-    <dd>Returns two strings with the "directory" and "file" parts of the given
-    <code>path</code>.</dd>
+    <dt><a name="splitonlast"></a><strong><code>cgilua.splitonlast (path)</code></strong></dt>
+    <dd>Returns two strings with the "directory path" and "file" parts of the given
+    <code>path</code> string splitted on the last separator ("/" or "\").
+    This function used to be called <code>cgilua.splitpath</code> and still can be accessed by
+    this name for compatibility reasons. <code>cgilua.splitpath</code> may be deprecated in future
+    versions.</dd>
+    
+    <dt><a name="tmpfile"></a><strong><code>cgilua.tmpfile (dir[, namefunction])</code></strong></dt>
+    <dd>Returns a temporary file in the <code><a href="#tmp_path">cgilua.tmp_path</a></code> directory
+    using an optional name generator. If the name generator function is not passed,
+    <code>cgilua.tmpname</code> is used. The file is removed by CGILua after the request has been
+    processed.</dd>
+
+    <dt><a name="tmpname"></a><strong><code>cgilua.tmpname ()</code></strong></dt>
+    <dd>Returns a temporary name using an adjusted version of <code>os.tmpname</code>.</dd>
 </dl>
 
 <h2><a name="index"></a>Alphabetic Index</h2>
@@ -396,7 +417,11 @@ handled and presented to the user. The consist of:</p>
 <a href="#setmaxfilesize">setmaxfilesize</a><br/>
 <a href="#setmaxinput">setmaxinput</a><br/>
 <a href="#setoutfunc">setoutfunc (lp)</a><br/>
-<a href="#splitpath">splitpath</a><br/>
+<a href="#splitonfirst">splitonfirst</a><br/>
+<a href="#splitonlast">splitonlast</a><br/>
+<a href="#tmpfile">tmpfile</a><br/>
+<a href="#tmpname">tmpname</a><br/>
+<a href="#tmp_path">tmp_path</a><br/>
 <a href="#urlcode">urlcode</a><br/>
 <a href="#unescape">unescape (urlcode)</a><br/>
 <a href="#urlpath">urlpath</a><br/>
@@ -408,7 +433,7 @@ handled and presented to the user. The consist of:</p>
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: reference.html,v 1.42 2007/10/05 01:21:15 carregal Exp $</small></p>
+	<p><small>$Id: reference.html,v 1.43 2007/11/16 21:26:59 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
