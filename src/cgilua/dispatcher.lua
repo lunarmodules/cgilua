@@ -39,8 +39,13 @@ function route_url(action_name, params)
     end
 end
 
--- Defines the routing using a table of URLs
+-- Defines the routing using a table of URLs maps
 function route(URLs)
+	URLs = URLs or {}
+	if type(URLs[1]) == "string" then
+		-- accepts a single map as the only entry in a map table
+		URLs = {URLs}
+	end
     route_URLs = URLs
     f, args = route_map(cgilua.script_vpath)
 
