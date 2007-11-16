@@ -1,7 +1,9 @@
+-- CGILua dispatcher module
+-- @release $Id: dispatcher.lua,v 1.7 2007/11/16 21:30:24 carregal Exp $
+
 module(..., package.seeall)
 
-
--- Checks if a URL matches a route pattern
+-- Checks if an URL matches a route pattern
 local function route_match(url, pattern) 
     local params = {}
     local captures = string.gsub(pattern, "(/$[%w_-]+)", "/?([^/]*)")
@@ -16,7 +18,7 @@ end
 
 local route_URLs = {}
 
--- Maps the correct function for a URL
+-- Maps the correct function for an URL
 local function route_map(url) 
     for i, v in ipairs(route_URLs) do
         local pattern, f, name = unpack(v)
@@ -27,19 +29,30 @@ local function route_map(url)
     end
 end
 
--- Returns a URL for a route
-function route_url(action_name, params)
-    for i, v in ipairs(route_URLs) do
+-- Returns an URL for a named route
+-- @param map_name Name associated with the map in the routed URL table.
+-- @param params Table of named parameters used in the URL map
+-- @param queryargs Optional table of named parameters used for the QUERY part of the URL
+function route_url(map_name, params, queryargs)
+	local queryparams = ""
+	if queryargs then
+		queryparams = "?"..cgilua.urlcode.encodetable(queryargs)
+	end
+	for i, v in ipairs(route_URLs) do
         local pattern, f, name = unpack(v)
-        if name == action_name then
+        if name == map_name then
             local url = string.gsub(pattern, "$([%w_-]+)", params)
-            url = cgilua.urlpath.."/"..cgilua.app_name..url
+            url = cgilua.urlpath.."/"..cgilua.app_name..url..queryparams
             return url
         end
     end
 end
 
--- Defines the routing using a table of URLs maps
+-- Defines the routing using a table of URLs maps or a single map
+-- a map defines a URL mask using $name to extract parameters,
+-- a function to be called with the extracted parameters and
+-- a name for the map when used with route_url
+-- @param table of maps or a single map
 function route(URLs)
 	URLs = URLs or {}
 	if type(URLs[1]) == "string" then
