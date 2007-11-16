@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.67 2007/11/15 01:29:39 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.68 2007/11/16 21:29:36 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -17,7 +17,7 @@ local _open = io.open
 local tinsert, tremove = table.insert, table.remove
 local foreachi = table.foreachi
 local date = os.date
-local tmpname = os.tmpname
+local os_tmpname = os.tmpname
 local getenv = os.getenv
 local remove = os.remove
 local seeall = package.seeall
@@ -223,10 +223,11 @@ end
 -- Default path for temporary files
 tmp_path = getenv("TEMP") or getenv ("TMP") or "/tmp"
 
--- Default function for temporaty names
-tmp_name = function()
-    local tempname = tmpname()
-    -- Lua tmpname returns a full path in Unix, but not in Windows
+-- Default function for temporary names
+-- @returns a temporay name using os.tmpname
+tmpname = function()
+    local tempname = os_tmpname()
+    -- Lua os.tmpname returns a full path in Unix, but not in Windows
     -- so we strip the eventual prefix
     tempname = gsub(tempname, "(/tmp/)", "")
     return tempname
@@ -241,7 +242,7 @@ local _tmpfiles = {}
 ---------------------------------------------------------------------------
 function tmpfile(dir, namefunction)
     dir = dir or tmp_path
-    namefunction = namefunction or tmp_name
+    namefunction = namefunction or tmpname
     local tempname = namefunction()
     local filename = dir.."/"..tempname
     local file, err = _open(filename, "wb+")
@@ -357,18 +358,20 @@ end
 -- @return String with the directory part.
 -- @return String with the file part.
 ----------------------------------------------------------------------------
-function splitpath (path)
+function splitonlast (path, sep)
 	local dir,file = match(path,"^(.-)([^:/\\]*)$")
 	return dir,file
 end
 
+splitpath = splitonlast -- compatibility with previous versions
+
 ----------------------------------------------------------------------------
--- Extracts the first part of a path
--- @param path String with a path.
+-- Extracts the first and remaining parts of a path
+-- @param path separator (defaults to "/")
 -- @return String with the extracted part.
 -- @return String with the remaining path.
 ----------------------------------------------------------------------------
-function splitfirst(path)
+function splitonfirst(path, sep)
     local first, rest = match(path, "^/([^:/\\]*)(.*)")
     return first, rest
 end
@@ -589,21 +592,19 @@ function main ()
 
 	local result
     -- Executes the optional loader module
-	local response = loader and loader.run()
+	if loader then
+		loader.run()
+	end
 
     -- Changing curent directory to the script's "physical" dir
     local curr_dir = lfs.currentdir ()
     pcall (function () lfs.chdir (script_pdir) end)
+
     -- Opening functions
     pcall (open)
 
-	if response and type(response) == "function" then
-		-- Calls the response function
-		result, err = pcall (function () return response() end)
-	else
-	    -- Executes the script
-		result, err = pcall (function () return handle (script_file) end)
-	end
+    -- Executes the script
+	result, err = pcall (function () return handle (script_file) end)
     
     -- Closing functions
     pcall (close)
