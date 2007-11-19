@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.68 2007/11/16 21:29:36 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.69 2007/11/19 21:42:08 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -61,7 +61,7 @@ script_path = false
 
 _COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
-_VERSION = "CGILua 5.1.2 (work)"
+_VERSION = "CGILua 5.1.1"
 
 --
 -- Header functions
