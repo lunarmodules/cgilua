@@ -42,6 +42,7 @@
 				<li><a href="manual.html#scripts">Lua Scripts</a></li>
 				<li><a href="manual.html#templates">Lua Pages</a></li>
 				<li><a href="manual.html#parameters">Parameters</a></li>
+				<li><a href="manual.html#dispatching">Dispatching</a></li>
                 <li><a href="manual.html#error_handling">Error Handling</a></li>
 			</ul>
 		</li>
@@ -61,6 +62,7 @@
 		<li><strong>Libraries</strong>
 			<ul>
 				<li><a href="libraries.html#cookies">Cookies</a></li>
+				<li><a href="libraries.html#dispatcher">Dispatcher</a></li>
 				<li><a href="libraries.html#serialize">Serialize</a></li>
 				<li><a href="libraries.html#session">Session</a></li>
 			</ul>
@@ -113,6 +115,27 @@ of Cookies, Serialized Data and Sessions. To use these libraries just
     This function should be called
     before the HTTP headers are sent and before any output is generated.<br/>
     Returns nothing.</dd>
+</dl>
+
+<hr/>
+
+<h2><a name="dispatcher"></a>Dispatcher</h2>
+
+<dl class="reference">
+    <dt><strong><code>cgilua.dispatch.route (urlmaps)</code></strong></dt>
+    <dd>Defines the routing using a table of URLs maps or a single map.
+    A map defines a URL mask using <em>$name</em> patterns to extract parameters,
+    a function to be called with the extracted parameters and a name for the map when used
+    with <code>cgilua.dispatch.route_url</code>.
+    </dd>
+    
+    <dt><strong><code>cgilua.dispatch.route_url (mapname, parameters, query)</code></strong></dt>
+    <dd>Returns an URL for a named route map.
+    <em>mapname</em> defines the name associated with
+    the map in the original routed URL table sent to <code>cgilua.dispatch.route</code>.
+    <em>params</em> defines a table of named parameters used to fill the URL pattern.
+    <em>query</em> defines an optional table of named parameters used for the QUERY part of the URL.
+    </dd>
 </dl>
 
 <hr/>
@@ -191,7 +214,7 @@ of Cookies, Serialized Data and Sessions. To use these libraries just
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: libraries.html,v 1.31 2007/08/21 21:34:36 carregal Exp $</small></p>
+	<p><small>$Id: libraries.html,v 1.32 2007/11/19 20:38:32 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
