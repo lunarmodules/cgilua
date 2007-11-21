@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.69 2007/11/19 21:42:08 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.70 2007/11/21 17:04:23 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -27,6 +27,9 @@ lp.setcompatmode (true)
 
 module ("cgilua")
 
+_COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
+_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
+_VERSION = "CGILua 5.1.1"
 --
 -- Internal state variables.
 local _default_errorhandler = debug.traceback
@@ -58,10 +61,6 @@ local _maxfilesize = _default_maxfilesize
 local _default_maxinput = 1024 * 1024
 local _maxinput = _default_maxinput
 script_path = false
-
-_COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
-_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
-_VERSION = "CGILua 5.1.1"
 
 --
 -- Header functions
