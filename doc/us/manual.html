@@ -545,7 +545,7 @@ sequence for web applications using CGILua and <code>app.lua</code> as their dis
     <li>there is an <em>app_name</em> as the start of <em>path_info</em></li>
     <li>there is an <code>init.lua</code> file in <code><em>KEPLER_APPS</em>/cgilua/<em>app_name</em></code></li>
     <li>changes the current directory to <code><em>KEPLER_APPS</em>/cgilua/<em>app_name</em></code></li>
-    <li>sets <code>cgilua.app_name</code> to <em>app_name</em>
+    <li>sets <code>cgilua.app_name</code> to <em>app_name</em></li>
     <li>adds <code><em>KEPLER_APPS</em>/cgilua/<em>app_name</em>/lua</code> to the start of <code>package.path</code></li>
     <li>executes <code>init.lua</code></li>
 </ul>
@@ -555,7 +555,7 @@ CGILua applications usually need to dispatch their actions using the remaining <
 they can use <code>cgilua.dispatcher</code> as a helper library. The example below uses it to dispatch URLs that
 follow a convention similar to <a href="http://www.rubyonrails.org/">Rails</a>. Let's assume that this is a
 <code>init.lua</code> file in the <code><em>KEPLER_APPS</em>/cgilua/blog</code> directory:
-<p>
+</p>
 
 <pre class="example">
 require"cgilua.dispatcher"
@@ -565,7 +565,7 @@ return cgilua.dispatcher.route{"/$controller/$action/$ID", handle, "rails"}
 <p>
 In this example URLs like <code>.../app.lua/blog/post/edit/2</code> would result in the function <code>handle</code>
 being called as
-<p>
+</p>
 
 <pre class="example">
 handle({controller="post", action="edit", ID="2"})
@@ -686,9 +686,8 @@ containing all possible information to help reproduce the situation.
 </div> <!-- id="main" -->
 
 <div id="about">
-	<p><a href="http://validator.w3.org/check?uri=referer">
-    <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>$Id: manual.html,v 1.21 2007/11/19 20:38:32 carregal Exp $</small></p>
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: manual.html,v 1.22 2007/11/21 17:15:05 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
