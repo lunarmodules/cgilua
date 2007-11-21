@@ -113,14 +113,14 @@ as Lua 5.1.
 <h2><a name="history"></a>History</h2>
 
 <dl>
-	<dt><strong>Version 5.1.1</strong> [??/Nov/2007]</dt>
+	<dt><strong>Version 5.1.1</strong> [21/Nov/2007]</dt>
 	<dd>
 	<ul>
 		<li>Changed the security policy for scripts. Now scripts have access to all Lua globals,
 		including the <code>debug</code> and <code>os</code> packages. It is up to the application
 		developer to choose what policy to use</li>
         <li>If you are using Kepler, it is strongly suggested that you replace your previous CGILua <code>config.lua</code>
-        file with the new one installed by Kepler</li>
+        file with the new one installed by Kepler and then merge the differences</li>
         <li>Added the <a href="libraries.html#dispatcher"><code>cgilua.dispatcher</code></a> module</li>
 		<li>Added default handlers for a set of MIME types. The default handlers return
 		only the content-type and conten-lenght headers for the files.</li>
@@ -286,7 +286,7 @@ Project <a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.
 
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
-	<p><small>$Id: index.html,v 1.62 2007/11/21 17:15:05 carregal Exp $</small></p>
+	<p><small>$Id: index.html,v 1.63 2007/11/21 17:18:34 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
