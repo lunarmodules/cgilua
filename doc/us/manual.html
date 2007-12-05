@@ -219,7 +219,7 @@ If every script needs to load a module (such as the sessions library), you can d
 
 <pre class="example">
 require"cgilua.session"
-cgilua.session.setsessiondir(KEPLER_TMP.."/cgilua")
+cgilua.session.setsessiondir(CGILUA_TMP)
 cgilua.addopenfunction (cgilua.session.open)
 cgilua.addclosefunction (cgilua.session.close)
 </pre>
@@ -242,7 +242,7 @@ very beginning of each script that needs to use sessions):
 
 <pre class="example">
 require"cgilua.session"
-cgilua.session.setsessiondir(KEPLER_TMP.."/cgilua")
+cgilua.session.setsessiondir(CGILUA_TMP)
 cgilua.enablesession = function ()
 	cgilua.session.open ()
 	cgilua.addclosefunction (cgilua.session.close)
@@ -545,10 +545,10 @@ sequence for web applications using CGILua and <code>app.lua</code> as their dis
 
 <ul>
     <li>there is an <em>app_name</em> as the start of <em>path_info</em></li>
-    <li>there is an <code>init.lua</code> file in <code><em>KEPLER_APPS</em>/cgilua/<em>app_name</em></code></li>
-    <li>changes the current directory to <code><em>KEPLER_APPS</em>/cgilua/<em>app_name</em></code></li>
+    <li>there is an <code>init.lua</code> file in <code><em>CGILUA_APPS</em>/<em>app_name</em></code></li>
+    <li>changes the current directory to <code><em>CGILUA_APPS</em>/<em>app_name</em></code></li>
     <li>sets <code>cgilua.app_name</code> to <em>app_name</em></li>
-    <li>adds <code><em>KEPLER_APPS</em>/cgilua/<em>app_name</em>/lua</code> to the start of <code>package.path</code></li>
+    <li>adds <code><em>CGILUA_APPS</em>/<em>app_name</em>/lua</code> to the start of <code>package.path</code></li>
     <li>executes <code>init.lua</code></li>
 </ul>
 
@@ -556,7 +556,7 @@ sequence for web applications using CGILua and <code>app.lua</code> as their dis
 CGILua applications usually need to dispatch their actions using the remaining <em>path_info</em> and for that
 they can use <code>cgilua.dispatcher</code> as a helper library. The example below uses it to dispatch URLs that
 follow a convention similar to <a href="http://www.rubyonrails.org/">Rails</a>. Let's assume that this is a
-<code>init.lua</code> file in the <code><em>KEPLER_APPS</em>/cgilua/blog</code> directory:
+<code>init.lua</code> file in the <code><em>CGILUA_APPS</em>/blog</code> directory:
 </p>
 
 <pre class="example">
@@ -785,7 +785,7 @@ containing all possible information to help reproduce the situation.
 
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
-	<p><small>$Id: manual.html,v 1.24 2007/12/05 19:44:01 carregal Exp $</small></p>
+	<p><small>$Id: manual.html,v 1.25 2007/12/05 20:24:49 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
