@@ -1,4 +1,6 @@
--- Authentication controller
+-- Checking script example
+-- Assumes that the login form will use two fields called username and pass
+
 local username = cgilua.POST.username
 local pass = cgilua.POST.pass
 local logged, err, logoutURL

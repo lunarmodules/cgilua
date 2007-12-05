@@ -5,15 +5,16 @@
 -- cgilua.POST.user, cgilua.POST.pass, cgilua.QUERY.logout, cgilua.QUERY[tokenName]
 --
 -- The API consists in the functions
---   check(username, passwd) - verify if the pair username/passwd is authenticated by the configured method
---   username() - returns the authenticated user if existent
---   checkURL() - returns the URL for the login page
+--   check(username, passwd) - Checks if the pair username/passwd is authenticated by the configured method
+--   checkURL() - returns the URL for the checking script
+--   configure(options, methods) - configures the authentication framework (see /examples/authentication_conf.lua)
 --   logoutURL() - returns the URL for the logout page
 --   refURL() - returns the original URL being checked for authentication
+--   username() - returns the authenticated user if existent
 --
 -- The authenticated user can be persisted by using a cookie or an ID in the URL
 --
--- $Id: authentication.lua,v 1.1 2007/12/05 18:40:17 carregal Exp $
+-- $Id: authentication.lua,v 1.2 2007/12/05 19:41:13 carregal Exp $
 
 
 local mime=require"mime" -- from LuaSocket
