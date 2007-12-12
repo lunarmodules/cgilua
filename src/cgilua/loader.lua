@@ -4,7 +4,7 @@
 --  CGILUA_CONF - CGILua configuration directory
 --  CGILUA_TMP  - CGILua temporary files directory
 --
--- # $Id: loader.lua,v 1.2 2007/12/11 20:30:45 mascarenhas Exp $
+-- # $Id: loader.lua,v 1.3 2007/12/12 17:22:21 carregal Exp $
 
 module("cgilua.loader", package.seeall)
 
@@ -24,8 +24,8 @@ function run()
     local document_root = cgilua.pdir or servervariable"DOCUMENT_ROOT"
 
     if not cgilua.script_path then
-        if cgilua.isdirect then -- the launcher is associated with scripts (Xavante, mod_lua or isapi usually)
-	    if servervariable"PATH_TRANSLATED" ~= "" then
+        if CGILUA_ISDIRECT then -- the launcher is associated with scripts (Xavante, mod_lua or isapi usually)
+	        if servervariable"PATH_TRANSLATED" ~= "" then
               cgilua.script_path = servervariable"PATH_TRANSLATED"
             else
               cgilua.script_path = servervariable"SCRIPT_FILENAME"
