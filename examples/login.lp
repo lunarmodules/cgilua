@@ -12,8 +12,8 @@
     <form method="post" action="" >
         User name: <input name="username" maxlength="20" size="20" value="<%= username %>" ><br />
         Password: <input name="pass" type="password" maxlength="20" size="20"><br />
-        <input type="submit" value="Login">
-        <input type="reset" value="Reset">
+        <input type="submit" value="Login" />
+        <input type="reset" value="Reset" />
     </form>
     <% end %>
 </body>
