@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.73 2007/12/17 16:14:36 mascarenhas Exp $
+-- @release $Id: cgilua.lua,v 1.74 2007/12/17 16:25:31 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -221,7 +221,7 @@ end
 
 
 -- Default path for temporary files
-tmp_path = getenv("TEMP") or getenv ("TMP") or "/tmp"
+tmp_path = _G.CGILUA_TMP or getenv("TEMP") or getenv ("TMP") or "/tmp"
 
 -- Default function for temporary names
 -- @returns a temporay name using os.tmpname

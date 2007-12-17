@@ -4,7 +4,7 @@
 --  CGILUA_CONF - CGILua configuration directory
 --  CGILUA_TMP  - CGILua temporary files directory
 --
--- # $Id: loader.lua,v 1.3 2007/12/12 17:22:21 carregal Exp $
+-- # $Id: loader.lua,v 1.4 2007/12/17 16:26:04 carregal Exp $
 
 module("cgilua.loader", package.seeall)
 
@@ -76,8 +76,6 @@ function run()
         end
     end
     
-    cgilua.tmp_path = CGILUA_TMP
-
     -- define other cgilua vars so mkurlpath can work correctly
     if cgilua.script_vpath then
         cgilua.script_vdir = cgilua.splitpath (cgilua.script_vpath)
