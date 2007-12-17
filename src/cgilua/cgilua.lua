@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.72 2007/12/14 18:01:59 mascarenhas Exp $
+-- @release $Id: cgilua.lua,v 1.73 2007/12/17 16:14:36 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -53,7 +53,7 @@ local _default_erroroutput = function (msg)
 	-- Building user message
 	msg = gsub (gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
 	SAPI.Response.contenttype ("text/html")
-	SAPI.Response.write (msg)
+	SAPI.Response.write ("<html><head><title>CGILua Error</title></head><body>" .. msg .. "</body></html>")
 end
 local _erroroutput = _default_erroroutput
 local _default_maxfilesize = 512 * 1024
@@ -162,6 +162,7 @@ function pcall (f)
 	local ok = results[1]
 	tremove(results, 1)
 	if ok then
+	        if #results == 0 then results = { true } end
 		return unpack(results)
 	else
 		_erroroutput (unpack(results))
@@ -587,7 +588,7 @@ function main ()
     end
     
     -- Build QUERY/POST tables
-	pcall (getparams)
+    if not pcall (getparams) then return nil end
 
 	local result
     -- Executes the optional loader module
