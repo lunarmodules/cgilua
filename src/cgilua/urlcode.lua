@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Utility functions for encoding/decoding of URLs.
 --
--- @release $Id: urlcode.lua,v 1.8 2007/04/16 14:01:32 tomas Exp $
+-- @release $Id: urlcode.lua,v 1.9 2008/01/10 14:04:04 tomas Exp $
 ----------------------------------------------------------------------------
 
 local next, pairs, tonumber, type = next, pairs, tonumber, type
@@ -25,7 +25,7 @@ end
 ----------------------------------------------------------------------------
 function escape (str)
 	str = string.gsub (str, "\n", "\r\n")
-	str = string.gsub (str, "([^%w ])",
+	str = string.gsub (str, "([^0-9a-zA-Z ])", -- locale independent
 		function (c) return string.format ("%%%02X", string.byte(c)) end)
 	str = string.gsub (str, " ", "+")
 	return str
