@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.74 2007/12/17 16:25:31 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.75 2008/01/21 16:25:55 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -14,7 +14,7 @@ local pairs = pairs
 local gsub, format, strfind, strlower, strsub, match = string.gsub, string.format, string.find, string.lower, string.sub, string.match
 local setmetatable = setmetatable
 local _open = io.open
-local tinsert, tremove = table.insert, table.remove
+local tinsert, tremove, concat = table.insert, table.remove, table.concat
 local foreachi = table.foreachi
 local date = os.date
 local os_tmpname = os.tmpname
@@ -135,7 +135,7 @@ function print (...)
 	for i = 1, select("#",...) do
 		args[i] = tostring(args[i])
 	end
-	SAPI.Response.write (unpack(args))
+	SAPI.Response.write (concat(args,"\t"))
 end
 
 ----------------------------------------------------------------------------
