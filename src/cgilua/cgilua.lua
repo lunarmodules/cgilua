@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.75 2008/01/21 16:25:55 mascarenhas Exp $
+-- @release $Id: cgilua.lua,v 1.76 2008/01/21 16:44:04 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -21,6 +21,7 @@ local os_tmpname = os.tmpname
 local getenv = os.getenv
 local remove = os.remove
 local seeall = package.seeall
+local setfenv = setfenv
 
 lp.setoutfunc ("cgilua.put")
 lp.setcompatmode (true)
@@ -169,6 +170,12 @@ function pcall (f)
 	end
 end
 
+local function buildscriptenv()
+  local env = { print = _M.print, write = _M.put }
+  setmetatable(env, { __index = _G })
+  return env
+end
+
 ----------------------------------------------------------------------------
 -- Execute a script
 --  If an error is found, Lua's error handler is called and this function
@@ -177,12 +184,14 @@ end
 -- @return The result of the execution of the file.
 ----------------------------------------------------------------------------
 function doscript (filename)
-	local f, err = _G.loadfile(filename)
-	if not f then
-		error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))
-	else
-        return pcall(f)
-	end
+  local f, err = _G.loadfile(filename)
+  if not f then
+    error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))
+  else
+    local env = buildscriptenv()
+    setfenv(f, env)
+    return pcall(f)
+  end
 end
 
 ----------------------------------------------------------------------------
@@ -261,8 +270,9 @@ end
 -- @param env Optional environment
 ----------------------------------------------------------------------------
 function handlelp (filename, env)
-	htmlheader ()
-	lp.include (filename, env)
+  env = env or buildscriptenv()
+  htmlheader ()
+  lp.include (filename, env)
 end
 
 ----------------------------------------------------------------------------
@@ -299,8 +309,9 @@ end
 ----------------------------------------------------------------------------
 function buildprocesshandler (type, subtype)
 	return function (filename)
-		contentheader (type, subtype)
-		lp.include (filename)
+		 local env = buildscriptenv()
+		 contentheader (type, subtype)
+		 lp.include (filename, env)
 	end
 end
 
