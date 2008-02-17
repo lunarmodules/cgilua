@@ -115,10 +115,17 @@ as Lua 5.1.
 <h2><a name="history"></a>History</h2>
 
 <dl>
-    <dt><strong>Version 5.1.2</strong> [??/Dec/2007]</dt>
+    <dt><strong>Version 5.1.2</strong> [18/Feb/2008]</dt>
 	<dd>
 	<ul>
-        <li>Added the <a href="libraries.html#authentication"><code>cgilua.authentication</code></a> module</li></li>
+        <li>Added the <a href="libraries.html#authentication"><code>cgilua.authentication</code></a> module</li>
+        <li>Better error handling. Wraps error message in valid HTML</li>
+        <li>Bug fixed: CGILua was ignoring <code>CGILUA_TMP</code> in Windows.</li>
+        <li>Handling multiple values in the generated URL (patch by Matt Campbell)</li>
+        <li><a href="reference.html#print"><code>cgilua.print</code></a> now separates arguments with tabs,
+        like Lua <code>print</code></li>
+        <li>Now <code>print</code> and <code>write</code> are aliases to <a href="reference.html#print"><code>cgilua.print</code></a>
+        and <a href="reference.html#put"><code>cgilua.put</code></a>.</li>
     </ul>
     </dd>
     
@@ -295,7 +302,7 @@ Project <a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.
 
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
-	<p><small>$Id: index.html,v 1.64 2007/12/05 19:41:13 carregal Exp $</small></p>
+	<p><small>$Id: index.html,v 1.65 2008/02/17 03:10:01 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
