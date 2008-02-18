@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.76 2008/01/21 16:44:04 mascarenhas Exp $
+-- @release $Id: cgilua.lua,v 1.77 2008/02/18 21:48:52 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -30,7 +30,7 @@ module ("cgilua")
 
 _COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
-_VERSION = "CGILua 5.1.1"
+_VERSION = "CGILua 5.1.2"
 --
 -- Internal state variables.
 local _default_errorhandler = debug.traceback
@@ -584,46 +584,46 @@ end
 -- Request processing.
 ---------------------------------------------------------------------------
 function main ()
-    buildhandlers()    
+	buildhandlers()    
 	-- Default handler values
 	addscripthandler ("lua", doscript)
 	addscripthandler ("lp", handlelp)
 	-- Looks for an optional loader module
 	pcall (function () _G.require"cgilua.loader" end)
 
-    -- post.lua needs to be loaded after cgilua.lua is compiled
+	-- post.lua needs to be loaded after cgilua.lua is compiled
 	pcall (function () _G.require"cgilua.post" end)
 
-    if loader then
-        loader.init()
-    end
+	if loader then
+		loader.init()
+	end
     
-    -- Build QUERY/POST tables
-    if not pcall (getparams) then return nil end
+	-- Build QUERY/POST tables
+	if not pcall (getparams) then return nil end
 
 	local result
-    -- Executes the optional loader module
+	-- Executes the optional loader module
 	if loader then
 		loader.run()
 	end
 
-    -- Changing curent directory to the script's "physical" dir
-    local curr_dir = lfs.currentdir ()
-    pcall (function () lfs.chdir (script_pdir) end)
+	-- Changing curent directory to the script's "physical" dir
+	local curr_dir = lfs.currentdir ()
+	pcall (function () lfs.chdir (script_pdir) end)
 
-    -- Opening functions
-    pcall (open)
+	-- Opening functions
+	pcall (open)
 
-    -- Executes the script
+	-- Executes the script
 	result, err = pcall (function () return handle (script_file) end)
     
-    -- Closing functions
-    pcall (close)
-    -- Changing to original directory
-    pcall (function () lfs.chdir (curr_dir) end)
+	-- Closing functions
+	pcall (close)
+	-- Changing to original directory
+	pcall (function () lfs.chdir (curr_dir) end)
 
-    -- Cleanup
-    reset ()
+	-- Cleanup
+	reset ()
 	if result then -- script executed ok!
 		return result
 	end
