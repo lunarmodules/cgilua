@@ -22,6 +22,7 @@ dependencies = {
 build = {
    type = "make",
    build_pass = false,
+   install_target = "install",
    install_variables = {
       LUA_DIR = "$(LUADIR)"
    }
