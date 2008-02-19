@@ -21,7 +21,8 @@ dependencies = {
 
 source = {
    url = "cvs://:pserver:anonymous@cvs.luaforge.net:/cvsroot/cgilua",
-   cvs_tag = "HEAD"
+   cvs_tag = "HEAD",
+   dir = "cgilua"
 }
 
 build = {
