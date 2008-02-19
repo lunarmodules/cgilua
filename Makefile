@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.46 2007/12/05 18:40:17 carregal Exp $
+# $Id: Makefile,v 1.47 2008/02/19 19:28:40 mascarenhas Exp $
 
 # Default prefix
 PREFIX = /usr/local
@@ -14,4 +14,5 @@ install:
 	mkdir -p $(CGILUA_DIR)
 	cp $(CGILUA_LUAS) $(CGILUA_DIR)
 	cp $(ROOT_LUAS) $(LUA_DIR)
+
 clean:
