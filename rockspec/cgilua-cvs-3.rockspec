@@ -1,5 +1,7 @@
 package = "CGILua"
+
 version = "cvs-3"
+
 description = {
    summary = "Tool for creating dynamic Web pages and manipulating data from Web forms",
    detailed = [[
@@ -11,14 +13,17 @@ description = {
       IIS or mod_lua on Apache. 
    ]]
 }
+
 dependencies = {
    "lua >= 5.1",
    "luafilesystem cvs",
 }
+
 source = {
-   url = "cvs://:pserver:anonymous:@cvs.luaforge.net:/cvsroot/cgilua",
-   cvs_tag = "HEAD",
+   url = "cvs://:pserver:anonymous@cvs.luaforge.net:/cvsroot/cgilua",
+   cvs_tag = "HEAD"
 }
+
 build = {
    type = "make",
    build_pass = false,
