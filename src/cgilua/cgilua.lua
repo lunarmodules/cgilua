@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.77 2008/02/18 21:48:52 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.78 2008/03/05 18:45:11 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -137,6 +137,7 @@ function print (...)
 		args[i] = tostring(args[i])
 	end
 	SAPI.Response.write (concat(args,"\t"))
+	SAPI.Response.write ("\n")
 end
 
 ----------------------------------------------------------------------------
