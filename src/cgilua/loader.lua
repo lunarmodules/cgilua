@@ -4,7 +4,7 @@
 --  CGILUA_CONF - CGILua configuration directory
 --  CGILUA_TMP  - CGILua temporary files directory
 --
--- # $Id: loader.lua,v 1.6 2008/03/28 19:44:10 mascarenhas Exp $
+-- # $Id: loader.lua,v 1.7 2008/03/28 22:01:18 ignacio Exp $
 
 require "lfs"
 
@@ -49,9 +49,9 @@ function run()
 	    -- looks for a Lua script with the same name as the executable
 	    local _, name = cgilua.splitpath(servervariable"SCRIPT_NAME")
 	    name = string.gsub(name, "%.[^%.]-$","")
-	    if name and io.open(document_root.."/"..name..".lua") then
-	       cgilua.script_path = document_root.."/"..name..".lua"
-	    end
+		if name and lfs.attributes(document_root.."/"..name..".lua") then
+			cgilua.script_path = document_root.."/"..name..".lua"
+		end
 	 else
 	    -- uses /index.lua then /index.lp as the default script
 	    if cgilua.script_vpath == "/" then
@@ -65,7 +65,7 @@ function run()
 	    end
 	    -- checks if PATH_INFO refers to a valid file and ajusts the settings accordingly
 	    local filepath, path_info = string.match (cgilua.script_vpath, "^([^%.]-%.[^/]+)(.*)")
-	    if filepath and io.open(document_root..filepath) then
+	    if filepath and lfs.attributes(document_root..filepath) then
 	       -- if one is found use it
 	       cgilua.script_path = document_root..filepath
 	       cgilua.script_vpath = path_info
