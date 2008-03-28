@@ -4,7 +4,9 @@
 --  CGILUA_CONF - CGILua configuration directory
 --  CGILUA_TMP  - CGILua temporary files directory
 --
--- # $Id: loader.lua,v 1.5 2008/01/23 18:26:49 mascarenhas Exp $
+-- # $Id: loader.lua,v 1.6 2008/03/28 19:44:10 mascarenhas Exp $
+
+require "lfs"
 
 module("cgilua.loader", package.seeall)
 
@@ -53,12 +55,12 @@ function run()
 	 else
 	    -- uses /index.lua then /index.lp as the default script
 	    if cgilua.script_vpath == "/" then
-	       if io.open(document_root.."/index.lua") then
+	       if lfs.attributes(document_root.."/index.lua") then
 		  cgilua.script_vpath = "/index.lua"
-	       elseif io.open(document_root.."/index.lp") then
+	       elseif lfs.attributes(document_root.."/index.lp") then
 		  cgilua.script_vpath = "/index.lp"
 	       else
-		  error("No script defined")
+		  error("Kepler is correctly configured, but you didn't provide a script!")
 	       end                    
 	    end
 	    -- checks if PATH_INFO refers to a valid file and ajusts the settings accordingly
