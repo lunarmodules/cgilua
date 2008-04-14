@@ -16,7 +16,7 @@ description = {
 
 dependencies = {
    "lua >= 5.1",
-   "luafilesystem > 1.4.0",
+   "luafilesystem 1.4.1rc1",
 }
 
 source = {
