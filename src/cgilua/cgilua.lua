@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.78 2008/03/05 18:45:11 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.79 2008/04/22 20:19:14 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -173,7 +173,7 @@ end
 
 local function buildscriptenv()
   local env = { print = _M.print, write = _M.put }
-  setmetatable(env, { __index = _G })
+  setmetatable(env, { __index = _G, __newindex = _G })
   return env
 end
 
