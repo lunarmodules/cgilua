@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.79 2008/04/22 20:19:14 mascarenhas Exp $
+-- @release $Id: cgilua.lua,v 1.80 2008/04/24 13:42:04 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -71,7 +71,9 @@ script_path = false
 -- @param header String with the header.
 -- @param value String with the corresponding value.
 ----------------------------------------------------------------------------
-header = SAPI.Response.header
+function header(...)
+   return SAPI.Response.header(...)
+end
 
 ----------------------------------------------------------------------------
 -- Sends a Content-type header.
@@ -112,7 +114,9 @@ end
 -- @param name String with the name of the server variable.
 -- @return String with the value of the server variable.
 ----------------------------------------------------------------------------
-servervariable = SAPI.Request.servervariable
+function servervariable(...)
+   return SAPI.Request.servervariable(...)
+end
 
 ----------------------------------------------------------------------------
 -- Primitive error output function
@@ -148,7 +152,9 @@ end
 --  handle initialized with the file descriptor for stdout)
 -- @param s String (or number) with output.
 ----------------------------------------------------------------------------
-put = SAPI.Response.write
+function put (...)
+   return SAPI.Response.write(...)
+end
 
 -- Returns the current errorhandler
 function _geterrorhandler(msg)
@@ -585,6 +591,7 @@ end
 -- Request processing.
 ---------------------------------------------------------------------------
 function main ()
+        SAPI = _G.SAPI
 	buildhandlers()    
 	-- Default handler values
 	addscripthandler ("lua", doscript)
