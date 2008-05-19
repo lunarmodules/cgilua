@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.80 2008/04/24 13:42:04 mascarenhas Exp $
+-- @release $Id: cgilua.lua,v 1.81 2008/05/19 18:13:36 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -28,7 +28,7 @@ lp.setcompatmode (true)
 
 module ("cgilua")
 
-_COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
+_COPYRIGHT = "Copyright (C) 2003 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
 _VERSION = "CGILua 5.1.2"
 --

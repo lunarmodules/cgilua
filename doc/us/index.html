@@ -111,21 +111,32 @@ as Lua 5.1.
 <p>CGILua source code can be downloaded from its
 <a href="http://luaforge.net/projects/cgilua/files">LuaForge</a> page</p>
 
+<p>You can also install CGILua using <a href="http://www.luarocks.org">LuaRocks</a>:</p>
 
+<pre class="example">
+luarocks install cgilua
+</pre>
+	
 <h2><a name="history"></a>History</h2>
 
 <dl>
-    <dt><strong>Version 5.1.2</strong> [18/Feb/2008]</dt>
+    <dt><strong>Version 5.1.2</strong> [19/May/2008]</dt>
 	<dd>
 	<ul>
         <li>Added the <a href="libraries.html#authentication"><code>cgilua.authentication</code></a> module</li>
-        <li>Better error handling. Wraps error message in valid HTML</li>
-        <li>Bug fixed: CGILua was ignoring <code>CGILUA_TMP</code> in Windows.</li>
-        <li>Handling multiple values in the generated URL (patch by Matt Campbell)</li>
         <li><a href="reference.html#print"><code>cgilua.print</code></a> now separates arguments with tabs,
         like Lua <code>print</code></li>
         <li>Now <code>print</code> and <code>write</code> are aliases to <a href="reference.html#print"><code>cgilua.print</code></a>
         and <a href="reference.html#put"><code>cgilua.put</code></a>.</li>
+		<li>Now strips an eventual <code>#!</code> from top of Lua Pages files</li>
+		<li>CGILua can now process sequential requests in the same Lua state</li>
+        <li>Better error handling. Wraps error message in valid HTML</li>
+        <li>Bug fixed: CGILua was ignoring <code>CGILUA_TMP</code> in Windows</li>
+		<li>Corrected the URL handling for the dispatcher (bug found by Ronaldo Sugii)</li>
+		<li>Better URL handling for different locales</li>
+        <li>Handling multiple values in the generated URL (patch by Matt Campbell)</li>
+		<li>Fixed file handle leak in <code>loader.lua</code></li>
+		<li>Fixed bug [<a href="http://luaforge.net/tracker/?func=detail&amp;group_id=104&amp;aid=2630&amp;atid=508">#2630</a>] - Including new files (bug found by Bruno Massa)</li>
     </ul>
     </dd>
     
@@ -302,7 +313,7 @@ Project <a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.
 
 <div id="about">
 	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
-	<p><small>$Id: index.html,v 1.65 2008/02/17 03:10:01 carregal Exp $</small></p>
+	<p><small>$Id: index.html,v 1.66 2008/05/19 18:13:36 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
