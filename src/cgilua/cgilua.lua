@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.81 2008/05/19 18:13:36 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.82 2008/12/11 18:12:46 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -568,6 +568,9 @@ end
 --
 local function reset ()
 	script_path = false
+        script_vpath, pdir, use_executable_name, url_path, script_vdir, script_pdir,
+          script_file, authentication, app_name = 
+               nil, nil, nil, nil, nil, nil, nil, nil, nil
 	_maxfilesize = _default_maxfilesize
 	_maxinput = _default_maxinput
 	-- Error Handling
