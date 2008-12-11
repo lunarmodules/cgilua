@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Lua Pages Template Preprocessor.
 --
--- @release $Id: lp.lua,v 1.13 2008/01/19 19:30:35 mascarenhas Exp $
+-- @release $Id: lp.lua,v 1.14 2008/12/11 14:48:09 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local assert, error, getfenv, loadstring, setfenv = assert, error, getfenv, loadstring, setfenv
@@ -114,12 +114,14 @@ end
 -- optionally given environment.
 -- @param filename String with the name of the file containing the template.
 -- @param env Table with the environment to run the resulting function.
+local BOM = string.char(239) .. string.char(187) .. string.char(191)
 
 function include (filename, env)
 	-- read the whole contents of the file
 	local fh = assert (open (filename))
 	local src = fh:read("*a")
 	fh:close()
+	if src:sub(1,3) == BOM then src = src:sub(4) end
 	-- translates the file into a function
 	local prog = compile (src, '@'..filename)
 	local _env
