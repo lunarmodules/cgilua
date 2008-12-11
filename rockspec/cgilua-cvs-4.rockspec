@@ -46,6 +46,6 @@ build = {
 
 for i = 1, #CGILUA_LUAS do
     local file = CGILUA_LUAS[i]
-    local mod = file:match("^src/cgilua/([^%.]+)%.lua$")
+    local mod = "cgilua." .. file:match("^src/cgilua/([^%.]+)%.lua$")
     build.modules[mod] = file
 end
