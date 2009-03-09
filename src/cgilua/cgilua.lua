@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.83 2008/12/11 18:36:35 mascarenhas Exp $
+-- @release $Id: cgilua.lua,v 1.84 2009/03/09 22:03:24 carregal Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -30,7 +30,7 @@ module ("cgilua")
 
 _COPYRIGHT = "Copyright (C) 2003 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
-_VERSION = "CGILua 5.1.2"
+_VERSION = "CGILua 5.1.3"
 --
 -- Internal state variables.
 local _default_errorhandler = debug.traceback
