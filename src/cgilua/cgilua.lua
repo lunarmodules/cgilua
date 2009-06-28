@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- CGILua library.
 --
--- @release $Id: cgilua.lua,v 1.84 2009/03/09 22:03:24 carregal Exp $
+-- @release $Id: cgilua.lua,v 1.85 2009/06/28 22:42:34 tomas Exp $
 ----------------------------------------------------------------------------
 
 local _G, SAPI = _G, SAPI
@@ -346,9 +346,9 @@ function mkurlpath (script, args)
 		params = "?"..urlcode.encodetable(args)
 	end
 	if strsub(script,1,1) == "/" then
-		return urlpath .. script .. params
+		return script .. params
 	else
-		return urlpath .. script_vdir .. script .. params
+		return script_vdir .. script .. params
 	end
 end
 
