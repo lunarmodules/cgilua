@@ -41,7 +41,8 @@ build = {
    type = "module",
    modules = {
      cgilua = "src/cgilua/cgilua.lua"
-   }
+   },
+   install = { bin = { "src/launchers/cgilua.cgi", "src/launchers/cgilua.fcgi" } }   
 }
 
 for i = 1, #CGILUA_LUAS do
