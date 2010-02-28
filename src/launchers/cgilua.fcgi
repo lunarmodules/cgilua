@@ -18,13 +18,6 @@ end
 local ONE_HOUR = 60 * 60
 local ONE_DAY = 24 * ONE_HOUR
 
-local bootstrap = [[
-  CGILUA_APPS = wsapi.app_path .. "/cgilua"
-  CGILUA_CONF = wsapi.app_path .. "/cgilua"
-  CGILUA_TMP = os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
-  CGILUA_ISDIRECT = true
-]]
-
 local sapi_loader = common.make_isolated_launcher{
   filename = nil,           -- if you want to force the launch of a single script
   launcher = "cgilua.fcgi", -- the name of this launcher
@@ -32,7 +25,9 @@ local sapi_loader = common.make_isolated_launcher{
   reload = false,           -- if you want to reload the application on every request
   period = ONE_HOUR,        -- frequency of Lua state staleness checks
   ttl = ONE_DAY,            -- time-to-live for Lua states
-  bootstrap = bootstrap     -- bootstrap code for CGILua
+  vars =                    -- order of checking for the path of the script
+   { "SCRIPT_FILENAME",
+     "PATH_TRANSLATED" } 
 }
 
 wsapi.fastcgi.run(sapi_loader)

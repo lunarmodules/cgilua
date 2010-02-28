@@ -14,10 +14,6 @@ local sapi = require "wsapi.sapi"
 local arg_filename = (...)
  
 local function sapi_loader(wsapi_env)
-  CGILUA_APPS = wsapi_env.APP_PATH .. "/cgilua"
-  CGILUA_CONF = wsapi_env.APP_PATH .. "/cgilua"
-  CGILUA_TMP = os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
-  CGILUA_ISDIRECT = true
   common.normalize_paths(wsapi_env, arg_filename, "cgilua.cgi")
   return sapi.run(wsapi_env)
 end 
