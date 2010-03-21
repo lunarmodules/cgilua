@@ -16,7 +16,7 @@ description = {
 
 dependencies = {
    "lua >= 5.1",
-   "luafilesystem cvs",
+   "luafilesystem >= 1.5.0",
 }
 
 source = {
