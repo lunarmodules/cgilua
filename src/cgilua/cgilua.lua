@@ -28,9 +28,9 @@ lp.setcompatmode (true)
 
 module ("cgilua")
 
-_COPYRIGHT = "Copyright (C) 2003 Kepler Project"
+_COPYRIGHT = "Copyright (C) 2003-2010 Kepler Project"
 _DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms"
-_VERSION = "CGILua 5.1.3"
+_VERSION = "CGILua 5.1.4"
 --
 -- Internal state variables.
 local _default_errorhandler = debug.traceback
