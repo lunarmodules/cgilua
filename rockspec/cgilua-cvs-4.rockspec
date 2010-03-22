@@ -41,7 +41,7 @@ build = {
      cgilua = "src/cgilua/cgilua.lua"
    },
    install = { bin = { "src/launchers/cgilua.cgi", "src/launchers/cgilua.fcgi" } },
-   copy_directories = { "examples" }
+   copy_directories = { "examples", "doc" }
 }
 
 for i = 1, #CGILUA_LUAS do

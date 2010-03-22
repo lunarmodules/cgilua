@@ -40,6 +40,7 @@ build = {
    modules = {
      cgilua = "src/cgilua/cgilua.lua"
    },
+   copy_directories = { "examples", "doc", "tests" },
    install = { bin = { "src/launchers/cgilua.cgi", "src/launchers/cgilua.fcgi" } }
 }
 
