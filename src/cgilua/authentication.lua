@@ -19,14 +19,15 @@
 
 local mime=require"mime" -- from LuaSocket
 local md5=require"md5"
-require"cgilua.cookies"
+local cookies = require"cgilua.cookies"
 
-local cgilua = cgilua
-local string = string
-local math = math
+local cgilua = require"cgilua"
+local string = require"string"
+local math = require"math"
 local error = error
 
-module"cgilua.authentication"
+--module"cgilua.authentication"
+local _M = {}
 
 local authenticatedUser
 local configuration
@@ -36,17 +37,17 @@ local _check -- check function provided by the configuration
 -- if not defined, CGILua standard URLs are assumed
 
 -- Returns the current token
-function getToken()
+function _M.getToken()
     return cgilua.QUERY[configuration.tokenName]
 end
 
 -- Sets the current token
-function setToken(token)
+function _M.setToken(token)
     cgilua.QUERY[configuration.tokenName] = token
 end
     
 -- Returns the current URL
-function currentURL()
+function _M.currentURL()
     local script_name = cgilua.servervariable"SCRIPT_NAME"
     local path_info = cgilua.servervariable"PATH_INFO" or ""
     local query_string = cgilua.servervariable"QUERY_STRING" or ""
@@ -61,7 +62,7 @@ end
 --
 -- '=' is replaced by ''
 -- '+' and '/' are respectively replaced by '*' and '-'
-function encodeURLbase64(str)
+function _M.encodeURLbase64(str)
 	local b64str = mime.b64(str)
 	local urlb64str = string.gsub(b64str,"=","")
 	urlb64str = string.gsub(urlb64str,"+","*")
@@ -70,7 +71,7 @@ function encodeURLbase64(str)
 	return urlb64str
 end
 
-function decodeURLbase64(urlb64str)
+function _M.decodeURLbase64(urlb64str)
 	local b64str = string.gsub(urlb64str,"*","+")
 	b64str = string.gsub(b64str,"-","/")
 	b64str = string.gsub(b64str,"_"," ")
@@ -81,17 +82,17 @@ function decodeURLbase64(urlb64str)
 end
 
 -- Returns the authenticated username or nil if no user is authenticated
-function username()
+function _M.username()
 	if authenticatedUser == nil then
 		local authenticatedUserData
         local token
 		if configuration.tokenPersistence == "url" then
-            token = getToken()
+            token = _M.getToken()
 		elseif configuration.tokenPersistence == "cookie" then
 			token = cgilua.cookies.get(configuration.tokenName)
 		end
         if token then
-            authenticatedUserData = md5.decrypt(decodeURLbase64(token), configuration.criptKey)
+            authenticatedUserData = md5.decrypt(_M.decodeURLbase64(token), configuration.criptKey)
             -- check if IP in crypted data match with client IP
             local authenticatedUserIP = authenticatedUserData and string.gsub(authenticatedUserData, ",.*$","") or nil
             if authenticatedUserIP ~= cgilua.servervariable("REMOTE_ADDR") then
@@ -107,7 +108,7 @@ end
 local function cryptUserData()
     if authenticatedUser then
         local userData = cgilua.servervariable("REMOTE_ADDR") ..",".. authenticatedUser
-        local cryptedUserData = encodeURLbase64(md5.crypt(userData, configuration.criptKey))
+        local cryptedUserData = _M.encodeURLbase64(md5.crypt(userData, configuration.criptKey))
         return cryptedUserData
     end
 end
@@ -118,20 +119,20 @@ local function setUser(username)
     if username then
         local cryptedUserData = cryptUserData()
         if configuration.tokenPersistence == "url" then
-            setToken(cryptedUserData)
+            _M.setToken(cryptedUserData)
             cgilua.cookies.delete(configuration.tokenName) -- removes an eventual previous cookie token
         elseif configuration.tokenPersistence == "cookie" then
             cgilua.cookies.set(configuration.tokenName, cryptedUserData)
-            setToken() -- remove an eventual previous token from the URLs
+            _M.setToken() -- remove an eventual previous token from the URLs
         end
     end
 end
 
 -- User logout, clear everything
-function logout()
+function _M.logout()
     setUser()
     cgilua.cookies.delete(configuration.tokenName)
-    setToken()
+    _M.setToken()
     cgilua.QUERY.logout = nil
 end
 
@@ -139,7 +140,7 @@ end
 -- if the user is authenticaded then login the user else logout the user
 -- returns true if the user has been succesfully authenticated or false plus
 -- an error message when the authentication fails
-function check(name, pass)
+function _M.check(name, pass)
     name = name or cgilua.POST.user
     pass = pass or cgilua.POST.pass
 	if name then
@@ -149,14 +150,14 @@ function check(name, pass)
 			setUser(name)
 			return true
 		else
-			logout()
+			_M.logout()
 			return false, errauth
 		end
 	else
-		local authuser = username()
+		local authuser = _M.username()
 		if authuser then
 			if cgilua.QUERY.logout ~= nil then
-				logout()
+				_M.logout()
 				return false
 			end
 		end
@@ -166,10 +167,10 @@ end
 
 -- Returns a authentication URL with ref URL as a parameter,
 -- accepts an optional value for the logout action
-function checkURL(ref, tologout)
+function _M.checkURL(ref, tologout)
     local token
     if configuration.tokenPersistence == "url" then
-        token = getToken()
+        token = _M.getToken()
     elseif configuration.tokenPersistence == "cookie" then
         token = cgilua.cookies.get(configuration.tokenName)
     end
@@ -179,8 +180,8 @@ function checkURL(ref, tologout)
     -- Some proxy and firewall software will also filter out referer information,
     -- to avoid leaking the location of non-public websites.
     -- So we send the current URL as an URL parameter to the login URL.     
-	setToken()
-	local args = {ref = ref or currentURL(), logout = tologout}
+	_M.setToken()
+	local args = {ref = ref or _M.currentURL(), logout = tologout}
 	if string.find(configuration.checkURL, "^https?:") then
 		local params = "?"..urlcode.encodetable(args)
 		return configuration.checkURL..params
@@ -189,12 +190,12 @@ function checkURL(ref, tologout)
 end
 
 -- Returns the logout URL, based on the login URL
-function logoutURL()
-	return checkURL(nil, 1)
+function _M.logoutURL()
+	return _M.checkURL(nil, 1)
 end
 
 -- Returns the referenced URL, the one supposed to be offered only for authenticated users
-function refURL()
+function _M.refURL()
     local url
     local baseURL = cgilua.QUERY.ref or configuration.checkURL
     if string.find(baseURL, "\?") then
@@ -206,7 +207,7 @@ function refURL()
 end
 
 -- Sets the current configuration
-function configure(options, methods)
+function _M.configure(options, methods)
     configuration = options
     local method = methods[options.method] or {}
     
@@ -217,3 +218,5 @@ function configure(options, methods)
         username = method.username
     end
 end
+
+return _M
