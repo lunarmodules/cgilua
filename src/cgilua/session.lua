@@ -4,8 +4,9 @@
 -- @release $Id: session.lua,v 1.29 2007/11/21 16:33:20 carregal Exp $
 ----------------------------------------------------------------------------
 
+local cgilua = require"cgilua"
 local lfs = require"lfs"
-local serialize = require"cgilua.serialize"
+local serialize = require"cgilua.serialize".serialize
 
 local assert, error, ipairs, _G, loadfile, next, tostring, type = assert, error, ipairs, _G, loadfile, next, tostring, type
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
@@ -15,9 +16,12 @@ local remove, time = os.remove, os.time
 local mod, rand, randseed = math.mod, math.random, math.randomseed
 local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
 
-module ("cgilua.session")
+--module ("cgilua.session")
+local _M = {}
 
+local RANGE = 999999999
 local INVALID_SESSION_ID = "Invalid session identification"
+randseed (mod (time(), RANGE))
 
 ----------------------------------------------------------------------------
 -- Internal state variables.
@@ -44,7 +48,7 @@ end
 -- Deletes a session.
 -- @param id Session identification.
 ----------------------------------------------------------------------------
-function delete (id)
+function _M.delete (id)
 	if not check_id (id) then
 		return nil, INVALID_SESSION_ID
 	end
@@ -69,20 +73,20 @@ end
 -- @return New identifier.
 --
 local function new_id ()
-	return rand (999999999)
+	return rand (RANGE)
 end
 
 ----------------------------------------------------------------------------
 -- Creates a new session identifier.
 -- @return Session identification.
 ----------------------------------------------------------------------------
-function new ()
+function _M.new ()
 	local id = new_id ()
 	if find (id..".lua") then
+		randseed (mod (time(), 999999999))
 		repeat
 			id = new_id (id)
 		until not find (id..".lua")
-		randseed (mod (id, 999999999))
 	end
 	return id
 end
@@ -91,7 +95,7 @@ end
 -- Changes the session identificator generator.
 -- @param func Function.
 ----------------------------------------------------------------------------
-function setidgenerator (func)
+function _M.setidgenerator (func)
 	if type (func) == "function" then
 		new_id = func
 	end
@@ -103,7 +107,7 @@ end
 -- @return Table with session data or nil in case of error.
 -- @return In case of error, also returns the error message.
 ----------------------------------------------------------------------------
-function load (id)
+function _M.load (id)
 	if not check_id (id) then
 		return nil, INVALID_SESSION_ID
 	end
@@ -120,7 +124,7 @@ end
 -- @param id Session identification.
 -- @param data Table with session data to be saved.
 ----------------------------------------------------------------------------
-function save (id, data)
+function _M.save (id, data)
 	if not check_id (id) then
 		return nil, INVALID_SESSION_ID
 	end
@@ -133,7 +137,7 @@ end
 ----------------------------------------------------------------------------
 -- Removes expired sessions.
 ----------------------------------------------------------------------------
-function cleanup ()
+function _M.cleanup ()
 	local rem = {}
 	local now = time ()
 	for file in dir (root_dir) do
@@ -153,7 +157,7 @@ end
 -- Changes the session timeout.
 -- @param t Number of seconds to maintain a session.
 ----------------------------------------------------------------------------
-function setsessiontimeout (t)
+function _M.setsessiontimeout (t)
 	if type (t) == "number" then
 		timeout = t
 	end
@@ -163,7 +167,7 @@ end
 -- Changes the session directory.
 -- @param path String with the new session directory.
 ----------------------------------------------------------------------------
-function setsessiondir (path)
+function _M.setsessiondir (path)
 	path = gsub (path, "[/\\]$", "")
 	-- Make sure the given path is a directory
 	if not attributes (path, "mode") then
@@ -188,19 +192,19 @@ local id = nil
 ----------------------------------------------------------------------------
 -- Destroys the session.
 ----------------------------------------------------------------------------
-function destroy ()
-	data = {} -- removes data from session table to avoid recreation by `close'
-	delete (id)
+function _M.destroy ()
+	_M.data = {} -- removes data from session table to avoid recreation by `close'
+	_M.delete (id)
 end
 
 ----------------------------------------------------------------------------
 -- Open user session.
 -- This function should be called before the script is executed.
 ----------------------------------------------------------------------------
-function open ()
+function _M.open ()
 	-- Redefine cgilua.mkurlpath to manage the session identification
-	local mkurlpath = _G.cgilua.mkurlpath
-	function _G.cgilua.mkurlpath (script, data)
+	local mkurlpath = cgilua.mkurlpath
+	function cgilua.mkurlpath (script, data)
 		if not data then
 			data = {}
 		end
@@ -208,12 +212,12 @@ function open ()
 		return mkurlpath (script, data)
 	end
 
-	cleanup()
+	_M.cleanup()
 
-	id = _G.cgilua.QUERY[ID_NAME] or new()
+	id = cgilua.QUERY[ID_NAME] or _M.new()
 	if id then
-		_G.cgilua.QUERY[ID_NAME] = nil
-		_G.cgilua.session.data = load (id) or {}
+		cgilua.QUERY[ID_NAME] = nil
+		_M.data = _M.load (id) or {}
 	end
 end
 
@@ -221,9 +225,9 @@ end
 -- Close user session.
 -- This function should be called after the script is executed.
 ----------------------------------------------------------------------------
-function close ()
-	if next (_G.cgilua.session.data) then
-		save (id, _G.cgilua.session.data)
+function _M.close ()
+	if next (cgilua.session.data) then
+		_M.save (id, cgilua.session.data)
 		id = nil
 	end
 end
@@ -235,13 +239,13 @@ local already_enabled = false
 -- It just calls the `open' function and register the `close' function
 -- to be called at the end of the execution.
 ----------------------------------------------------------------------------
-function _G.cgilua.enablesession ()
+function _M.enablesession ()
 	if already_enabled then -- avoid misuse when a script calls another one
 		return
 	else
 		already_enabled = true
 	end
-	open ()
-	_G.cgilua.addclosefunction (close)
+	_M.open ()
+	cgilua.addclosefunction (_M.close)
 end
 
