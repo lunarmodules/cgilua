@@ -4,7 +4,7 @@
 -- @release $Id: cgilua.lua,v 1.85 2009/06/28 22:42:34 tomas Exp $
 ----------------------------------------------------------------------------
 
-local _G, SAPI = _G, SAPI
+local _G = assert(_G)
 local urlcode = require"cgilua.urlcode"
 local lp = require"cgilua.lp"
 local lfs = require"lfs"
@@ -34,6 +34,7 @@ local _M = {
 
 --
 -- Internal state variables.
+local SAPI
 local _default_errorhandler = debug.traceback
 local _errorhandler = _default_errorhandler
 local _default_erroroutput = function (msg)
@@ -73,7 +74,9 @@ _M.script_path = false
 -- @param header String with the header.
 -- @param value String with the corresponding value.
 ----------------------------------------------------------------------------
-_M.header = SAPI.Response.header
+function _M.header (...)
+	return SAPI.Response.header (...)
+end
 
 ----------------------------------------------------------------------------
 -- Sends a Content-type header.
@@ -115,7 +118,9 @@ end
 -- @param name String with the name of the server variable.
 -- @return String with the value of the server variable.
 ----------------------------------------------------------------------------
-_M.servervariable = SAPI.Request.servervariable
+function _M.servervariable (...)
+	return SAPI.Request.servervariable (...)
+end
 
 ----------------------------------------------------------------------------
 -- Primitive error output function
@@ -153,7 +158,9 @@ end
 -- @class function
 -- @param s String (or number) with output.
 ----------------------------------------------------------------------------
-_M.put = SAPI.Response.write
+function _M.put (...)
+	return SAPI.Response.write (...)
+end
 
 -- Returns the current errorhandler
 function _M._geterrorhandler(msg)
@@ -177,7 +184,7 @@ function _M.pcall (f)
 end
 
 local function buildscriptenv()
-	local env = { print = _M.print, write = _M.put }
+	local env = { cgilua = _M, print = _M.print, write = _M.put }
 	setmetatable(env, { __index = _G, __newindex = _G })
 	return env
 end
@@ -235,7 +242,7 @@ end
 
 
 -- Default path for temporary files
-_M.tmp_path = _G.CGILUA_TMP or getenv("TEMP") or getenv ("TMP") or "/tmp"
+_M.tmp_path = CGILUA_TMP or getenv("TEMP") or getenv ("TMP") or "/tmp"
 
 -- Default function for temporary names
 -- @returns a temporay name using os.tmpname
@@ -275,7 +282,7 @@ end
 -- @param env Optional environment
 ----------------------------------------------------------------------------
 function _M.handlelp (filename, env)
-	env = env or _M.buildscriptenv()
+	env = env or buildscriptenv()
 	_M.htmlheader ()
 	lp.include (filename, env)
 end
@@ -324,7 +331,7 @@ end
 -- Builds the default handler table from cgilua.mime
 ----------------------------------------------------------------------------
 local function buildhandlers()
-	local mime = _G.require "cgilua.mime"
+	local mime = require "cgilua.mime"
 	for ext, mediatype in pairs(mime) do
 		local t, st = match(mediatype, "([^/]*)/([^/]*)")
 		_M.addscripthandler(ext, _M.buildplainhandler(t, st))
@@ -396,7 +403,7 @@ end
 -- Define variables and build the cgilua.POST, cgilua.GET tables.
 --
 local function getparams ()
-    local requestmethod = servervariable"REQUEST_METHOD"
+    local requestmethod = _M.servervariable"REQUEST_METHOD"
 	-- Fill in the POST table.
 	_M.POST = {}
 	if  requestmethod == "POST" then
@@ -599,10 +606,10 @@ function _M.main ()
 	_M.addscripthandler ("lua", _M.doscript)
 	_M.addscripthandler ("lp", _M.handlelp)
 	-- Looks for an optional loader module
-	_M.pcall (function () _G.require"cgilua.loader" end)
+	_M.pcall (function () _M.loader = require"cgilua.loader" end)
 
 	-- post.lua needs to be loaded after cgilua.lua is compiled
-	_M.pcall (function () _G.require"cgilua.post" end)
+	_M.pcall (function () _M.post = require"cgilua.post" end)
 
 	if _M.loader then
 		_M.loader.init()
@@ -613,19 +620,19 @@ function _M.main ()
 
 	local result
 	-- Executes the optional loader module
-	if loader then
-		loader.run()
+	if _M.loader then
+		_M.loader.run()
 	end
 
 	-- Changing curent directory to the script's "physical" dir
 	local curr_dir = lfs.currentdir ()
-	_M.pcall (function () lfs.chdir (script_pdir) end)
+	_M.pcall (function () lfs.chdir (_M.script_pdir) end)
 
 	-- Opening functions
 	_M.pcall (open)
 
 	-- Executes the script
-	result, err = _M.pcall (function () return handle (script_file) end)
+	result, err = _M.pcall (function () return _M.handle (_M.script_file) end)
     
 	-- Closing functions
 	_M.pcall (close)
@@ -633,7 +640,7 @@ function _M.main ()
 	_M.pcall (function () lfs.chdir (curr_dir) end)
 
 	-- Cleanup
-	_M.reset ()
+	reset ()
 	if result then -- script executed ok!
 		return result
 	end
