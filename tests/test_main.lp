@@ -2,9 +2,26 @@
 <head><title>Embeded Lua Test</title></head>
 
 <body>
-cgi = {
+cgilua.QUERY = {
 <?lua
-for i,v in pairs (cgi) do
+for i,v in pairs (cgilua.QUERY) do
+	if type(v) == "table" then
+		local vv = "{"
+		for a,b in pairs(v) do
+			vv = string.format ("%s%s = %s<br>\n", vv, a, tostring(b))
+		end
+		v = vv.."}"
+	end
+?>
+<%= i %> = <%= tostring(v) %> <br>
+<%
+end
+%>
+}
+<br>
+cgilua.POST = {
+<?lua
+for i,v in pairs (cgilua.POST) do
 	if type(v) == "table" then
 		local vv = "{"
 		for a,b in pairs(v) do
