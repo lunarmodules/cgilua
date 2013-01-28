@@ -104,7 +104,7 @@ local cache = {}
 function _M.compile (string, chunkname, env)
 	local s, err = cache[string]
 	if not s then
-		s = translate (string)
+		s = _M.translate (string)
 		cache[string] = s
 	end
 	f, err = load (s, chunkname, "bt", env)

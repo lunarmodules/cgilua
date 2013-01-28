@@ -17,16 +17,17 @@
 -- @release $Id: post.lua,v 1.17 2008/04/03 21:55:28 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
-local readuntil = require"cgilua.readuntil"
+local iterate = require"cgilua.readuntil".iterate
 local urlcode = require"cgilua.urlcode"
+local tmpfile = require"cgilua".tmpfile
 
 local assert, error, pairs, tonumber, tostring, type = assert, error, pairs, tonumber, tostring, type
 local getn, tinsert = table.getn, table.insert
 local format, gsub, strfind, strlower, strlen = string.format, string.gsub, string.find, string.lower, string.len
 local min = math.min
-local iterate = cgilua.readuntil.iterate
-local urlcode = cgilua.urlcode
-local tmpfile = cgilua.tmpfile
+--local iterate = cgilua.readuntil.iterate
+--local urlcode = cgilua.urlcode
+--local tmpfile = cgilua.tmpfile
 
 -- environment for processing multipart/form-data input
 local boundary = nil      -- boundary string that separates each 'part' of input

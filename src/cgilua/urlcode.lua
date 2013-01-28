@@ -79,10 +79,10 @@ end
 ----------------------------------------------------------------------------
 function _M.parsequery (query, args)
 	if type(query) == "string" then
-		local insertfield, unescape = insertfield, unescape
+		local insertfield, unescape = _M.insertfield, _M.unescape
 		gsub (query, "([^&=]+)=([^&=]*)&?",
 			function (key, val)
-				insertfield (args, unescape(key), unescape(val))
+				_M.insertfield (args, unescape(key), unescape(val))
 			end)
 	end
 end
@@ -97,6 +97,7 @@ function _M.encodetable (args)
 	if args == nil or next(args) == nil then	 -- no args or empty args?
 		return ""
 	end
+	local escape = _M.escape
 	local strp = ""
 	for key, vals in pairs(args) do
 		if type(vals) ~= "table" then
