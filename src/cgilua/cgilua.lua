@@ -20,7 +20,6 @@ local os_tmpname = os.tmpname
 local getenv = os.getenv
 local remove = os.remove
 local seeall = package.seeall
-local setfenv = setfenv
 
 lp.setoutfunc ("cgilua.put")
 lp.setcompatmode (true)
@@ -69,12 +68,12 @@ _M.script_path = false
 
 ----------------------------------------------------------------------------
 -- Sends a header.
+-- @name header
+-- @class function
 -- @param header String with the header.
 -- @param value String with the corresponding value.
 ----------------------------------------------------------------------------
-function _M.header(...)
-	return SAPI.Response.header(...)
-end
+_M.header = SAPI.Response.header
 
 ----------------------------------------------------------------------------
 -- Sends a Content-type header.
@@ -91,7 +90,6 @@ end
 function _M.htmlheader()
 	SAPI.Response.contenttype ("text/html")
 end
-local htmlheader = htmlheader
 
 ----------------------------------------------------------------------------
 -- Sends an HTTP header redirecting the browser to another URL
@@ -112,12 +110,12 @@ end
 
 ----------------------------------------------------------------------------
 -- Returns a server variable
+-- @name servervariable
+-- @class function
 -- @param name String with the name of the server variable.
 -- @return String with the value of the server variable.
 ----------------------------------------------------------------------------
-function _M.servervariable(...)
-	return SAPI.Request.servervariable(...)
-end
+_M.servervariable = SAPI.Request.servervariable
 
 ----------------------------------------------------------------------------
 -- Primitive error output function
@@ -151,11 +149,11 @@ end
 -- Its basic implementation is to use Lua function 'write', which writes
 --  each of its arguments (strings or numbers) to file _OUTPUT (a file
 --  handle initialized with the file descriptor for stdout)
+-- @name put
+-- @class function
 -- @param s String (or number) with output.
 ----------------------------------------------------------------------------
-function _M.put (...)
-	return SAPI.Response.write(...)
-end
+_M.put = SAPI.Response.write
 
 -- Returns the current errorhandler
 function _M._geterrorhandler(msg)
@@ -167,7 +165,7 @@ end
 -- @param f Function to be called.
 ----------------------------------------------------------------------------
 function _M.pcall (f)
-	local results = {xpcall (f, _geterrorhandler)}
+	local results = {xpcall (f, _errorhandler)}
 	local ok = results[1]
 	tremove(results, 1)
 	if ok then
