@@ -8,12 +8,12 @@ local cgilua = require"cgilua"
 local lfs = require"lfs"
 local serialize = require"cgilua.serialize".serialize
 
-local assert, error, ipairs, _G, loadfile, next, tostring, type = assert, error, ipairs, _G, loadfile, next, tostring, type
+local assert, error, ipairs, loadfile, next, tostring, type = assert, error, ipairs, loadfile, next, tostring, type
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
 local tinsert = table.insert
 local _open = io.open
 local remove, time = os.remove, os.time
-local mod, rand, randseed = math.mod, math.random, math.randomseed
+local mod, rand, randseed = (math.mod or math.fmod), math.random, math.randomseed
 local attributes, dir, mkdir = lfs.attributes, lfs.dir, lfs.mkdir
 
 --module ("cgilua.session")
@@ -157,7 +157,7 @@ end
 -- Changes the session timeout.
 -- @param t Number of seconds to maintain a session.
 ----------------------------------------------------------------------------
-function _M.setsessiontimeout (t)
+function _M.settimeout (t)
 	if type (t) == "number" then
 		timeout = t
 	end
@@ -167,14 +167,14 @@ end
 -- Changes the session directory.
 -- @param path String with the new session directory.
 ----------------------------------------------------------------------------
-function _M.setsessiondir (path)
+function _M.setdir (path)
 	path = gsub (path, "[/\\]$", "")
 	-- Make sure the given path is a directory
 	if not attributes (path, "mode") then
 		assert (mkdir (path))
 	end
 	-- Make sure it can create a new file in the given directory
-	local test_file = path.."/".._G.cgilua.tmpname()
+	local test_file = path.."/"..cgilua.tmpname()
 	local fh, err = _open (test_file, "w")
 	if not fh then
 		error ("Could not open a file in session directory: "..
@@ -239,7 +239,7 @@ local already_enabled = false
 -- It just calls the `open' function and register the `close' function
 -- to be called at the end of the execution.
 ----------------------------------------------------------------------------
-function _M.enablesession ()
+function _M.enable ()
 	if already_enabled then -- avoid misuse when a script calls another one
 		return
 	else
@@ -249,3 +249,4 @@ function _M.enablesession ()
 	cgilua.addclosefunction (_M.close)
 end
 
+return _M

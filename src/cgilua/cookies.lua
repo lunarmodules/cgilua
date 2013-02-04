@@ -4,12 +4,15 @@
 -- @release $Id: cookies.lua,v 1.8 2008/04/24 13:42:04 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
+local cgilua = require"cgilua"
+local os = require"os"
+local string = require"string"
 local urlcode = require"cgilua.urlcode"
 
 local error = error
 local format, gsub, strfind = string.format, string.gsub, string.find
 local date = os.date
-local escape, unescape = cgilua.urlcode.escape, cgilua.urlcode.unescape
+local escape, unescape = urlcode.escape, urlcode.unescape
 
 local header = SAPI.Response.header
 local write = SAPI.Response.write
@@ -94,3 +97,5 @@ function _M.delete (name, options)
 	options.expires = 1
 	_M.set(name, "xxx", options)
 end
+
+return _M
