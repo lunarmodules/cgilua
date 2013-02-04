@@ -262,11 +262,11 @@ local _tmpfiles = {}
 -- @param namefunction Name generator function
 ---------------------------------------------------------------------------
 function _M.tmpfile(dir, namefunction)
-	dir = dir or tmp_path
+	dir = dir or _M.tmp_path
 	namefunction = namefunction or _M.tmpname
 	local tempname = namefunction()
 	local filename = dir.."/"..tempname
-	local file, err = _open(filename, "wb+")
+	local file, err = _open(filename, "w+b")
 	if file then
 		tinsert(_tmpfiles, {name = filename, file = file})
 	end
@@ -353,7 +353,7 @@ function _M.mkurlpath (script, args)
 	if strsub(script,1,1) == "/" then
 		return script .. params
 	else
-		return script_vdir .. script .. params
+		return _M.script_vdir .. script .. params
 	end
 end
 
@@ -407,7 +407,7 @@ local function getparams ()
 	-- Fill in the POST table.
 	_M.POST = {}
 	if  requestmethod == "POST" then
-		post.parsedata {
+		_M.post.parsedata {
 			read = SAPI.Request.getpostdata,
 			discardinput = ap and ap.discard_request_body,
 			content_type = _M.servervariable"CONTENT_TYPE",
