@@ -6,7 +6,6 @@
 
 local strsub, strfind, strlen = string.sub, string.find, string.len
 
---module ("cgilua.readuntil")
 
 ----------------------------------------------------------------------------
 -- Creates a function which reads an input until a given character.

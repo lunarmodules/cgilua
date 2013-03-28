@@ -9,15 +9,14 @@
 local cgilua = require"cgilua"
 local lfs = require "lfs"
 
---module("cgilua.loader", package.seeall)
-local _M = {}
+local M = {}
 
-function _M.init()
+function M.init()
 	-- Loads the user configuration
 	cgilua.doif (CGILUA_CONF.."/config.lua")
 end
 
-function _M.run()
+function M.run()
 	local servervariable = cgilua.servervariable
 	cgilua.script_vpath = cgilua.script_vpath or servervariable"PATH_INFO"
 
@@ -92,4 +91,4 @@ function _M.run()
 	cgilua.script_pdir, cgilua.script_file = cgilua.splitpath (cgilua.script_path)
 end
 
-return _M
+return M

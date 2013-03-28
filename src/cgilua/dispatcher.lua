@@ -1,7 +1,6 @@
 -- CGILua dispatcher module
 -- @release $Id: dispatcher.lua,v 1.8 2007/12/07 18:49:49 carregal Exp $
 
---module(..., package.seeall)
 
 -- Checks if an URL matches a route pattern
 local function route_match(url, pattern) 

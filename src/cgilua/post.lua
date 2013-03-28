@@ -41,7 +41,6 @@ local discardinput = nil  -- discard all remaining input
 local readuntil = nil     -- read until delimiter
 local read = nil          -- basic read function
 
---module ("cgilua.post")
 
 --
 -- Extract the boundary string from CONTENT_TYPE metavariable

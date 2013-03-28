@@ -9,8 +9,7 @@ local find, format, gsub, strsub, char = string.find, string.format, string.gsub
 local concat, tinsert = table.concat, table.insert
 local open = io.open
 
---module (...)
-local _M = {}
+local M = {}
 
 ----------------------------------------------------------------------------
 -- function to do output
@@ -41,7 +40,7 @@ end
 -- @param s String to translate.
 -- @return String with translated code.
 ----------------------------------------------------------------------------
-function _M.translate (s)
+function M.translate (s)
 	s = gsub(s, "^#![^\n]+\n", "")
 	if compatmode then
 		s = gsub(s, "$|(.-)|%$", "<?lua = %1 ?>")
@@ -75,7 +74,7 @@ end
 -- Defines the name of the output function.
 -- @param f String with the name of the function which produces output.
 
-function _M.setoutfunc (f)
+function M.setoutfunc (f)
 	outfunc = f
 end
 
@@ -83,7 +82,7 @@ end
 -- Turns on or off the compatibility with old CGILua 3.X behavior.
 -- @param c Boolean indicating if the compatibility mode should be used.
 
-function _M.setcompatmode (c)
+function M.setcompatmode (c)
 	compatmode = c
 end
 
@@ -101,10 +100,10 @@ local cache = {}
 -- @param env Table with the environment of the resulting function (optional).
 -- @return Function with the resulting translation.
 
-function _M.compile (string, chunkname, env)
+function M.compile (string, chunkname, env)
 	local s, err = cache[string]
 	if not s then
-		s = _M.translate (string)
+		s = M.translate (string)
 		cache[string] = s
 	end
 	f, err = load (s, chunkname, "bt", env)
@@ -120,7 +119,7 @@ end
 -- @param env Table with the environment to run the resulting function.
 local BOM = char(239) .. char(187) .. char(191)
 
-function _M.include (filename, env)
+function M.include (filename, env)
 	-- read the whole contents of the file
 	local fh = assert (open (filename))
 	local src = fh:read("*a")
@@ -128,8 +127,8 @@ function _M.include (filename, env)
 
 	if src:sub(1,3) == BOM then src = src:sub(4) end
 	-- translates the file into a function
-	local prog = _M.compile (src, '@'..filename, env)
+	local prog = M.compile (src, '@'..filename, env)
 	prog ()
 end
 
-return _M
+return M

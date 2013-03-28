@@ -10,8 +10,7 @@ local gsub = string.gsub
 local strbyte, strchar, strformat, strsub = string.byte, string.char, string.format, string.sub
 local tinsert = require"table".insert
 
---module ("cgilua.urlcode")
-local _M = {}
+local M = {}
 
 -- Converts an hexadecimal code in the form %XX to a character
 local function hexcode2char (h)
@@ -21,7 +20,7 @@ end
 ----------------------------------------------------------------------------
 -- Decode an URL-encoded string (see RFC 2396)
 ----------------------------------------------------------------------------
-function _M.unescape (str)
+function M.unescape (str)
 	str = gsub (str, "+", " ")
 	str = gsub (str, "%%(%x%x)", hexcode2char)
 	str = gsub (str, "\r\n", "\n")
@@ -36,7 +35,7 @@ end
 ----------------------------------------------------------------------------
 -- URL-encode a string (see RFC 2396)
 ----------------------------------------------------------------------------
-function _M.escape (str)
+function M.escape (str)
 	str = gsub (str, "\n", "\r\n")
 	str = gsub (str, "([^0-9a-zA-Z ])", char2hexcode) -- locale independent
 	str = gsub (str, " ", "+")
@@ -51,7 +50,7 @@ end
 -- Multi-valued names will be represented as tables with numerical indexes
 --	(in the order they came).
 ----------------------------------------------------------------------------
-function _M.insertfield (args, name, value)
+function M.insertfield (args, name, value)
 	if not args[name] then
 		args[name] = value
 	else
@@ -77,12 +76,12 @@ end
 -- @param query String to be parsed.
 -- @param args Table where to store the pairs.
 ----------------------------------------------------------------------------
-function _M.parsequery (query, args)
+function M.parsequery (query, args)
 	if type(query) == "string" then
-		local insertfield, unescape = _M.insertfield, _M.unescape
+		local insertfield, unescape = M.insertfield, M.unescape
 		gsub (query, "([^&=]+)=([^&=]*)&?",
 			function (key, val)
-				_M.insertfield (args, unescape(key), unescape(val))
+				M.insertfield (args, unescape(key), unescape(val))
 			end)
 	end
 end
@@ -93,11 +92,11 @@ end
 -- @param args Table where to extract the pairs (name=value).
 -- @return String with the resulting encoding.
 ----------------------------------------------------------------------------
-function _M.encodetable (args)
+function M.encodetable (args)
 	if args == nil or next(args) == nil then	 -- no args or empty args?
 		return ""
 	end
-	local escape = _M.escape
+	local escape = M.escape
 	local strp = ""
 	for key, vals in pairs(args) do
 		if type(vals) ~= "table" then
@@ -111,4 +110,4 @@ function _M.encodetable (args)
 	return strsub(strp,2)
 end
 
-return _M
+return M

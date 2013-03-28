@@ -24,9 +24,8 @@ local seeall = package.seeall
 lp.setoutfunc ("cgilua.put")
 lp.setcompatmode (true)
 
---module ("cgilua")
 
-local _M = {
+local M = {
 	_COPYRIGHT = "Copyright (C) 2003-2013 Kepler Project",
 	_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms",
 	_VERSION = "CGILua 5.2",
@@ -62,7 +61,7 @@ local _default_maxfilesize = 512 * 1024
 local _maxfilesize = _default_maxfilesize
 local _default_maxinput = 1024 * 1024
 local _maxinput = _default_maxinput
-_M.script_path = false
+M.script_path = false
 
 --
 -- Header functions
@@ -74,7 +73,7 @@ _M.script_path = false
 -- @param header String with the header.
 -- @param value String with the corresponding value.
 ----------------------------------------------------------------------------
-function _M.header (...)
+function M.header (...)
 	return SAPI.Response.header (...)
 end
 
@@ -83,14 +82,14 @@ end
 -- @param type String with the type of the header.
 -- @param subtype String with the subtype of the header.
 ----------------------------------------------------------------------------
-function _M.contentheader (type, subtype)
+function M.contentheader (type, subtype)
 	SAPI.Response.contenttype (type..'/'..subtype)
 end
 
 ----------------------------------------------------------------------------
 -- Sends the HTTP header "text/html".
 ----------------------------------------------------------------------------
-function _M.htmlheader()
+function M.htmlheader()
 	SAPI.Response.contenttype ("text/html")
 end
 
@@ -99,7 +98,7 @@ end
 -- @param url String with the URL.
 -- @param args Table with the arguments (optional).
 ----------------------------------------------------------------------------
-function _M.redirect (url, args)
+function M.redirect (url, args)
 	if strfind(url,"^https?:") then
 		local params=""
 		if args then
@@ -107,7 +106,7 @@ function _M.redirect (url, args)
 		end
 		return SAPI.Response.redirect(url..params)
 	else
-		return SAPI.Response.redirect(mkabsoluteurl(mkurlpath(url,args)))
+		return SAPI.Response.redirect(M.mkabsoluteurl(M.mkurlpath(url,args)))
 	end
 end
 
@@ -118,7 +117,7 @@ end
 -- @param name String with the name of the server variable.
 -- @return String with the value of the server variable.
 ----------------------------------------------------------------------------
-function _M.servervariable (...)
+function M.servervariable (...)
 	return SAPI.Request.servervariable (...)
 end
 
@@ -127,7 +126,7 @@ end
 -- @param msg String (or number) with the message.
 -- @param level String with the error level (optional).
 ----------------------------------------------------------------------------
-function _M.errorlog (msg, level)
+function M.errorlog (msg, level)
 	local t = type(msg)
 	if t == "string" or t == "number" then
 		SAPI.Response.errorlog (msg, level)
@@ -139,7 +138,7 @@ end
 ----------------------------------------------------------------------------
 -- Converts all its arguments to strings before sending them to the server.
 ----------------------------------------------------------------------------
-function _M.print (...)
+function M.print (...)
 	local args = { ... }
 	for i = 1, select("#",...) do
 		args[i] = tostring(args[i])
@@ -158,12 +157,12 @@ end
 -- @class function
 -- @param s String (or number) with output.
 ----------------------------------------------------------------------------
-function _M.put (...)
+function M.put (...)
 	return SAPI.Response.write (...)
 end
 
 -- Returns the current errorhandler
-function _M._geterrorhandler(msg)
+function M._geterrorhandler(msg)
 	return _errorhandler(msg)
 end
 
@@ -171,7 +170,7 @@ end
 -- Executes a function using the CGILua error handler.
 -- @param f Function to be called.
 ----------------------------------------------------------------------------
-function _M.pcall (f)
+function M.pcall (f)
 	local results = {xpcall (f, _errorhandler)}
 	local ok = results[1]
 	tremove(results, 1)
@@ -184,7 +183,7 @@ function _M.pcall (f)
 end
 
 local function buildscriptenv()
-	local env = { cgilua = _M, print = _M.print, write = _M.put }
+	local env = { cgilua = M, print = M.print, write = M.put }
 	setmetatable(env, { __index = _G, __newindex = _G })
 	return env
 end
@@ -196,13 +195,13 @@ end
 -- @param filename String with the name of the file to be processed.
 -- @return The result of the execution of the file.
 ----------------------------------------------------------------------------
-function _M.doscript (filename)
+function M.doscript (filename)
 	local env = buildscriptenv()
 	local f, err = loadfile(filename, "bt", env)
 	if not f then
 		error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))
 	else
-		return _M.pcall(f)
+		return M.pcall(f)
 	end
 end
 
@@ -215,7 +214,7 @@ end
 --      file does not exists or if it cannot be opened).
 -- @return It could return an error message if the file cannot be opened.
 ----------------------------------------------------------------------------
-function _M.doif (filename)
+function M.doif (filename)
         if not filename then return end    -- no file
         local f, err = _open(filename)
         if not f then return nil, err end    -- no file (or unreadable file)
@@ -227,7 +226,7 @@ end
 -- Set the maximum "total" input size allowed (in bytes)
 -- @param nbytes Number of the maximum size (in bytes) of the whole POST data.
 ---------------------------------------------------------------------------
-function _M.setmaxinput(nbytes)
+function M.setmaxinput(nbytes)
         _maxinput = nbytes
 end
 
@@ -236,17 +235,17 @@ end
 -- Might be less or equal than _maxinput.
 -- @param nbytes Number of the maximum size (in bytes) of a file.
 ---------------------------------------------------------------------------
-function _M.setmaxfilesize(nbytes)
+function M.setmaxfilesize(nbytes)
         _maxfilesize = nbytes
 end
 
 
 -- Default path for temporary files
-_M.tmp_path = CGILUA_TMP or getenv("TEMP") or getenv ("TMP") or "/tmp"
+M.tmp_path = CGILUA_TMP or getenv("TEMP") or getenv ("TMP") or "/tmp"
 
 -- Default function for temporary names
 -- @returns a temporay name using os.tmpname
-function _M.tmpname ()
+function M.tmpname ()
     local tempname = os_tmpname()
     -- Lua os.tmpname returns a full path in Unix, but not in Windows
     -- so we strip the eventual prefix
@@ -261,9 +260,9 @@ local _tmpfiles = {}
 -- @param dir Base directory for the temporary file
 -- @param namefunction Name generator function
 ---------------------------------------------------------------------------
-function _M.tmpfile(dir, namefunction)
-	dir = dir or _M.tmp_path
-	namefunction = namefunction or _M.tmpname
+function M.tmpfile(dir, namefunction)
+	dir = dir or M.tmp_path
+	namefunction = namefunction or M.tmpname
 	local tempname = namefunction()
 	local filename = dir.."/"..tempname
 	local file, err = _open(filename, "w+b")
@@ -281,9 +280,9 @@ end
 -- @param filename String with the name of the file to be processed.
 -- @param env Optional environment
 ----------------------------------------------------------------------------
-function _M.handlelp (filename, env)
+function M.handlelp (filename, env)
 	env = env or buildscriptenv()
-	_M.htmlheader ()
+	M.htmlheader ()
 	lp.include (filename, env)
 end
 
@@ -295,7 +294,7 @@ end
 -- @return Function (which receives a filename as argument) that produces
 --      the header and copies the content of the given file.
 ----------------------------------------------------------------------------
-function _M.buildplainhandler (type, subtype)
+function M.buildplainhandler (type, subtype)
 	return function (filename)
 		local fh, err = _open (filename, "rb")
 		local contents = ""
@@ -305,9 +304,9 @@ function _M.buildplainhandler (type, subtype)
 		else
 			error(err)
 		end
-		_M.header("Content-Lenght", #contents)
-		_M.contentheader (type, subtype)
-		_M.put (contents)
+		M.header("Content-Lenght", #contents)
+		M.contentheader (type, subtype)
+		M.put (contents)
 	end
 end
 
@@ -319,10 +318,10 @@ end
 -- @return Function (which receives a filename as argument) that produces
 --      the header and processes the given file.
 ----------------------------------------------------------------------------
-function _M.buildprocesshandler (type, subtype)
+function M.buildprocesshandler (type, subtype)
 	return function (filename)
 		local env = buildscriptenv()
-		_M.contentheader (type, subtype)
+		M.contentheader (type, subtype)
 		lp.include (filename, env)
 	end
 end
@@ -334,7 +333,7 @@ local function buildhandlers()
 	local mime = require "cgilua.mime"
 	for ext, mediatype in pairs(mime) do
 		local t, st = match(mediatype, "([^/]*)/([^/]*)")
-		_M.addscripthandler(ext, _M.buildplainhandler(t, st))
+		M.addscripthandler(ext, M.buildplainhandler(t, st))
 	end
 end
 
@@ -344,16 +343,16 @@ end
 -- @param args Table with arguments to script (optional).
 -- @return String in URL format.
 ----------------------------------------------------------------------------
-function _M.mkurlpath (script, args)
+function M.mkurlpath (script, args)
 	-- URL-encode the parameters to be passed do the script
 	local params = ""
 	if args then
 		params = "?"..urlcode.encodetable(args)
 	end
-	if strsub(script,1,1) == "/" then
+	if strsub(script,1,1) == '/' or M.script_vdir == '/' then
 		return script .. params
 	else
-		return _M.script_vdir .. script .. params
+		return M.script_vdir .. script .. params
 	end
 end
 
@@ -363,15 +362,15 @@ end
 -- @param protocol String with the name of the protocol (default = "http").
 -- @return String in URL format.
 ----------------------------------------------------------------------------
-function _M.mkabsoluteurl (path, protocol)
+function M.mkabsoluteurl (path, protocol)
 	protocol = protocol or "http"
 	if path:sub(1,1) ~= '/' then
 		path = '/'..path
 	end
 	return format("%s://%s:%s%s",
 		protocol,
-		_M.servervariable"SERVER_NAME",
-		_M.servervariable"SERVER_PORT",
+		M.servervariable"SERVER_NAME",
+		M.servervariable"SERVER_PORT",
 		path)
 end
 
@@ -381,12 +380,12 @@ end
 -- @return String with the directory part.
 -- @return String with the file part.
 ----------------------------------------------------------------------------
-function _M.splitonlast (path, sep)
+function M.splitonlast (path, sep)
 	local dir,file = match(path,"^(.-)([^:/\\]*)$")
 	return dir,file
 end
 
-_M.splitpath = _M.splitonlast -- compatibility with previous versions
+M.splitpath = M.splitonlast -- compatibility with previous versions
 
 ----------------------------------------------------------------------------
 -- Extracts the first and remaining parts of a path
@@ -394,7 +393,7 @@ _M.splitpath = _M.splitonlast -- compatibility with previous versions
 -- @return String with the extracted part.
 -- @return String with the remaining path.
 ----------------------------------------------------------------------------
-function _M.splitonfirst(path, sep)
+function M.splitonfirst(path, sep)
 	local first, rest = match(path, "^/([^:/\\]*)(.*)")
 	return first, rest
 end
@@ -403,23 +402,23 @@ end
 -- Define variables and build the cgilua.POST, cgilua.GET tables.
 --
 local function getparams ()
-    local requestmethod = _M.servervariable"REQUEST_METHOD"
+    local requestmethod = M.servervariable"REQUEST_METHOD"
 	-- Fill in the POST table.
-	_M.POST = {}
+	M.POST = {}
 	if  requestmethod == "POST" then
-		_M.post.parsedata {
+		M.post.parsedata {
 			read = SAPI.Request.getpostdata,
 			discardinput = ap and ap.discard_request_body,
-			content_type = _M.servervariable"CONTENT_TYPE",
-			content_length = _M.servervariable"CONTENT_LENGTH",
+			content_type = M.servervariable"CONTENT_TYPE",
+			content_length = M.servervariable"CONTENT_LENGTH",
 			maxinput = _maxinput,
 			maxfilesize = _maxfilesize,
-			args = _M.POST,
+			args = M.POST,
 		}
 	end
 	-- Fill in the QUERY table.
-	_M.QUERY = {}
-	urlcode.parsequery (_M.servervariable"QUERY_STRING", _M.QUERY)
+	M.QUERY = {}
+	urlcode.parsequery (M.servervariable"QUERY_STRING", M.QUERY)
 end
 
 --
@@ -442,9 +441,9 @@ local function default_handler (filename)
 	else
 		error(err)
 	end
-	_M.header("Content-Lenght", #contents)
-	_M.put ("\n")
-	_M.put (contents)
+	M.header("Content-Lenght", #contents)
+	M.put ("\n")
+	M.put (contents)
 end
 
 ----------------------------------------------------------------------------
@@ -452,7 +451,7 @@ end
 -- @param file_extension String with the lower-case extension of the script.
 -- @param func Function to handle this kind of scripts.
 ----------------------------------------------------------------------------
-function _M.addscripthandler (file_extension, func)
+function M.addscripthandler (file_extension, func)
 	assert (type(file_extension) == "string", "File extension must be a string")
 	if strfind (file_extension, '%.', 1) then
 		file_extension = strsub (file_extension, 2)
@@ -468,7 +467,7 @@ end
 -- @param path String with a script path.
 -- @return Function that handles it or nil.
 ----------------------------------------------------------------------------
-function _M.getscripthandler (path)
+function M.getscripthandler (path)
 	local i,f, ext = strfind (path, "%.([^.]+)$")
 	return _script_handlers[strlower(ext or '')]
 end
@@ -478,8 +477,8 @@ end
 -- @param path String with a script path.
 -- @return The returned values from the script.
 ---------------------------------------------------------------------------
-function _M.handle (path)
-	local h = _M.getscripthandler (path) or default_handler
+function M.handle (path)
+	local h = M.getscripthandler (path) or default_handler
 	return h (path)
 end
 
@@ -490,7 +489,7 @@ end
 -- for the final message which should be returned.
 -- @param Function.
 ---------------------------------------------------------------------------
-function _M.seterrorhandler (f)
+function M.seterrorhandler (f)
 	local tf = type(f)
 	if tf == "function" then
 		_errorhandler = f
@@ -504,7 +503,7 @@ end
 -- This function is called to generate the error output.
 -- @param Function.
 ---------------------------------------------------------------------------
-function _M.seterroroutput (f)
+function M.seterroroutput (f)
 	local tf = type(f)
 	if tf == "function" then
 		_erroroutput = f
@@ -522,7 +521,7 @@ local _close_functions = {
 -- Adds a function to be executed after the script.
 -- @param f Function to be registered.
 ---------------------------------------------------------------------------
-function _M.addclosefunction (f)
+function M.addclosefunction (f)
 	local tf = type(f)
 	if tf == "function" then
 		tinsert (_close_functions, f)
@@ -549,7 +548,7 @@ local _open_functions = {
 -- Adds a function to be executed before the script.
 -- @param f Function to be registered.
 ---------------------------------------------------------------------------
-function _M.addopenfunction (f)
+function M.addopenfunction (f)
 	local tf = type(f)
 	if tf == "function" then
 		tinsert (_open_functions, f)
@@ -572,9 +571,9 @@ end
 -- Resets CGILua's state.
 --
 local function reset ()
-	_M.script_path = false
-	_M.script_vpath, _M.pdir, _M.use_executable_name, _M.urlpath, _M.script_vdir, _M.script_pdir,
-	_M.script_file, _M.authentication, _M.app_name = 
+	M.script_path = false
+	M.script_vpath, M.pdir, M.use_executable_name, M.urlpath, M.script_vdir, M.script_pdir,
+	M.script_file, M.authentication, M.app_name = 
 		nil, nil, nil, nil, nil, nil, nil, nil, nil
 	_maxfilesize = _default_maxfilesize
 	_maxinput = _default_maxinput
@@ -599,45 +598,45 @@ end
 ---------------------------------------------------------------------------
 -- Request processing.
 ---------------------------------------------------------------------------
-function _M.main ()
+function M.main ()
 	SAPI = _G.SAPI
 	buildhandlers()    
 	-- Default handler values
-	_M.addscripthandler ("lua", _M.doscript)
-	_M.addscripthandler ("lp", _M.handlelp)
+	M.addscripthandler ("lua", M.doscript)
+	M.addscripthandler ("lp", M.handlelp)
 	-- Looks for an optional loader module
-	_M.pcall (function () _M.loader = require"cgilua.loader" end)
+	M.pcall (function () M.loader = require"cgilua.loader" end)
 
 	-- post.lua needs to be loaded after cgilua.lua is compiled
-	_M.pcall (function () _M.post = require"cgilua.post" end)
+	M.pcall (function () M.post = require"cgilua.post" end)
 
-	if _M.loader then
-		_M.loader.init()
+	if M.loader then
+		M.loader.init()
 	end
     
 	-- Build QUERY/POST tables
-	if not _M.pcall (getparams) then return nil end
+	if not M.pcall (getparams) then return nil end
 
 	local result
 	-- Executes the optional loader module
-	if _M.loader then
-		_M.loader.run()
+	if M.loader then
+		M.loader.run()
 	end
 
 	-- Changing curent directory to the script's "physical" dir
 	local curr_dir = lfs.currentdir ()
-	_M.pcall (function () lfs.chdir (_M.script_pdir) end)
+	M.pcall (function () lfs.chdir (M.script_pdir) end)
 
 	-- Opening functions
-	_M.pcall (open)
+	M.pcall (open)
 
 	-- Executes the script
-	result, err = _M.pcall (function () return _M.handle (_M.script_file) end)
+	result, err = M.pcall (function () return M.handle (M.script_file) end)
     
 	-- Closing functions
-	_M.pcall (close)
+	M.pcall (close)
 	-- Changing to original directory
-	_M.pcall (function () lfs.chdir (curr_dir) end)
+	M.pcall (function () lfs.chdir (curr_dir) end)
 
 	-- Cleanup
 	reset ()
@@ -646,4 +645,4 @@ function _M.main ()
 	end
 end
 
-return _M
+return M

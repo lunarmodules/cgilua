@@ -18,8 +18,7 @@ local header = SAPI.Response.header
 local write = SAPI.Response.write
 local servervariable = SAPI.Request.servervariable
 
---module ("cgilua.cookies")
-local _M = {}
+local M = {}
 
 local function optional (what, name)
 	if name ~= nil and name ~= "" then
@@ -54,7 +53,7 @@ end
 -- @param value String with the value of the cookie.
 -- @param options Table with the options (optional).
 
-function _M.set (name, value, options)
+function M.set (name, value, options)
 	header("Set-Cookie", build(name, value, options))
 end
 
@@ -66,7 +65,7 @@ end
 -- @param value String with the value of the cookie.
 -- @param options Table with the options (optional).
 
-function _M.sethtml (name, value, options)
+function M.sethtml (name, value, options)
 	write(format('<meta http-equiv="Set-Cookie" content="%s">', 
 		build(name, value, options)))
 end
@@ -77,7 +76,7 @@ end
 -- @param name String with the name of the cookie.
 -- @return String with the value associated with the cookie.
 
-function _M.get (name)
+function M.get (name)
 	local cookies = servervariable"HTTP_COOKIE" or ""
 	cookies = ";" .. cookies .. ";"
 	cookies = gsub(cookies, "%s*;%s*", ";")	 -- remove extra spaces
@@ -92,10 +91,10 @@ end
 -- @param name String with the name of the cookie.
 -- @param options Table with the options (optional).
 
-function _M.delete (name, options)
+function M.delete (name, options)
 	options = options or {}
 	options.expires = 1
-	_M.set(name, "xxx", options)
+	M.set(name, "xxx", options)
 end
 
-return _M
+return M
