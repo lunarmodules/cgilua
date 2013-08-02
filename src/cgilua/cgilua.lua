@@ -219,7 +219,7 @@ function M.doif (filename)
         local f, err = _open(filename)
         if not f then return nil, err end    -- no file (or unreadable file)
         f:close()
-        return doscript (filename)
+        return M.doscript (filename)
 end
 
 ---------------------------------------------------------------------------
