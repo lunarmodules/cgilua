@@ -1,3 +1,4 @@
+#!/usr/bin/env cgilua.cgi
 -- $Id: test_main.lua,v 1.11 2006/01/06 16:33:57 tomas Exp $
 
 cgilua.serialize = require"cgilua.serialize".serialize

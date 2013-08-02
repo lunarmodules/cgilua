@@ -1,3 +1,4 @@
+#!/usr/bin/env cgilua.cgi
 cgilua.session = require"cgilua.session"
 cgilua.session.setdir"/tmp/"
 cgilua.session.enable ()

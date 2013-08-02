@@ -1,3 +1,4 @@
+#!/usr/bin/env cgilua.cgi
 function link_dir (dir, base)
 	local path = base.."/"..dir
 	local mode = lfs.attributes (path).mode

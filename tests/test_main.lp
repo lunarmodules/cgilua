@@ -1,3 +1,4 @@
+#!/usr/bin/env cgilua.cgi
 <html>
 <head><title>Embeded Lua Test</title></head>
 
