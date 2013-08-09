@@ -156,7 +156,7 @@ end
 -- Changes the session timeout.
 -- @param t Number of seconds to maintain a session.
 ----------------------------------------------------------------------------
-function M.settimeout (t)
+function M.setsessiontimeout (t)
 	if type (t) == "number" then
 		timeout = t
 	end
@@ -166,7 +166,7 @@ end
 -- Changes the session directory.
 -- @param path String with the new session directory.
 ----------------------------------------------------------------------------
-function M.setdir (path)
+function M.setsessiondir (path)
 	path = gsub (path, "[/\\]$", "")
 	-- Make sure the given path is a directory
 	if not attributes (path, "mode") then
@@ -238,7 +238,7 @@ local already_enabled = false
 -- It just calls the `open' function and register the `close' function
 -- to be called at the end of the execution.
 ----------------------------------------------------------------------------
-function M.enable ()
+function M.enablesession ()
 	if already_enabled then -- avoid misuse when a script calls another one
 		return
 	else
