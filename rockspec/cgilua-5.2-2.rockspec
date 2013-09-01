@@ -16,7 +16,9 @@ description = {
       server, with different launchers. A launcher is responsible for the
       interaction of CGILua and the Web server, for example using ISAPI on
       IIS or mod_lua on Apache. 
-   ]]
+   ]],
+   homepage = "http://keplerproject.github.com/cgilua",
+   license = "MIT/X11",
 }
 
 dependencies = {
