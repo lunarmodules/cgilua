@@ -211,6 +211,7 @@ end
 
 -- Sets the current configuration
 function M.configure(options, methods)
+	authenticatedUser = nil
     configuration = options
     local method = methods[options.method] or {}
     
