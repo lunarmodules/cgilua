@@ -14,9 +14,9 @@ local format, gsub, strfind = string.format, string.gsub, string.find
 local date = os.date
 local escape, unescape = urlcode.escape, urlcode.unescape
 
-local header = SAPI.Response.header
-local write = SAPI.Response.write
-local servervariable = SAPI.Request.servervariable
+--local header = SAPI.Response.header
+--local write = SAPI.Response.write
+--local servervariable = SAPI.Request.servervariable
 
 local M = {}
 
@@ -54,7 +54,7 @@ end
 -- @param options Table with the options (optional).
 
 function M.set (name, value, options)
-	header("Set-Cookie", build(name, value, options))
+	cgilua.header("Set-Cookie", build(name, value, options))
 end
 
 
@@ -66,7 +66,7 @@ end
 -- @param options Table with the options (optional).
 
 function M.sethtml (name, value, options)
-	write(format('<meta http-equiv="Set-Cookie" content="%s">', 
+	cgilua.put(format('<meta http-equiv="Set-Cookie" content="%s">', 
 		build(name, value, options)))
 end
 
@@ -77,7 +77,7 @@ end
 -- @return String with the value associated with the cookie.
 
 function M.get (name)
-	local cookies = servervariable"HTTP_COOKIE" or ""
+	local cookies = cgilua.servervariable("HTTP_COOKIE") or ""
 	cookies = ";" .. cookies .. ";"
 	cookies = gsub(cookies, "%s*;%s*", ";")	 -- remove extra spaces
 	local pattern = ";" .. name .. "=(.-);"
