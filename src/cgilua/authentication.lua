@@ -53,6 +53,10 @@ function M.currentURL()
     if query_string ~= "" then
         query_string = "?"..query_string
     end
+	--DIRK: hack
+	if path_info == "/" then
+		path_info = ""
+	end
     return cgilua.mkabsoluteurl(script_name..path_info..query_string)
 end
 
@@ -95,6 +99,7 @@ function M.username()
             -- check if IP in crypted data match with client IP
             local authenticatedUserIP = authenticatedUserData and string.gsub(authenticatedUserData, ",.*$","") or nil
             if authenticatedUserIP ~= cgilua.servervariable("REMOTE_ADDR") then
+				M.logout()
                 return nil
             end
             authenticatedUser=authenticatedUserData and string.gsub(authenticatedUserData, "^.*,", "") or nil

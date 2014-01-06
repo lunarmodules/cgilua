@@ -195,8 +195,8 @@ end
 -- @param filename String with the name of the file to be processed.
 -- @return The result of the execution of the file.
 ----------------------------------------------------------------------------
-function M.doscript (filename)
-	local env = buildscriptenv()
+function M.doscript (filename, env)
+	local env = env or buildscriptenv()
 	local f, err = loadfile(filename, "bt", env)
 	if not f then
 		error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))

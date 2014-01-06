@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/doc.css" type="text/css"/>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <%
-    require"cgilua.cookies"
+    cgilua.cookies = require"cgilua.cookies"
     if cgilua.POST.user then
         cgilua.cookies.sethtml("cookie_kepler", cgilua.POST.user)
     end
