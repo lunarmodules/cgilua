@@ -1,6 +1,7 @@
 -- Checking script example
 -- Assumes that the login form will use two fields called username and pass
 
+local lp = require 'cgilua.lp'
 local username = cgilua.POST.username
 local pass = cgilua.POST.pass
 local logged, err, logoutURL
@@ -21,7 +22,7 @@ else
     err = err or ""
 
 	cgilua.htmlheader()
-	cgilua.lp.include ("login.lp", {
+	lp.include ("login.lp", {
         logged = logged, errorMsg = err, username = username,
         cgilua = cgilua, logoutURL = logoutURL})
 end

@@ -8,7 +8,7 @@
 -- cgilua.use_executable_name = true
 
 -- Enables CGILua authentication
--- cgilua.doif (CGILUA_CONF.."/authentication_conf.lua")
+cgilua.doif (CGILUA_CONF.."/../authentication_conf.lua")
 
 -- Emulating old behavior loading file "env.lua" from the script's directory
 --[[
@@ -18,8 +18,7 @@ end)
 --]]
 
 -- Basic configuration for using sessions
---[[
-require"cgilua.session"
+cgilua.session = require"cgilua.session"
 cgilua.session.setsessiondir (CGILUA_TMP)
 -- The following function must be called by every script that needs session.
 local already_enabled = false
@@ -32,7 +31,9 @@ function cgilua.enablesession ()
   cgilua.session.open ()
   cgilua.addclosefunction (cgilua.session.close)
 end
---]]
+
+cgilua.setmaxinput(5 * 1024 * 1024)
+cgilua.setmaxfilesize(5 * 1024 * 1024)
 
 -- Optional compatibility values
 -- cgilua.preprocess = cgilua.handlelp

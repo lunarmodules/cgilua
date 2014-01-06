@@ -53,6 +53,10 @@ function M.currentURL()
     if query_string ~= "" then
         query_string = "?"..query_string
     end
+	--DIRK: hack
+	if path_info == "/" then
+		path_info = ""
+	end
     return cgilua.mkabsoluteurl(script_name..path_info..query_string)
 end
 
@@ -88,13 +92,14 @@ function M.username()
 		if configuration.tokenPersistence == "url" then
             token = M.getToken()
 		elseif configuration.tokenPersistence == "cookie" then
-			token = cgilua.cookies.get(configuration.tokenName)
+			token = cookies.get(configuration.tokenName)
 		end
         if token then
             authenticatedUserData = md5.decrypt(M.decodeURLbase64(token), configuration.criptKey)
             -- check if IP in crypted data match with client IP
             local authenticatedUserIP = authenticatedUserData and string.gsub(authenticatedUserData, ",.*$","") or nil
             if authenticatedUserIP ~= cgilua.servervariable("REMOTE_ADDR") then
+				M.logout()
                 return nil
             end
             authenticatedUser=authenticatedUserData and string.gsub(authenticatedUserData, "^.*,", "") or nil
@@ -119,9 +124,9 @@ local function setUser(username)
         local cryptedUserData = cryptUserData()
         if configuration.tokenPersistence == "url" then
             M.setToken(cryptedUserData)
-            cgilua.cookies.delete(configuration.tokenName) -- removes an eventual previous cookie token
+            cookies.delete(configuration.tokenName) -- removes an eventual previous cookie token
         elseif configuration.tokenPersistence == "cookie" then
-            cgilua.cookies.set(configuration.tokenName, cryptedUserData)
+            cookies.set(configuration.tokenName, cryptedUserData)
             M.setToken() -- remove an eventual previous token from the URLs
         end
     end
@@ -130,7 +135,7 @@ end
 -- User logout, clear everything
 function M.logout()
     setUser()
-    cgilua.cookies.delete(configuration.tokenName)
+    cookies.delete(configuration.tokenName)
     M.setToken()
     cgilua.QUERY.logout = nil
 end
@@ -171,7 +176,7 @@ function M.checkURL(ref, tologout)
     if configuration.tokenPersistence == "url" then
         token = M.getToken()
     elseif configuration.tokenPersistence == "cookie" then
-        token = cgilua.cookies.get(configuration.tokenName)
+        token = cookies.get(configuration.tokenName)
     end
 
     -- As HTTP header referer information can violate privacy, 
@@ -197,16 +202,21 @@ end
 function M.refURL()
     local url
     local baseURL = cgilua.QUERY.ref or configuration.checkURL
-    if string.find(baseURL, "\?") then
-        url = string.gsub(baseURL, "\?", "?"..configuration.tokenName.."="..cryptUserData().."&")
-    else
-        url = baseURL.."?"..configuration.tokenName.."="..cryptUserData()
-    end
+	if configuration.tokenPersistence == 'url' then
+		if string.find(baseURL, "%?") then
+			url = string.gsub(baseURL, "%?", "?"..configuration.tokenName.."="..cryptUserData().."&")
+		else
+			url = baseURL.."?"..configuration.tokenName.."="..cryptUserData()
+		end
+	else
+		url = baseURL
+	end
 	return url
 end
 
 -- Sets the current configuration
 function M.configure(options, methods)
+	authenticatedUser = nil
     configuration = options
     local method = methods[options.method] or {}
     

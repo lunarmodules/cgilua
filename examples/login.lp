@@ -4,6 +4,9 @@
 </head>
 
 <body>
+	<%
+	cgilua.enablesession ()
+	%>
     <% if logged then %>
     <p>User <%= username %> logged in</p>
     <a href="<%= logoutURL %>">Logout</a>

@@ -6,7 +6,7 @@
 -- $Id: authentication_conf.lua,v 1.1 2007/12/05 18:40:17 carregal Exp $
 ----------------------------
 
-require"cgilua.authentication"
+cgilua.authentication = require"cgilua.authentication"
 
 local options = {
     -- Authentication method: "simpledatabase", "webserver", "ldap", "test"
@@ -14,7 +14,7 @@ local options = {
     
     -- How Authentication is stored on the client
     -- This directive can be "cookie" or "url"
-    tokenPersistence="url",
+    tokenPersistence="cookie",
     
     -- Name used for the token persitence
     tokenName = "userhash",
@@ -35,7 +35,7 @@ options.simpledatabase = {
     sourcename="users",
     dbusername="root",
     dbpassword="pass",
-    passwd_hash_function=(require"md5") and md5.sumhexa, -- for MD5 encription
+    passwd_hash_function=(require"md5") and require("md5").sumhexa, -- for MD5 encription
         -- passwd_hash_function = function(arg) return arg end , -- for no encription
     users_table="Users",
     user_name_field="Name",
