@@ -197,8 +197,8 @@ end
 function M.refURL()
     local url
     local baseURL = cgilua.QUERY.ref or configuration.checkURL
-    if string.find(baseURL, "\?") then
-        url = string.gsub(baseURL, "\?", "?"..configuration.tokenName.."="..cryptUserData().."&")
+    if string.find(baseURL, "%?") then
+        url = string.gsub(baseURL, "%?", "?"..configuration.tokenName.."="..cryptUserData().."&")
     else
         url = baseURL.."?"..configuration.tokenName.."="..cryptUserData()
     end
