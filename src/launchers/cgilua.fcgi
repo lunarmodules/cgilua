@@ -6,6 +6,7 @@
 
 pcall(require, "luarocks.require")
 
+local fastcgi = require "wsapi.fastcgi"
 local common = require "wsapi.common"
 
 local ok, err = pcall(require, "wsapi.fastcgi")
@@ -30,4 +31,4 @@ local sapi_loader = common.make_isolated_launcher{
      "PATH_TRANSLATED" } 
 }
 
-wsapi.fastcgi.run(sapi_loader)
+fastcgi.run(sapi_loader)
