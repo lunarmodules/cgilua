@@ -99,7 +99,7 @@ as Lua 5.1.
 
 <h2><a name="status"></a>Status</h2>
 
-<p>Current version is 5.1.4</p>
+<p>Current version is 5.2</p>
 
 <h2><a name="download"></a>Download</h2>
 
@@ -115,6 +115,11 @@ luarocks install cgilua
 <h2><a name="history"></a>History</h2>
 
 <dl>
+    <dt><strong>Version 5.2</strong> [22/Apr/2015]</dt>
+	<dd><ul>
+        <li>Code adapted to work with Lua 5.1 and Lua 5.2</li>
+	</ul></dd>
+
     <dt><strong>Version 5.1.4</strong> [22/Mar/2010]</dt>
 	<dd><ul>
         <li>Fixes file upload reentrancy</li>
@@ -248,7 +253,14 @@ luarocks install cgilua
 
 <h2><a name="incompatibility"></a>Incompatibility with previous CGILua versions (5.0, 4.0 and 3.x)</h2>
 
-<ul>
+<dt><strong>CGILua 5.2</strong></dt>
+<dd><ul>
+    <li>All CGILua 5.2 modules return a table when loaded.</li>
+    <li>Function <code>cgilua.lp.include</code> ...
+</ul></dd>
+
+<dt><strong>CGILua 5.1</strong></dt>
+<dd><ul>
     <li>CGILua 5.1 uses <a href="http://www.lua.org">Lua 5.1</a>.</li>
     <li>The <code>cgi</code> table is now deprecated. See
     <a href="manual.html#parameters">Receiving parameters</a> for a more
@@ -260,11 +272,18 @@ luarocks install cgilua
     should be replaced by
     <a href="reference.html#servervariable"><code>cgilua.servervariable</code></a>
     calls.</li>
-</ul>
+</ul></dd>
 
 <h2><a name="credits"></a>Credits</h2>
 
 <dl>
+    <dt><strong>CGILua 5.2</strong></dt>
+    <dd>
+    CGILua 5.2 is being maintained by Tom&aacute;s Guisasola
+    with contributions from F&aacute;bio Mascarenhas, Carla Ourofino
+    and others from the Kepler community.
+    </dd>
+    
     <dt><strong>CGILua 5.1</strong></dt>
     <dd>
     CGILua 5.1 is being maintained by Andr&eacute; Carregal and
