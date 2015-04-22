@@ -1,4 +1,4 @@
-CGILua 5.1.4
+CGILua 5.2.2
 http://keplerproject.org/cgilua
 
 Overview
@@ -19,6 +19,9 @@ You can also install CGILua using LuaRocks:
 luarocks install cgilua
 
 History
+
+Version 5.2.2 [22/Apr/2015]
+    * Uses Lua 5.2
 
 Version 5.1.4 [22/Mar/2010]
 

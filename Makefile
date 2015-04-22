@@ -4,7 +4,7 @@
 PREFIX= /usr/local
 
 # System's lua directory (where Lua libraries are installed)
-LUA_DIR= $(PREFIX)/share/lua/5.1
+LUA_DIR= $(PREFIX)/share/lua/5.2
 
 CGILUA_DIR= $(LUA_DIR)/cgilua
 CGILUA_LUAS= src/cgilua/authentication.lua src/cgilua/cookies.lua src/cgilua/dispatcher.lua src/cgilua/loader.lua src/cgilua/lp.lua src/cgilua/mime.lua src/cgilua/post.lua src/cgilua/readuntil.lua src/cgilua/serialize.lua src/cgilua/session.lua src/cgilua/urlcode.lua
