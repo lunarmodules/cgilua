@@ -1,6 +1,7 @@
 -- CGILua dispatcher module
 -- @release $Id: dispatcher.lua,v 1.8 2007/12/07 18:49:49 carregal Exp $
 
+local unpack = table.unpack or unpack
 
 -- Checks if an URL matches a route pattern
 local function route_match(url, pattern) 
@@ -59,7 +60,7 @@ local function route(URLs)
 		URLs = {URLs}
 	end
     route_URLs = URLs
-    f, args = route_map(cgilua.script_vpath)
+    local f, args = route_map(cgilua.script_vpath)
 
     if f then
         return f(args)

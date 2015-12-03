@@ -9,7 +9,8 @@ local urlcode = require"cgilua.urlcode"
 local lp = require"cgilua.lp"
 local lfs = require"lfs"
 local debug = require"debug"
-local assert, error, ipairs, select, tostring, type, unpack, xpcall = assert, error, ipairs, select, tostring, type, unpack, xpcall
+local assert, error, ipairs, select, tostring, type, xpcall = assert, error, ipairs, select, tostring, type, xpcall
+local unpack = table.unpack or unpack
 local pairs = pairs
 local gsub, format, strfind, strlower, strsub, match = string.gsub, string.format, string.find, string.lower, string.sub, string.match
 local setmetatable = setmetatable
@@ -19,7 +20,6 @@ local date = os.date
 local os_tmpname = os.tmpname
 local getenv = os.getenv
 local remove = os.remove
-local seeall = package.seeall
 
 lp.setoutfunc ("cgilua.put")
 lp.setcompatmode (true)
@@ -631,7 +631,7 @@ function M.main ()
 	M.pcall (open)
 
 	-- Executes the script
-	result, err = M.pcall (function () return M.handle (M.script_file) end)
+	result = M.pcall (function () return M.handle (M.script_file) end)
     
 	-- Closing functions
 	M.pcall (close)

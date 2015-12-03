@@ -22,9 +22,9 @@ local md5=require"md5"
 local cookies = require"cgilua.cookies"
 
 local cgilua = require"cgilua"
+local urlcode = require"cgilua.urlcode"
 local string = require"string"
 local math = require"math"
-local error = error
 
 local M = {}
 
