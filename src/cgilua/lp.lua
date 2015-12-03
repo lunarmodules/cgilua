@@ -4,7 +4,8 @@
 -- @release $Id: lp.lua,v 1.15 2008/12/11 17:40:24 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
-local assert, error, loadstring = assert, error, loadstring
+local assert, error = assert, error
+local loadstring = loadstring or load
 local find, format, gsub, strsub, char = string.find, string.format, string.gsub, string.sub, string.char
 local concat, tinsert = table.concat, table.insert
 local open = io.open
@@ -101,12 +102,12 @@ local cache = {}
 -- @return Function with the resulting translation.
 
 function M.compile (string, chunkname, env)
-	local s, err = cache[string]
+	local s = cache[string]
 	if not s then
 		s = M.translate (string)
 		cache[string] = s
 	end
-	f, err = load (s, chunkname, "bt", env)
+	local f, err = load (s, chunkname, "bt", env)
 	if not f then error (err, 3) end
 	return f
 end
