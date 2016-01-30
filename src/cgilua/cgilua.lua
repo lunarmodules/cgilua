@@ -201,6 +201,9 @@ function M.doscript (filename)
 	if not f then
 		error (format ("Cannot execute `%s'. Exiting.\n%s", filename, err))
 	else
+		if _VERSION == "Lua 5.1" then
+			setfenv(f, env)
+		end
 		return M.pcall(f)
 	end
 end
