@@ -11,9 +11,9 @@
 <div id="container">
 	
 <div id="product">
-	<div id="product_logo"><a href="http://www.keplerproject.org">
+	<div id="product_logo">
 		<img alt="CGILua logo" src="cgi-128.gif"/>
-	</a></div>
+	</div>
 	<div id="product_name"><big><strong>CGILua</strong></big></div>
 	<div id="product_description">Building Web Scripts with Lua</div>
 </div> <!-- id="product" -->
@@ -114,8 +114,6 @@ method used.
 <p>
 A launcher is responsible for the interaction of CGILua and the Web server,
 implementing SAPI for example using ISAPI on IIS or mod_lua on Apache.
-The reference implementation of CGILua launchers is
-<a href="http://www.keplerproject.org/kepler/">Kepler</a>.
 </p>
 
 <p>
@@ -622,7 +620,7 @@ authenticated.
 </p>
 
 <p>
-One simple example of such a checking script is the one found in <code>/examples/check.lua</code> in CGILua CVS,
+One simple example of such a checking script is the one found in <code>/examples/check.lua</code> in the CGILua repository,
 but usually a checking script implemented in CGILua would do the following:
 </p>
 
@@ -658,7 +656,7 @@ end
 </pre>
 
 <p>
-The login form for this example can be fount at <code>/examples/login.lp</code> in CGILua CVS and consists of:
+The login form for this example can be fount at <code>/examples/login.lp</code> in the CGILua repository and consists of:
 </p>
 
 <pre class="example">
@@ -702,9 +700,7 @@ The function
 <a href="reference.html#seterroroutput"><code>cgilua.seterroroutput</code></a>
 defines the function that decides what to do with the error message. It could
 be sent to the client's browser, written to a log file or sent to an e-mail
-address (with the help of
-<a href="http://luasocket.luaforge.net/">LuaSocket</a> or 
-<a href="http://www.keplerproject.org/lualogging/">LuaLogging</a> for example).
+address (with the help of LuaSocket or LuaLogging for example).
 </p>
 
 <p>
