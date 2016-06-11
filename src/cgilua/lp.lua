@@ -5,7 +5,7 @@
 ----------------------------------------------------------------------------
 
 local assert, error = assert, error
-local loadstring = loadstring or load
+local load = loadstring or load
 local find, format, gsub, strsub, char = string.find, string.format, string.gsub, string.sub, string.char
 local concat, tinsert = table.concat, table.insert
 local open = io.open
@@ -109,6 +109,9 @@ function M.compile (string, chunkname, env)
 	end
 	local f, err = load (s, chunkname, "bt", env)
 	if not f then error (err, 3) end
+	if _VERSION == "Lua 5.1" then
+		setfenv(f, env)
+	end
 	return f
 end
 
