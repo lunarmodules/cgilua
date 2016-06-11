@@ -20,7 +20,7 @@ return {
 			local dellen = strlen(del) 
 			local i, e
 			while true do
-				i, e = strfind(current, del, 1, 1)
+				i, e = strfind(current, del, 1, true)
 				if i then break end
 				local new = inp()
 				if not new then break end
@@ -28,7 +28,7 @@ return {
 					local endcurrent = strsub(current, -dellen+1)
 					local border = endcurrent .. strsub(new, 1, dellen-1)
 					if strlen(current) < dellen or strlen(new) < dellen or
-						 strfind(border, del, 1, 1) then
+						 strfind(border, del, 1, true) then
 						-- move last part of `current' to new block
 						current = strsub(current, 1, -dellen)
 						new = endcurrent .. new

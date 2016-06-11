@@ -455,7 +455,7 @@ end
 ----------------------------------------------------------------------------
 function M.addscripthandler (file_extension, func)
 	assert (type(file_extension) == "string", "File extension must be a string")
-	if strfind (file_extension, '%.', 1) then
+	if strfind(file_extension, '%.') then
 		file_extension = strsub (file_extension, 2)
 	end
 	file_extension = strlower(file_extension)
@@ -470,7 +470,7 @@ end
 -- @return Function that handles it or nil.
 ----------------------------------------------------------------------------
 function M.getscripthandler (path)
-	local _, _, ext = strfind (path, "%.([^.]+)$")
+	local ext = match(path, "%.([^.]+)$")
 	return _script_handlers[strlower(ext or '')]
 end
 

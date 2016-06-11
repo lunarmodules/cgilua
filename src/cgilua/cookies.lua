@@ -9,7 +9,7 @@ local string = require"string"
 local urlcode = require"cgilua.urlcode"
 
 local error = error
-local format, gsub, strfind = string.format, string.gsub, string.find
+local format, gsub, strfind, strmatch = string.format, string.gsub, string.find, string.match
 local date = os.date
 local escape, unescape = urlcode.escape, urlcode.unescape
 
@@ -80,7 +80,7 @@ function M.get (name)
 	cookies = ";" .. cookies .. ";"
 	cookies = gsub(cookies, "%s*;%s*", ";")	 -- remove extra spaces
 	local pattern = ";" .. name .. "=(.-);"
-	local _, _, value = strfind(cookies, pattern)
+	local value = strmatch(cookies, pattern)
 	return value and unescape(value)
 end
 
