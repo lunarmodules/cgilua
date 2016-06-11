@@ -383,7 +383,7 @@ end
 -- @return String with the directory part.
 -- @return String with the file part.
 ----------------------------------------------------------------------------
-function M.splitonlast (path, sep)
+function M.splitonlast (path)
 	local dir,file = match(path,"^(.-)([^:/\\]*)$")
 	return dir,file
 end
@@ -392,11 +392,10 @@ M.splitpath = M.splitonlast -- compatibility with previous versions
 
 ----------------------------------------------------------------------------
 -- Extracts the first and remaining parts of a path
--- @param path separator (defaults to "/")
 -- @return String with the extracted part.
 -- @return String with the remaining path.
 ----------------------------------------------------------------------------
-function M.splitonfirst(path, sep)
+function M.splitonfirst(path)
 	local first, rest = match(path, "^/([^:/\\]*)(.*)")
 	return first, rest
 end
