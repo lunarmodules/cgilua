@@ -81,7 +81,7 @@ function M.parsequery (query, args)
 		local insertfield, unescape = M.insertfield, M.unescape
 		gsub (query, "([^&=]+)=([^&=]*)&?",
 			function (key, val)
-				M.insertfield (args, unescape(key), unescape(val))
+				insertfield (args, unescape(key), unescape(val))
 			end)
 	end
 end

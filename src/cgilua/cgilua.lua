@@ -471,7 +471,7 @@ end
 -- @return Function that handles it or nil.
 ----------------------------------------------------------------------------
 function M.getscripthandler (path)
-	local i,f, ext = strfind (path, "%.([^.]+)$")
+	local _, _, ext = strfind (path, "%.([^.]+)$")
 	return _script_handlers[strlower(ext or '')]
 end
 

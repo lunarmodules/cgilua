@@ -4,7 +4,6 @@
 -- @release $Id: cookies.lua,v 1.8 2008/04/24 13:42:04 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
-local cgilua = require"cgilua"
 local os = require"os"
 local string = require"string"
 local urlcode = require"cgilua.urlcode"
@@ -81,7 +80,7 @@ function M.get (name)
 	cookies = ";" .. cookies .. ";"
 	cookies = gsub(cookies, "%s*;%s*", ";")	 -- remove extra spaces
 	local pattern = ";" .. name .. "=(.-);"
-	local _, __, value = strfind(cookies, pattern)
+	local _, _, value = strfind(cookies, pattern)
 	return value and unescape(value)
 end
 

@@ -21,8 +21,8 @@ local iterate = require"cgilua.readuntil".iterate
 local urlcode = require"cgilua.urlcode"
 local tmpfile = require"cgilua".tmpfile
 
-local assert, error, pairs, tonumber, tostring, type = assert, error, pairs, tonumber, tostring, type
-local getn, tinsert = table.getn, table.insert
+local assert, error, pairs, tonumber, type = assert, error, pairs, tonumber, type
+local tinsert = table.insert
 local format, gsub, strfind, strlower, strlen = string.format, string.gsub, string.find, string.lower, string.len
 local min = math.min
 --local iterate = cgilua.readuntil.iterate
