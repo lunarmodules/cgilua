@@ -225,8 +225,8 @@ end
 -- This function should be called after the script is executed.
 ----------------------------------------------------------------------------
 function M.close ()
-	if next (cgilua.session.data) then
-		M.save (id, cgilua.session.data)
+	if next (M.data) then
+		M.save (id, M.data)
 		id = nil
 	end
 end
