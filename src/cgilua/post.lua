@@ -170,7 +170,8 @@ end
 -- in its content-disposition header) a temporary file is created 
 -- and the field contents are written to it. In this case,
 -- [[value]] has a table that contains the temporary file handle 
--- (key 'file') and the file name (key 'filename'). Optional headers
+-- (key 'file'), the file name (key 'filename') and size of the file in bytes
+-- (key 'filesize'). Optional headers
 -- included in the field description are also inserted into this table,
 -- as (header_type=value) pairs.
 --
@@ -209,10 +210,10 @@ end
 -- Initialize the library by setting the dependent functions:
 --	content_type            = value of "Content-type" header
 --	content_length          = value of "Content-length" header
---	read                    = function that can read POST data
---	discardinput (optional) = function that discard POST data
---	maxinput (optional)     = limit of POST data (in bytes)
---	maxfilesize (optional)  = limit of uploaded file(s) (in bytes)
+--	read                    = function that reads POST data
+--	discardinput (optional) = function that discards POST data
+--	maxinput (optional)     = size limit of POST data (in bytes)
+--	maxfilesize (optional)  = size limit applied to each uploaded file (in bytes)
 --
 local function init (defs)
 	assert (defs.read)
