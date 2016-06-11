@@ -23,7 +23,7 @@ local tmpfile = require"cgilua".tmpfile
 
 local assert, error, pairs, tonumber, type = assert, error, pairs, tonumber, type
 local tinsert = table.insert
-local format, gsub, strfind, strlower, strlen = string.format, string.gsub, string.find, string.lower, string.len
+local format, gmatch, strfind, strlower, strlen = string.format, string.gmatch, string.find, string.lower, string.len
 local min = math.min
 
 -- environment for processing multipart/form-data input
@@ -50,12 +50,12 @@ end
 -- Create a table containing the headers of a multipart/form-data field
 --
 local function breakheaders (hdrdata)
-  local headers = {}
-  gsub (hdrdata, '([^%c%s:]+):%s+([^\n]+)', function(type,val)
-    type = strlower(type)
-    headers[type] = val
-  end)
-  return headers
+	local headers = {}
+	for name, value in gmatch(hdrdata, '([^%c%s:]+):%s+([^\n]+)') do
+		name = strlower(name)
+		headers[name] = value
+	end
+	return headers
 end
 
 --
@@ -82,17 +82,17 @@ end
 -- Extract a field name (and possible filename) from its disposition header
 --
 local function getfieldnames (headers)
-  local disposition_hdr = headers["content-disposition"]
-  local attrs = {}
-  if disposition_hdr then
-    gsub(disposition_hdr, ';%s*([^%s=]+)="(.-)"', function(attr, val)
-	   attrs[attr] = val
-         end)
-  else
-    error("Error processing multipart/form-data."..
-          "\nMissing content-disposition header")
-  end
-  return attrs.name, attrs.filename
+	local disposition_hdr = headers["content-disposition"]
+	if not disposition_hdr then
+		error("Error processing multipart/form-data."..
+			"\nMissing content-disposition header")
+	end
+
+	local attrs = {}
+	for attr, value in gmatch(disposition_hdr, ';%s*([^%s=]+)="(.-)"') do
+		attrs[attr] = value
+	end
+	return attrs.name, attrs.filename
 end
 
 --
