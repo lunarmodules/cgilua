@@ -22,7 +22,7 @@ local urlcode = require"cgilua.urlcode"
 local tmpfile = require"cgilua".tmpfile
 
 local assert, error, pairs, tonumber, type = assert, error, pairs, tonumber, type
-local tinsert = table.insert
+local tinsert, tconcat = table.insert, table.concat
 local format, gmatch, strfind, strlower, strlen, strmatch = string.format, string.gmatch, string.find, string.lower, string.len, string.match
 local min = math.min
 
@@ -71,11 +71,11 @@ end
 --
 local function readfieldheaders ()
 	local EOH = "\r\n\r\n" -- <CR><LF><CR><LF>
-	local hdrdata = ""
-	local out = function (str) hdrdata = hdrdata..str end
+	local hdrparts = {}
+	local out = function (str) tinsert(hdrparts, str) end
 	if readuntil (EOH, out) then
 		-- parse headers
-		return breakheaders (hdrdata)
+		return breakheaders (tconcat(hdrparts))
 	else
 		-- no header found
 		return nil
@@ -103,11 +103,11 @@ end
 -- Read the contents of a 'regular' field to a string
 --
 local function readfieldcontents ()
-	local value = ""
+	local parts = {}
 	local boundaryline = "\r\n"..boundary
-	local out = function (str) value = value..str end
+	local out = function (str) tinsert(parts, str) end
 	if readuntil (boundaryline, out) then
-		return value
+		return tconcat(parts)
 	else
 		error("Error processing multipart/form-data.\nUnexpected end of input\n")
 	end
