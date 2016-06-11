@@ -23,7 +23,7 @@ local tmpfile = require"cgilua".tmpfile
 
 local assert, error, pairs, tonumber, type = assert, error, pairs, tonumber, type
 local tinsert = table.insert
-local format, gmatch, strfind, strlower, strlen = string.format, string.gmatch, string.find, string.lower, string.len
+local format, gmatch, strfind, strlower, strlen, strmatch = string.format, string.gmatch, string.find, string.lower, string.len, string.match
 local min = math.min
 
 -- environment for processing multipart/form-data input
@@ -42,8 +42,12 @@ local read = nil          -- basic read function
 -- Extract the boundary string from CONTENT_TYPE metavariable
 --
 local function getboundary ()
-  local _,_,boundary = strfind (content_type, "boundary%=(.-)$")
-  return  "--"..boundary 
+	local boundary = strmatch(content_type, "boundary=(.*)$")
+	if boundary then
+		return "--"..boundary
+	else
+		error("Error processing multipart/form-data.\nMissing boundary")
+	end
 end
 
 --
