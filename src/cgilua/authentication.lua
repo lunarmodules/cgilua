@@ -88,7 +88,7 @@ function M.username()
 		if configuration.tokenPersistence == "url" then
             token = M.getToken()
 		elseif configuration.tokenPersistence == "cookie" then
-			token = cgilua.cookies.get(configuration.tokenName)
+			token = cookies.get(configuration.tokenName)
 		end
         if token then
             authenticatedUserData = md5.decrypt(M.decodeURLbase64(token), configuration.criptKey)
@@ -119,9 +119,9 @@ local function setUser(username)
         local cryptedUserData = cryptUserData()
         if configuration.tokenPersistence == "url" then
             M.setToken(cryptedUserData)
-            cgilua.cookies.delete(configuration.tokenName) -- removes an eventual previous cookie token
+            cookies.delete(configuration.tokenName) -- removes an eventual previous cookie token
         elseif configuration.tokenPersistence == "cookie" then
-            cgilua.cookies.set(configuration.tokenName, cryptedUserData)
+            cookies.set(configuration.tokenName, cryptedUserData)
             M.setToken() -- remove an eventual previous token from the URLs
         end
     end
@@ -130,7 +130,7 @@ end
 -- User logout, clear everything
 function M.logout()
     setUser()
-    cgilua.cookies.delete(configuration.tokenName)
+    cookies.delete(configuration.tokenName)
     M.setToken()
     cgilua.QUERY.logout = nil
 end
@@ -171,7 +171,7 @@ function M.checkURL(ref, tologout)
     if configuration.tokenPersistence == "url" then
         token = M.getToken()
     elseif configuration.tokenPersistence == "cookie" then
-        token = cgilua.cookies.get(configuration.tokenName)
+        token = cookies.get(configuration.tokenName)
     end
 
     -- As HTTP header referer information can violate privacy, 
