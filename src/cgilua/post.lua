@@ -25,15 +25,11 @@ local assert, error, pairs, tonumber, type = assert, error, pairs, tonumber, typ
 local tinsert = table.insert
 local format, gsub, strfind, strlower, strlen = string.format, string.gsub, string.find, string.lower, string.len
 local min = math.min
---local iterate = cgilua.readuntil.iterate
---local urlcode = cgilua.urlcode
---local tmpfile = cgilua.tmpfile
 
 -- environment for processing multipart/form-data input
 local boundary = nil      -- boundary string that separates each 'part' of input
 local maxfilesize = nil   -- maximum size for file upload
 local maxinput = nil      -- maximum size of total POST data
-local inputfile = nil     -- temporary file for inputting form-data
 local bytesleft = nil     -- number of bytes yet to be read
 local content_type = nil  -- request's content-type
 -- local functions
@@ -182,16 +178,7 @@ end
 -- contents.
 --
 local function Main (inputsize, args)
-
-	-- create a temporary file for processing input data
-	local inputf,err = tmpfile()
-	if inputf == nil then
-		discardinput(inputsize)
-		error("Cannot create a temporary file.\n"..err)
-	end
-
 	-- set the environment for processing the multipart/form-data
-	inputfile = inputf
 	bytesleft = inputsize
 	maxfilesize = maxfilesize or inputsize 
 	boundary = getboundary()
