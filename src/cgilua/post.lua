@@ -286,10 +286,9 @@ return {
 			urlcode.parsequery (read (inputsize), defs.args)
 		elseif strfind(contenttype, "multipart/form-data", 1, true) then
 			Main (inputsize, defs.args)
-		elseif strfind (contenttype, "application/xml", 1, true) or strfind (contenttype, "text/xml", 1, true) or strfind (contenttype, "text/plain", 1, true) then
-			tinsert (defs.args, read (inputsize))
 		else
-			error("Unsupported Media Type: "..contenttype)
+			local input = read(inputsize)
+			tinsert (defs.args, input)
 		end
 	end,
 }
