@@ -1,6 +1,8 @@
 -- CGILua dispatcher module
 -- @release $Id: dispatcher.lua,v 1.8 2007/12/07 18:49:49 carregal Exp $
 
+local cgilua = require"cgilua"
+local urlcode = require"cgilua.urlcode"
 local unpack = table.unpack or unpack
 
 -- Checks if an URL matches a route pattern
@@ -36,7 +38,7 @@ end
 local function route_url(map_name, params, queryargs)
 	local queryparams = ""
 	if queryargs then
-		queryparams = "?"..cgilua.urlcode.encodetable(queryargs)
+		queryparams = "?"..urlcode.encodetable(queryargs)
 	end
 	for i, v in ipairs(route_URLs) do
         local pattern, f, name = unpack(v)
