@@ -31,9 +31,11 @@ local M = {
 	_VERSION = "CGILua 5.2",
 }
 
---
+-- Variáveis usadas pelo SAPI
+local Request, Response
+local servervariable, getpostdata;
+
 -- Internal state variables.
-local SAPI
 local _default_errorhandler = debug.traceback
 local _errorhandler = _default_errorhandler
 local _default_erroroutput = function (msg)
@@ -42,19 +44,19 @@ local _default_erroroutput = function (msg)
 	end
   
 	-- Logging error
-	SAPI.Response.errorlog (msg)
-	SAPI.Response.errorlog (" ")
+	Response.errorlog (msg)
+	Response.errorlog (" ")
 
-	SAPI.Response.errorlog (SAPI.Request.servervariable"REMOTE_ADDR")
-	SAPI.Response.errorlog (" ")
+	Response.errorlog (servervariable"REMOTE_ADDR")
+	Response.errorlog (" ")
 
-	SAPI.Response.errorlog (date())
-	SAPI.Response.errorlog ("\n")
+	Response.errorlog (date())
+	Response.errorlog ("\n")
 
 	-- Building user message
 	msg = gsub (gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
-	SAPI.Response.contenttype ("text/html")
-	SAPI.Response.write ("<html><head><title>CGILua Error</title></head><body>" .. msg .. "</body></html>")
+	Response.contenttype ("text/html")
+	Response.write ("<html><head><title>CGILua Error</title></head><body>" .. msg .. "</body></html>")
 end
 local _erroroutput = _default_erroroutput
 local _default_maxfilesize = 512 * 1024
@@ -74,7 +76,7 @@ M.script_path = false
 -- @param value String with the corresponding value.
 ----------------------------------------------------------------------------
 function M.header (...)
-	return SAPI.Response.header (...)
+	return Response.header (...)
 end
 
 ----------------------------------------------------------------------------
@@ -83,14 +85,14 @@ end
 -- @param subtype String with the subtype of the header.
 ----------------------------------------------------------------------------
 function M.contentheader (type, subtype)
-	SAPI.Response.contenttype (type..'/'..subtype)
+	Response.contenttype (type..'/'..subtype)
 end
 
 ----------------------------------------------------------------------------
 -- Sends the HTTP header "text/html".
 ----------------------------------------------------------------------------
 function M.htmlheader()
-	SAPI.Response.contenttype ("text/html")
+	Response.contenttype ("text/html")
 end
 
 ----------------------------------------------------------------------------
@@ -104,9 +106,9 @@ function M.redirect (url, args)
 		if args then
 			params = "?"..urlcode.encodetable(args)
 		end
-		return SAPI.Response.redirect(url..params)
+		return Response.redirect(url..params)
 	else
-		return SAPI.Response.redirect(M.mkabsoluteurl(M.mkurlpath(url,args)))
+		return Response.redirect(M.mkabsoluteurl(M.mkurlpath(url,args)))
 	end
 end
 
@@ -118,7 +120,7 @@ end
 -- @return String with the value of the server variable.
 ----------------------------------------------------------------------------
 function M.servervariable (...)
-	return SAPI.Request.servervariable (...)
+	return servervariable (...)
 end
 
 ----------------------------------------------------------------------------
@@ -129,7 +131,7 @@ end
 function M.errorlog (msg, level)
 	local t = type(msg)
 	if t == "string" or t == "number" then
-		SAPI.Response.errorlog (msg, level)
+		Response.errorlog (msg, level)
 	else
 		error ("bad argument #1 to `cgilua.errorlog' (string expected, got "..t..")", 2)
 	end
@@ -143,8 +145,8 @@ function M.print (...)
 	for i = 1, select("#",...) do
 		args[i] = tostring(args[i])
 	end
-	SAPI.Response.write (concat(args,"\t"))
-	SAPI.Response.write ("\n")
+	Response.write (concat(args,"\t"))
+	Response.write ("\n")
 end
 
 ----------------------------------------------------------------------------
@@ -158,7 +160,7 @@ end
 -- @param s String (or number) with output.
 ----------------------------------------------------------------------------
 function M.put (...)
-	return SAPI.Response.write (...)
+	return Response.write (...)
 end
 
 -- Returns the current errorhandler
@@ -409,7 +411,7 @@ local function getparams ()
 	M.POST = {}
 	if  requestmethod == "POST" then
 		M.post.parsedata {
-			read = SAPI.Request.getpostdata,
+			read = getpostdata,
 			discardinput = ap and ap.discard_request_body,
 			content_type = M.servervariable"CONTENT_TYPE",
 			content_length = M.servervariable"CONTENT_LENGTH",
@@ -600,8 +602,43 @@ end
 ---------------------------------------------------------------------------
 -- Request processing.
 ---------------------------------------------------------------------------
-function M.main ()
-	SAPI = _G.SAPI
+function M.main (wsapi_env, response)
+	_G.CGILUA_APPS = _G.CGILUA_APPS or wsapi_env.DOCUMENT_ROOT .. "/cgilua"
+	_G.CGILUA_CONF = _G.CGILUA_CONF or wsapi_env.DOCUMENT_ROOT .. "/cgilua"
+	_G.CGILUA_TMP = _G.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
+	_G.CGILUA_ISDIRECT = true
+
+	servervariable = function (name) return wsapi_env[name] end;
+	getpostdata = function (n) return wsapi_env.input:read(n) end;
+
+	Response = {
+		contenttype = function (header)
+			response:content_type(header)
+		end,
+		errorlog = function (msg, errlevel)
+			wsapi_env.error:write (msg)
+		end,
+		header = function (header, value)
+			if response.headers[header] then
+				if type(response.headers[header]) == "table" then
+					table.insert(response.headers[header], value)
+				else
+					response.headers[header] = { response.headers[header], value }
+				end
+			else
+				response.headers[header] = value
+			end
+		end,
+		redirect = function (url)
+			response.status = 302
+			response.headers["Location"] = url
+		end,
+		write = function (...)
+			response:write({...})
+		end,
+	}
+
+
 	buildhandlers()    
 	-- Default handler values
 	M.addscripthandler ("lua", M.doscript)
@@ -619,7 +656,6 @@ function M.main ()
 	-- Build QUERY/POST tables
 	if not M.pcall (getparams) then return nil end
 
-	local result
 	-- Executes the optional loader module
 	if M.loader then
 		M.loader.run()
@@ -633,7 +669,8 @@ function M.main ()
 	M.pcall (open)
 
 	-- Executes the script
-	result = M.pcall (function () return M.handle (M.script_file) end)
+	-- "return" is not used anywhere
+	M.pcall (function () return M.handle (M.script_file) end)
     
 	-- Closing functions
 	M.pcall (close)
@@ -642,9 +679,8 @@ function M.main ()
 
 	-- Cleanup
 	reset ()
-	if result then -- script executed ok!
-		return result
-	end
+	
+	return response:finish();
 end
 
 return M
