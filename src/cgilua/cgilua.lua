@@ -4,7 +4,6 @@
 -- @release $Id: cgilua.lua,v 1.85 2009/06/28 22:42:34 tomas Exp $
 ----------------------------------------------------------------------------
 
-local _G = assert(_G)
 local urlcode = require"cgilua.urlcode"
 local lp = require"cgilua.lp"
 local lfs = require"lfs"
@@ -31,38 +30,39 @@ local M = {
 	_VERSION = "CGILua 5.2",
 }
 
--- Variáveis usadas pelo SAPI
-local Request, Response
-local servervariable, getpostdata;
+-- Group local variables
+local L = { }
 
 -- Internal state variables.
-local _default_errorhandler = debug.traceback
-local _errorhandler = _default_errorhandler
-local _default_erroroutput = function (msg)
+L.default_errorhandler = debug.traceback
+L.errorhandler = L.default_errorhandler
+L.default_erroroutput = function (msg)
 	if type(msg) ~= "string" and type(msg) ~= "number" then
 		msg = format ("bad argument #1 to 'error' (string expected, got %s)", type(msg))
 	end
   
 	-- Logging error
-	Response.errorlog (msg)
-	Response.errorlog (" ")
+	L.Response.errorlog (msg)
+	L.Response.errorlog (" ")
 
-	Response.errorlog (servervariable"REMOTE_ADDR")
-	Response.errorlog (" ")
+	L.Response.errorlog (L.servervariable"REMOTE_ADDR")
+	L.Response.errorlog (" ")
 
-	Response.errorlog (date())
-	Response.errorlog ("\n")
+	L.Response.errorlog (date())
+	L.Response.errorlog ("\n")
 
 	-- Building user message
 	msg = gsub (gsub (msg, "\n", "<br>\n"), "\t", "&nbsp;&nbsp;")
-	Response.contenttype ("text/html")
-	Response.write ("<html><head><title>CGILua Error</title></head><body>" .. msg .. "</body></html>")
+	L.Response.contenttype ("text/html")
+	L.Response.write ("<html><head><title>CGILua Error</title></head><body>" .. msg .. "</body></html>")
 end
-local _erroroutput = _default_erroroutput
-local _default_maxfilesize = 512 * 1024
-local _maxfilesize = _default_maxfilesize
-local _default_maxinput = 1024 * 1024
-local _maxinput = _default_maxinput
+L.erroroutput = L.default_erroroutput
+L.default_maxfilesize = 512 * 1024
+L.maxfilesize = L.default_maxfilesize
+L.default_maxinput = 1024 * 1024
+L.maxinput = L.default_maxinput
+
+
 M.script_path = false
 
 --
@@ -76,7 +76,7 @@ M.script_path = false
 -- @param value String with the corresponding value.
 ----------------------------------------------------------------------------
 function M.header (...)
-	return Response.header (...)
+	return L.Response.header (...)
 end
 
 ----------------------------------------------------------------------------
@@ -85,14 +85,14 @@ end
 -- @param subtype String with the subtype of the header.
 ----------------------------------------------------------------------------
 function M.contentheader (type, subtype)
-	Response.contenttype (type..'/'..subtype)
+	L.Response.contenttype (type..'/'..subtype)
 end
 
 ----------------------------------------------------------------------------
 -- Sends the HTTP header "text/html".
 ----------------------------------------------------------------------------
 function M.htmlheader()
-	Response.contenttype ("text/html")
+	L.Response.contenttype ("text/html")
 end
 
 ----------------------------------------------------------------------------
@@ -106,9 +106,9 @@ function M.redirect (url, args)
 		if args then
 			params = "?"..urlcode.encodetable(args)
 		end
-		return Response.redirect(url..params)
+		return L.Response.redirect(url..params)
 	else
-		return Response.redirect(M.mkabsoluteurl(M.mkurlpath(url,args)))
+		return L.Response.redirect(M.mkabsoluteurl(M.mkurlpath(url,args)))
 	end
 end
 
@@ -120,7 +120,7 @@ end
 -- @return String with the value of the server variable.
 ----------------------------------------------------------------------------
 function M.servervariable (...)
-	return servervariable (...)
+	return L.servervariable (...)
 end
 
 ----------------------------------------------------------------------------
@@ -131,7 +131,7 @@ end
 function M.errorlog (msg, level)
 	local t = type(msg)
 	if t == "string" or t == "number" then
-		Response.errorlog (msg, level)
+		L.Response.errorlog (msg, level)
 	else
 		error ("bad argument #1 to `cgilua.errorlog' (string expected, got "..t..")", 2)
 	end
@@ -145,8 +145,8 @@ function M.print (...)
 	for i = 1, select("#",...) do
 		args[i] = tostring(args[i])
 	end
-	Response.write (concat(args,"\t"))
-	Response.write ("\n")
+	L.Response.write (concat(args,"\t"))
+	L.Response.write ("\n")
 end
 
 ----------------------------------------------------------------------------
@@ -160,12 +160,12 @@ end
 -- @param s String (or number) with output.
 ----------------------------------------------------------------------------
 function M.put (...)
-	return Response.write (...)
+	return L.Response.write (...)
 end
 
 -- Returns the current errorhandler
 function M._geterrorhandler(msg)
-	return _errorhandler(msg)
+	return L.errorhandler(msg)
 end
 
 ----------------------------------------------------------------------------
@@ -173,14 +173,14 @@ end
 -- @param f Function to be called.
 ----------------------------------------------------------------------------
 function M.pcall (f)
-	local results = {xpcall (f, _errorhandler)}
+	local results = {xpcall (f, L.errorhandler)}
 	local ok = results[1]
 	tremove(results, 1)
 	if ok then
 		if #results == 0 then results = { true } end
 		return unpack(results)
 	else
-		_erroroutput (unpack(results))
+		L.erroroutput (unpack(results))
 	end
 end
 
@@ -232,16 +232,16 @@ end
 -- @param nbytes Number of the maximum size (in bytes) of the whole POST data.
 ---------------------------------------------------------------------------
 function M.setmaxinput(nbytes)
-        _maxinput = nbytes
+        L.maxinput = nbytes
 end
 
 ---------------------------------------------------------------------------
 -- Set the maximum size for an "uploaded" file (in bytes)
--- Might be less or equal than _maxinput.
+-- Might be less or equal than L.maxinput.
 -- @param nbytes Number of the maximum size (in bytes) of a file.
 ---------------------------------------------------------------------------
 function M.setmaxfilesize(nbytes)
-        _maxfilesize = nbytes
+        L.maxfilesize = nbytes
 end
 
 
@@ -411,12 +411,12 @@ local function getparams ()
 	M.POST = {}
 	if  requestmethod == "POST" then
 		M.post.parsedata {
-			read = getpostdata,
+			read = L.getpostdata,
 			discardinput = ap and ap.discard_request_body,
 			content_type = M.servervariable"CONTENT_TYPE",
 			content_length = M.servervariable"CONTENT_LENGTH",
-			maxinput = _maxinput,
-			maxfilesize = _maxfilesize,
+			maxinput = L.maxinput,
+			maxfilesize = L.maxfilesize,
 			args = M.POST,
 		}
 	end
@@ -496,7 +496,7 @@ end
 function M.seterrorhandler (f)
 	local tf = type(f)
 	if tf == "function" then
-		_errorhandler = f
+		L.errorhandler = f
 	else
 		error (format ("Invalid type: expected `function', got `%s'", tf))
 	end
@@ -510,7 +510,7 @@ end
 function M.seterroroutput (f)
 	local tf = type(f)
 	if tf == "function" then
-		_erroroutput = f
+		L.erroroutput = f
 	else
 		error (format ("Invalid type: expected `function', got `%s'", tf))
 	end
@@ -561,6 +561,11 @@ function M.addopenfunction (f)
 	end
 end
 
+-- Change response status
+function M.setstatus(status)
+	L.Response.setstatus(status);
+end
+
 --
 -- Open function.
 -- Call all defined open-functions in the order they were created.
@@ -579,11 +584,11 @@ local function reset ()
 	M.script_vpath, M.pdir, M.use_executable_name, M.urlpath, M.script_vdir, M.script_pdir,
 	M.script_file, M.authentication, M.app_name = 
 		nil, nil, nil, nil, nil, nil, nil, nil, nil
-	_maxfilesize = _default_maxfilesize
-	_maxinput = _default_maxinput
+	L.maxfilesize = L.default_maxfilesize
+	L.maxinput = L.default_maxinput
 	-- Error Handling
-	_errorhandler = _default_errorhandler
-	_erroroutput = _default_erroroutput
+	L.errorhandler = L.default_errorhandler
+	L.erroroutput = L.default_erroroutput
 	-- Handlers
 	_script_handlers = {}
 	_open_functions = {}
@@ -597,26 +602,37 @@ local function reset ()
 			error(err)
 		end
 	end
+	L.Response = nil;
 end
 
 ---------------------------------------------------------------------------
 -- Request processing.
+-- env: enviroment variables
+-- response: the response object
 ---------------------------------------------------------------------------
-function M.main (wsapi_env, response)
-	_G.CGILUA_APPS = _G.CGILUA_APPS or wsapi_env.DOCUMENT_ROOT .. "/cgilua"
-	_G.CGILUA_CONF = _G.CGILUA_CONF or wsapi_env.DOCUMENT_ROOT .. "/cgilua"
+function M.main (enviroment, response)
+	--validade response parameter
+	assert(type(response) == "table", "invalid parameter: response")
+	assert(response.content_type, "invalid parameter: response need to have a method content_type()")
+	assert(response.write, "invalid parameter: response need to have a method write()")
+	assert(response.headers, "invalid parameter: response need to have a atribute headers")
+	assert(response.status, "invalid parameter: response need to have a atribute status")
+
+	-- enviroment variables
+	_G.CGILUA_APPS = _G.CGILUA_APPS or enviroment.DOCUMENT_ROOT .. "/cgilua"
+	_G.CGILUA_CONF = _G.CGILUA_CONF or enviroment.DOCUMENT_ROOT .. "/cgilua"
 	_G.CGILUA_TMP = _G.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
 	_G.CGILUA_ISDIRECT = true
 
-	servervariable = function (name) return wsapi_env[name] end;
-	getpostdata = function (n) return wsapi_env.input:read(n) end;
-
-	Response = {
+	-- Local variables
+	L.servervariable = function (name) return enviroment[name] end;
+	L.getpostdata = function (n) return enviroment.input:read(n) end;
+	L.Response = {
 		contenttype = function (header)
 			response:content_type(header)
 		end,
 		errorlog = function (msg, errlevel)
-			wsapi_env.error:write (msg)
+			enviroment.error:write (msg)
 		end,
 		header = function (header, value)
 			if response.headers[header] then
@@ -633,6 +649,10 @@ function M.main (wsapi_env, response)
 			response.status = 302
 			response.headers["Location"] = url
 		end,
+		setstatus = function(status)
+			response.status = status;
+		end,
+		status = response.status,
 		write = function (...)
 			response:write({...})
 		end,
