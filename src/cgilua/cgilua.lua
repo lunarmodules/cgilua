@@ -561,6 +561,10 @@ function M.addopenfunction (f)
 	end
 end
 
+function M.setstatus(status)
+	Response.status = status
+end
+
 --
 -- Open function.
 -- Call all defined open-functions in the order they were created.
@@ -597,26 +601,37 @@ local function reset ()
 			error(err)
 		end
 	end
+	Response = nil;
 end
 
 ---------------------------------------------------------------------------
 -- Request processing.
+-- env: enviroment variable
+-- response: the response object
 ---------------------------------------------------------------------------
-function M.main (wsapi_env, response)
-	_G.CGILUA_APPS = _G.CGILUA_APPS or wsapi_env.DOCUMENT_ROOT .. "/cgilua"
-	_G.CGILUA_CONF = _G.CGILUA_CONF or wsapi_env.DOCUMENT_ROOT .. "/cgilua"
+function M.main (env, response)
+	--validade response parameter
+	assert(type(response) == "table", "invalid parameter: response")
+	assert(response.content_type, "invalid parameter: response need to have a method content_type()")
+	assert(response.write, "invalid parameter: response need to have a method write()")
+	assert(response.headers, "invalid parameter: response need to have a atribute headers")
+	assert(response.status, "invalid parameter: response need to have a atribute status")
+
+	-- enviroment variables
+	_G.CGILUA_APPS = _G.CGILUA_APPS or env.DOCUMENT_ROOT .. "/cgilua"
+	_G.CGILUA_CONF = _G.CGILUA_CONF or env.DOCUMENT_ROOT .. "/cgilua"
 	_G.CGILUA_TMP = _G.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
 	_G.CGILUA_ISDIRECT = true
+	servervariable = function (name) return env[name] end;
+	getpostdata = function (n) return env.input:read(n) end;
 
-	servervariable = function (name) return wsapi_env[name] end;
-	getpostdata = function (n) return wsapi_env.input:read(n) end;
-
+	-- Response build for CGILua
 	Response = {
 		contenttype = function (header)
 			response:content_type(header)
 		end,
 		errorlog = function (msg, errlevel)
-			wsapi_env.error:write (msg)
+			env.error:write (msg)
 		end,
 		header = function (header, value)
 			if response.headers[header] then
@@ -633,6 +648,7 @@ function M.main (wsapi_env, response)
 			response.status = 302
 			response.headers["Location"] = url
 		end,
+		status = response.status,
 		write = function (...)
 			response:write({...})
 		end,
