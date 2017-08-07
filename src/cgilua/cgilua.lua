@@ -623,6 +623,8 @@ function M.main (enviroment, response)
 	_G.CGILUA_CONF = _G.CGILUA_CONF or enviroment.DOCUMENT_ROOT .. "/cgilua"
 	_G.CGILUA_TMP = _G.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
 	_G.CGILUA_ISDIRECT = true
+	servervariable = function (name) return env[name] end;
+	getpostdata = function (n) return env.input:read(n) end;
 
 	-- Local variables
 	L.servervariable = function (name) return enviroment[name] end;
