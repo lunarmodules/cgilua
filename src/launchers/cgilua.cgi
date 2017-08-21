@@ -10,7 +10,7 @@ local common = require "wsapi.common"
 local cgi = require "wsapi.cgi"
  
 local cgilua = require "cgilua"
- 
+
 local arg_filename = (...)
  
 local response = require "wsapi.response"
@@ -22,4 +22,3 @@ local function cgi_loader(wsapi_env)
 end 
  
 cgi.run(cgi_loader)
- 
