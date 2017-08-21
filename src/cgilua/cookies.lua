@@ -7,15 +7,16 @@
 local os = require"os"
 local string = require"string"
 local urlcode = require"cgilua.urlcode"
+local cgilua = require"cgilua"
 
 local error = error
 local format, gsub, strfind, strmatch = string.format, string.gsub, string.find, string.match
 local date = os.date
 local escape, unescape = urlcode.escape, urlcode.unescape
 
-local header = SAPI.Response.header
-local write = SAPI.Response.write
-local servervariable = SAPI.Request.servervariable
+local header = cgilua.Response.header
+local write = cgilua.Response.write
+local servervariable = cgilua.servervariable
 
 local M = {}
 
