@@ -20,7 +20,7 @@ cgilua.serialize (cgilua.POST, cgilua.put)
 cgilua.put "<br>\n"
 cgilua.put ("Remote address: "..cgilua.servervariable"REMOTE_ADDR")
 cgilua.put "<br>\n"
-cgilua.put ("Is persistent = "..tostring (SAPI.Info.ispersistent).."<br>\n")
+--cgilua.put ("Is persistent = "..tostring (SAPI.Info.ispersistent).."<br>\n")
 cgilua.put ("ap="..tostring(ap).."<br>\n")
 cgilua.put ("lfcgi="..tostring(lfcgi).."<br>\n")
 
