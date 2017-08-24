@@ -9,7 +9,7 @@ pcall(require, "luarocks.require")
 local common = require "wsapi.common"
 local cgi = require "wsapi.cgi"
  
-local cgilua = require "cgilua"
+local cgilua = require "cgilua.main"
 
 local arg_filename = (...)
  

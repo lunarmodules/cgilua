@@ -26,7 +26,7 @@ lp.setcompatmode (true)
 local cgilua = {
 	_COPYRIGHT = "Copyright (C) 2003-2013 Kepler Project",
 	_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms",
-	_VERSION = "CGILua 5.2",
+	_VERSION = "CGILua 6.0",
 }
 
 -- local functions and variables
@@ -567,8 +567,6 @@ local function build_library_objects(enviroment, response)
 			M.addscripthandler(ext, M.buildplainhandler(t, st))
 		end
 	end
-
-	--ZZZZZZZZZZZZZZZ
 
 	----------------------------------------------------------------------
 	--
