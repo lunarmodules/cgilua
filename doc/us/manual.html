@@ -11,9 +11,9 @@
 <div id="container">
 	
 <div id="product">
-	<div id="product_logo"><a href="http://www.keplerproject.org">
+	<div id="product_logo">
 		<img alt="CGILua logo" src="cgi-128.gif"/>
-	</a></div>
+	</div>
 	<div id="product_name"><big><strong>CGILua</strong></big></div>
 	<div id="product_description">Building Web Scripts with Lua</div>
 </div> <!-- id="product" -->
@@ -24,15 +24,6 @@
 <h1>CGILua</h1>
 	<ul>
 		<li><a href="index.html">Home</a>
-			<ul>
-				<li><a href="index.html#overview">Overview</a></li>
-				<li><a href="index.html#status">Status</a></li>
-				<li><a href="index.html#download">Download</a></li>
-				<li><a href="index.html#history">History</a></li>
-				<li><a href="index.html#incompatibility">Incompatibilities</a></li>
-				<li><a href="index.html#credits">Credits</a></li>
-				<li><a href="index.html#contact">Contact us</a></li>
-			</ul>
 		</li>
 		<li><strong>Manual</strong>
 			<ul>
@@ -48,26 +39,8 @@
 			</ul>
 		</li>
 		<li><a href="reference.html">Reference</a>
-			<ul>
-				<li><a href="reference.html#headers">Headers</a></li>
-				<li><a href="reference.html#contents">Content Generation</a></li>
-				<li><a href="reference.html#prep">Lua Pages</a></li>
-				<li><a href="reference.html#variables">CGILua Variables</a></li>
-				<li><a href="reference.html#error_handling">Error Handling</a></li>
-				<li><a href="reference.html#behavior">CGILua Behavior</a></li>
-				<li><a href="reference.html#urlcode">URL Encoding</a></li>
-				<li><a href="reference.html#auxiliar">Auxiliary functions</a></li>
-				<li><a href="reference.html#index">Alphabetic Index</a></li>
-			</ul>
 		</li>
 		<li><a href="libraries.html">Libraries</a>
-			<ul>
-				<li><a href="libraries.html#authentication">Authentication</a></li>
-				<li><a href="libraries.html#cookies">Cookies</a></li>
-				<li><a href="libraries.html#dispatcher">Dispatcher</a></li>
-				<li><a href="libraries.html#serialize">Serialize</a></li>
-				<li><a href="libraries.html#session">Session</a></li>
-			</ul>
 		</li>
 		<li><a href="sapi.html">SAPI</a></li>
 		<li><a href="license.html">License</a></li>
@@ -215,7 +188,7 @@ use something like:
 
 <pre class="example">
 cgilua.addopenfunction (function ()
-	cgilua.doif ("env.lua")
+   cgilua.doif ("env.lua")
 end)
 </pre>
 
@@ -224,7 +197,7 @@ If every script needs to load a module (such as the sessions library), you can d
 </p>
 
 <pre class="example">
-require"cgilua.session"
+require("cgilua.session")
 cgilua.session.setsessiondir(CGILUA_TMP)
 cgilua.addopenfunction (cgilua.session.open)
 cgilua.addclosefunction (cgilua.session.close)
@@ -247,11 +220,11 @@ very beginning of each script that needs to use sessions):
 </p>
 
 <pre class="example">
-require"cgilua.session"
+require("cgilua.session")
 cgilua.session.setsessiondir(CGILUA_TMP)
 cgilua.enablesession = function ()
-	cgilua.session.open ()
-	cgilua.addclosefunction (cgilua.session.close)
+   cgilua.session.open ()
+   cgilua.addclosefunction (cgilua.session.close)
 end
 </pre>
 
@@ -264,14 +237,14 @@ but not in other application's private directory. To implement this you could do
 
 <pre class="example">
 local app_lib_dir = {
-	["/virtual/path/"] = "/absolute/path/lib/",
+   ["/virtual/path/"] = "/absolute/path/lib/",
 }
 local package = package
 cgilua.addopenfunction (function ()
-	local app = app_lib_dir[cgilua.script_vdir]
-	if app then
-		package.path = app..'/?.lua'..';'..package.path
-	end
+   local app = app_lib_dir[cgilua.script_vdir]
+   if app then
+      package.path = app..'/?.lua'..';'..package.path
+   end
 end)
 </pre>
 
@@ -335,11 +308,11 @@ variables, and the concatenation operator:
 cgilua.htmlheader()  
 
 if cgilua.QUERY.language == 'english' then
-  greeting = 'Hello World!'
+   greeting = 'Hello World!'
 elseif cgilua.QUERY.language == 'portuguese' then
-  greeting = 'Ol&aacute; Mundo!'
+   greeting = 'Ol&aacute; Mundo!'
 else
-  greeting = '[unknown language]'
+   greeting = '[unknown language]'
 end
 
 cgilua.put('&lt;html&gt;')  
@@ -441,15 +414,15 @@ was definied in file <code>functions.lua</code> as follows:
 
 <pre class="example">
 function getGreeting()
-  local greeting
-  if cgilua.QUERY.language == 'english' then
-    greeting = 'Hello World!'
-  elseif cgilua.QUERY.language == 'portuguese' then
-    greeting = 'Ol&aacute; Mundo!'
-  else
-    greeting = '[unknown language]'
-  end
-  return greeting
+   local greeting
+   if cgilua.QUERY.language == 'english' then
+      greeting = 'Hello World!'
+   elseif cgilua.QUERY.language == 'portuguese' then
+      greeting = 'Ol&aacute; Mundo!'
+   else
+      greeting = '[unknown language]'
+   end
+   return greeting
 end
 </pre>
 
@@ -482,7 +455,7 @@ A Lua Script could do that using a loop like:
 <pre class="example">
 cgilua.put("&lt;ul&gt;")
 for i, item in ipairs(list) do
-    cgilua.put("&lt;li&gt;"..item.."&lt;/li&gt;")
+   cgilua.put("&lt;li&gt;"..item.."&lt;/li&gt;")
 end
 cgilua.put("&lt;/ul&gt;")
 </pre>
@@ -493,9 +466,9 @@ The equivalent loop in Lua Page would be:
 
 <pre class="example">
 &lt;ul&gt;
-    &lt;% for i, item in ipairs(list) do %&gt;
-    &lt;li&gt;&lt;%= item %&gt;&lt;/li&gt;
-    &lt;% end %&gt;
+   &lt;% for i, item in ipairs(list) do %&gt;
+   &lt;li&gt;&lt;%= item %&gt;&lt;/li&gt;
+   &lt;% end %&gt;
 &lt;/ul&gt;
 </pre>
 
@@ -566,7 +539,7 @@ follow a convention similar to <a href="http://www.rubyonrails.org/">Rails</a>. 
 </p>
 
 <pre class="example">
-require"cgilua.dispatcher"
+require("cgilua.dispatcher")
 return cgilua.dispatcher.route{"/$controller/$action/$ID", handle, "rails"}
 </pre>
 
@@ -606,9 +579,9 @@ would do, it checks for the presence of an authenticated user and redirects to t
 <pre class="example">
 -- checks for authenticated users
 if not cgilua.authentication.username() then
-    cgilua.redirect(cgilua.authentication.checkURL())
+   cgilua.redirect(cgilua.authentication.checkURL())
 else
-    -- continues with the application flow
+   -- continues with the application flow
 end
 </pre>
 
@@ -635,25 +608,26 @@ local pass = cgilua.POST.pass
 local logged, err, logoutURL
 
 if cgilua.authentication then
-    logged, err = cgilua.authentication.check(username, pass)
-    username = cgilua.authentication.username() or ""
-    logoutURL = cgilua.authentication.logoutURL()
+   logged, err = cgilua.authentication.check(username, pass)
+   username = cgilua.authentication.username() or ""
+   logoutURL = cgilua.authentication.logoutURL()
 else
-    logged = false
-    err = "No authentication configured!"
-    username = ""
+   logged = false
+   err = "No authentication configured!"
+   username = ""
 end
 
 if logged and username then
-    -- goes back to the application
-	cgilua.redirect(cgilua.authentication.refURL())
+   -- goes back to the application
+   cgilua.redirect(cgilua.authentication.refURL())
 else
-    err = err or ""
-    -- displays the login form which submits to this same script
-	cgilua.htmlheader()
-	cgilua.lp.include ("login.lp", {
-        logged = logged, errorMsg = err, username = username,
-        cgilua = cgilua, logoutURL = logoutURL})
+   err = err or ""
+   -- displays the login form which submits to this same script
+   cgilua.htmlheader()
+   cgilua.lp.include ("login.lp", {
+      logged = logged, errorMsg = err, username = username,
+      cgilua = cgilua, logoutURL = logoutURL
+   })
 end
 </pre>
 
@@ -668,10 +642,10 @@ The login form for this example can be fount at <code>/examples/login.lp</code> 
 &lt;% else %&gt;
 &lt;p style="color:#ff0000"&gt;&lt;%= errorMsg %&gt; &lt;/p&gt;
 &lt;form method="post" action="" &gt;
-    User name: &lt;input name="username" maxlength="20" size="20" value="&lt;%= username %&gt;" &gt;&lt;br /&gt;
-    Password: &lt;input name="pass" type="password" maxlength="20" size="20"&gt;&lt;br /&gt;
-    &lt;input type="submit" value="Login"&gt;
-    &lt;input type="reset" value="Reset"&gt;
+   User name: &lt;input name="username" maxlength="20" size="20" value="&lt;%= username %&gt;" &gt;&lt;br /&gt;
+   Password: &lt;input name="pass" type="password" maxlength="20" size="20"&gt;&lt;br /&gt;
+   &lt;input type="submit" value="Login"&gt;
+   &lt;input type="reset" value="Reset"&gt;
 &lt;/form&gt;
 &lt;% end %&gt;
 </pre>
@@ -723,58 +697,58 @@ piece of code:
 <pre class="example">
 local ip = cgilua.servervariable"REMOTE_ADDR"
 local developers_machines = {
-	["192.168.0.20"] = true,
-	["192.168.0.27"] = true,
-	["192.168.0.30"] = true,
+   ["192.168.0.20"] = true,
+   ["192.168.0.27"] = true,
+   ["192.168.0.30"] = true,
 }
 local function mail (s)
-	require"cgilua.serialize"
-	require"socket.smtp"
-	-- Build the message
-	local msg = {}
-	table.insert (msg, tostring(s))
-	-- Tries to obtain the REFERER URL
-	table.insert (msg, tostring (cgilua.servervariable"HTTP_REFERER"))
-	table.insert (msg, cgilua.servervariable"SERVER_NAME"..
-		cgilua.servervariable"SCRIPT_NAME")
-	-- CGI parameters
-	table.insert (msg, "CGI")
-	cgilua.serialize(cgi, function (s) table.insert (msg, s) end)
-	table.insert (msg, tostring (os.date()))
-	table.insert (msg, tostring (ip))
-	table.insert (msg, "Cookies:")
-	table.insert (msg, tostring (cgilua.servervariable"HTTP_COOKIE" or "no cookies"))
-	-- Formats message according to LuaSocket-2.0b3
-	local source = socket.smtp.message {
-		headers = { subject = "Script Error", },
-		body = table.concat (msg, '\n'),
-	}
-	-- Sends the message
-	local r, e = socket.smtp.send {
-		from = "sender@my.domain.net",
-		rcpt = "developers@my.domain.net",
-		source = source,
-	}
+   require"cgilua.serialize"
+   require"socket.smtp"
+   -- Build the message
+   local msg = {}
+   table.insert (msg, tostring(s))
+   -- Tries to obtain the REFERER URL
+   table.insert (msg, tostring (cgilua.servervariable"HTTP_REFERER"))
+   table.insert (msg, cgilua.servervariable"SERVER_NAME"..
+      cgilua.servervariable"SCRIPT_NAME")
+   -- CGI parameters
+   table.insert (msg, "CGI")
+   cgilua.serialize(cgi, function (s) table.insert (msg, s) end)
+   table.insert (msg, tostring (os.date()))
+   table.insert (msg, tostring (ip))
+   table.insert (msg, "Cookies:")
+   table.insert (msg, tostring (cgilua.servervariable"HTTP_COOKIE" or "no cookies"))
+   -- Formats message according to LuaSocket-2.0b3
+   local source = socket.smtp.message {
+      headers = { subject = "Script Error", },
+      body = table.concat (msg, '\n'),
+   }
+   -- Sends the message
+   local r, e = socket.smtp.send {
+      from = "sender@my.domain.net",
+      rcpt = "developers@my.domain.net",
+      source = source,
+   }
 end
 if developers_machines[ip] then
-	-- Developer's error treatment: write to the display
-	cgilua.seterroroutput (function (msg)
-		cgilua.errorlog (msg)
-		cgilua.errorlog (cgilua.servervariable"REMOTE_ADDR")
-		cgilua.errorlog (os.date())
-		cgilua.htmlheader ()
-		msg = string.gsub (string.gsub (msg, "\n", "&lt;br&gt;\n"), "\t", "&nbsp;&nbsp;")
-		cgilua.put (msg)
-	end)
+   -- Developer's error treatment: write to the display
+   cgilua.seterroroutput (function (msg)
+      cgilua.errorlog (msg)
+      cgilua.errorlog (cgilua.servervariable"REMOTE_ADDR")
+      cgilua.errorlog (os.date())
+      cgilua.htmlheader ()
+      msg = string.gsub (string.gsub (msg, "\n", "&lt;br&gt;\n"), "\t", "&nbsp;&nbsp;")
+      cgilua.put (msg)
+   end)
 else
-	-- User's error treatment: shows a standard page and sends an e-mail to
-	-- the developer
-	cgilua.seterroroutput (function (s)
-		cgilua.htmlheader ()
-		cgilua.put"&lt;h1&gt;An error occurred&lt;/h1&gt;\n"
-		cgilua.put"The responsible is being informed."
-		mail (s)
-	end)
+   -- User's error treatment: shows a standard page and sends an e-mail to
+   -- the developer
+   cgilua.seterroroutput (function (s)
+      cgilua.htmlheader ()
+      cgilua.put"&lt;h1&gt;An error occurred&lt;/h1&gt;\n"
+      cgilua.put"The responsible is being informed."
+      mail (s)
+   end)
 end
 </pre>
 
@@ -790,8 +764,8 @@ containing all possible information to help reproduce the situation.
 </div> <!-- id="main" -->
 
 <div id="about">
-	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
-	<p><small>$Id: manual.html,v 1.27 2008/05/19 18:13:36 carregal Exp $</small></p>
+   <p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+   <p><small>$Id: manual.html,v 1.27 2008/05/19 18:13:36 carregal Exp $</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
