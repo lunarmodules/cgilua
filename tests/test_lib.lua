@@ -1,6 +1,6 @@
 #!/usr/bin/env cgilua.cgi
 local function getfield (t, f)
-  for w in string.gfind(f, "[%w_]+") do
+  for w in string.gmatch(f, "[%w_]+") do
     if not t then return nil end
     t = t[w]
   end

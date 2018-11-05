@@ -1,7 +1,7 @@
 #!/usr/bin/env cgilua.cgi
 cgilua.session = require"cgilua.session"
-cgilua.session.setdir"/tmp/"
-cgilua.session.enable ()
+cgilua.session.setsessiondir"/tmp/"
+cgilua.session.enablesession ()
 
 function pt (tab)
 	for i, v in pairs (tab) do

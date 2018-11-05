@@ -9,14 +9,16 @@ pcall(require, "luarocks.require")
 local common = require "wsapi.common"
 local cgi = require "wsapi.cgi"
  
-local sapi = require "wsapi.sapi"
- 
+local cgilua = require "cgilua.main"
+
 local arg_filename = (...)
  
-local function sapi_loader(wsapi_env)
+local response = require "wsapi.response"
+local res = response.new()
+
+local function cgi_loader(wsapi_env)
   common.normalize_paths(wsapi_env, arg_filename, "cgilua.cgi")
-  return sapi.run(wsapi_env)
+  return cgilua.main(wsapi_env, res)
 end 
  
-cgi.run(sapi_loader)
- 
+cgi.run(cgi_loader)
