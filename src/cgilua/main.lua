@@ -24,7 +24,7 @@ lp.setcompatmode (true)
 
 -- Module return in first require
 local cgilua = {
-	_COPYRIGHT = "Copyright (C) 2003-2013 Kepler Project",
+	_COPYRIGHT = "Copyright (C) 2003-2019 Kepler Project",
 	_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms",
 	_VERSION = "CGILua 6.0",
 }
@@ -36,7 +36,11 @@ local L = {
 
 
 local function build_library_objects(enviroment, response)
-	local M = { }
+	local M = {
+		_COPYRIGHT = "Copyright (C) 2003-2018 Kepler Project",
+		_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms",
+		_VERSION = "CGILua 6.0",
+	}
 	--[[
 	######################################################################
 	######################################################################
@@ -94,7 +98,7 @@ local function build_library_objects(enviroment, response)
 	-- Adds a function to be executed before the script.
 	-- @param f Function to be registered.
 	---------------------------------------------------------------------------
-	 M.addopenfunction = function (f)
+	M.addopenfunction = function (f)
 		local tf = type(f)
 		if tf == "function" then
 			tinsert (L._open_functions, f)
