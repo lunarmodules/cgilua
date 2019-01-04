@@ -37,9 +37,9 @@ local L = {
 
 local function build_library_objects(enviroment, response)
 	local M = {
-		_COPYRIGHT = "Copyright (C) 2003-2018 Kepler Project",
-		_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms",
-		_VERSION = "CGILua 6.0",
+		_COPYRIGHT = cgilua._COPYRIGHT,
+		_DESCRIPTION = cgilua._DESCRIPTION,
+		_VERSION = cgilua._VERSION,
 	}
 	--[[
 	######################################################################
