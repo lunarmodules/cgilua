@@ -430,7 +430,8 @@ local function build_library_objects(enviroment, response)
 			end
 			return M.Response.redirect(url..params)
 		else
-			return M.Response.redirect(M.mkabsoluteurl(M.mkurlpath(url,args)))
+			local protocol = (M.servervariable"SERVER_PORT" == "443") and "https" or "http"
+			return M.Response.redirect(M.mkabsoluteurl(M.mkurlpath(url,args), protocol))
 		end
 	end
 
