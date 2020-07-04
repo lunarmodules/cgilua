@@ -13,8 +13,6 @@
 --		maxfilesize = 512 * 1024,
 --		args = params,
 --	}
---
--- @release $Id: post.lua,v 1.17 2008/04/03 21:55:28 mascarenhas Exp $
 ----------------------------------------------------------------------------
 
 local iterate = require"cgilua.readuntil".iterate
@@ -24,7 +22,7 @@ local tmpfile = require"cgilua".tmpfile
 local assert, error, pairs, tonumber, type = assert, error, pairs, tonumber, type
 local tinsert, tconcat = table.insert, table.concat
 local format, gmatch, strfind, strlower, strlen, strmatch = string.format, string.gmatch, string.find, string.lower, string.len, string.match
-local min = math.min
+local floor, min = math.floor, math.min
 
 -- environment for processing multipart/form-data input
 local boundary = nil      -- boundary string that separates each 'part' of input
@@ -129,7 +127,7 @@ local function fileupload (filename)
 		local sl = strlen (str)
 		if bytesread + sl > maxfilesize then
 			discardinput (bytesleft)
-			error (format ("Maximum file size (%d kbytes) exceeded while uploading `%s'", maxfilesize / 1024, filename))
+			error (format ("Maximum file size (%d kbytes) exceeded while uploading `%s'", floor(maxfilesize / 1024), filename))
 		end
 		file:write (str)
 		bytesread = bytesread + sl
@@ -266,7 +264,7 @@ return {
 			bytesleft = inputsize
 			discardinput(inputsize)
 			error(format("Total size of incoming data (%d KB) exceeds configured maximum (%d KB)",
-				inputsize /1024, maxinput / 1024))
+				floor(inputsize /1024), floor(maxinput / 1024)))
 		end
 
 		-- process the incoming data according to its content type
