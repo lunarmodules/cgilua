@@ -1,6 +1,6 @@
-# CGILua 5.2.1
+# CGILua 6
 
-http://keplerproject.github.io/cgilua/
+http://lunarmodules.github.io/cgilua/
 
 ## Overview
 
@@ -12,17 +12,34 @@ One of advantages of CGILua is its abstraction of the underlying Web server.
 CGILua can be used with a variety of Web servers and, for each server, with
 different launchers. A launcher is responsible for the interaction of CGILua
 and the Web server, for example using ISAPI on IIS or mod_lua on Apache.
-The reference implementation of CGILua launchers is Kepler. 
 
 CGILua is free software and uses the same license as Lua 5.x (MIT).
 
-You can install CGILua using [LuaRocks](https://github.com/keplerproject/luarocks):
+You can install CGILua using [LuaRocks](https://luarocks.org):
 
 ```
 luarocks install cgilua
 ```
 
 ## History
+
+Version 6.0.2 [04/Jul/2020]
+
+* Fix for preventing formatting errors
+* Small LDoc corrections
+
+Version 6.0.1 [17/May/2019]
+
+* Bug correction on redirections
+* Version variables definition
+* Other minor corrections
+
+Version 6.0.0 [05/Nov/2018]
+
+* Adapted CGILua SAPI launcher to explore all WSAPI features
+* SAPI layer removed
+* Several fixes
+* Lua 5.3 compatibility
 
 Version 5.2.1 [22/Apr/2015]
 
@@ -112,28 +129,26 @@ Version 5.0 beta [15/Dec/2004]
 Version 5.0 alpha 3 [8/Jun/2004]
 Version 5.0 alpha [21/Apr/2004]
 
-Incompatibility with previous CGILua versions (5.0, 4.0 and 3.x)
-
-* CGILua 5.1 uses Lua 5.1.
-* The cgi table is now deprecated. See Receiving parameters for a more detailed explanation.
-* The template tags have changed. See Lua pages for a more detailed explanation.
-* The use of getenv calls to obtain CGI variables should be replaced by cgilua.servervariable calls.
-
 ## Credits
 
-CGILua 5.1
-
-CGILua 5.1 is being maintained by André Carregal and Tomás Guisasola with contributions from Fábio Mascarenhas and others from the Kepler mailing list. 
-
-CGILua 5.0
-
-CGILua 5.0 was completely redesigned by Roberto Ierusalimschy, André Carregal and Tomás Guisasola as part of the Kepler Project. The implementation is compatible with Lua 5.0 and was coded by Tomás Guisasola with invaluable contributions by Ana Lúcia de Moura, Fábio Mascarenhas and Danilo Tuler. CGILua 5.0 development was sponsored by Fábrica Digital, FINEP and CNPq.
-
-CGILua 4.0
-
-Ana Lúcia de Moura adapted CGILua 3.2 to Lua 4.0, reimplemented some code and added a few improvements but this version was not officially distributed.
-
-CGILua 3.x
-
-CGILua was born as the evolution of an early system developed by Renato Ferreira Borges and André Clínio at TeCGraf. At the time (circa 1995) there were no CGI tools available and everything was done with shell scripts!
-However, the main contribution to CGILua 3 was done by Anna Hester, who consolidated the whole tool and developed a consistent distribution with versions 3.1 and 3.2 (the number was an effort to follow Lua version numbers). This version was widely used on a great variety of systems.
+* CGILua 6.0 - CGILua 6.0 is maintained by Tomás Guisasola, including contributions from the
+  community, including several commits by Peter Melnichenko and João Dutra Bastos. João worked
+  sponsored by the Google Summer of Code program. His project was "Adapt CGILua SAPI launcher
+  to explore all WSAPI features".
+* CGILua 5.2 - CGILua 5.2 was maintained by Tomás Guisasola with contributions from Fábio
+  Mascarenhas, Carla Ourofino and others from the community.
+* CGILua 5.1 - CGILua 5.1 was maintained by André Carregal and Tomás Guisasola with contributions
+  from Fábio Mascarenhas and others from the Kepler mailing list. 
+* CGILua 5.0 - CGILua 5.0 was completely redesigned by Roberto Ierusalimschy, André Carregal and
+  Tomás Guisasola as part of the Kepler Project. The implementation is compatible with Lua 5.0
+  and was coded by Tomás Guisasola with invaluable contributions by Ana Lúcia de Moura, Fábio
+  Mascarenhas and Danilo Tuler. CGILua 5.0 development was sponsored by Fábrica Digital,
+  FINEP and CNPq.
+* CGILua 4.0 - Ana Lúcia de Moura adapted CGILua 3.2 to Lua 4.0, reimplemented some code and
+  added a few improvements but this version was not officially distributed.
+* CGILua 3.x - CGILua was born as the evolution of an early system developed by Renato Ferreira
+  Borges and André Clínio at TeCGraf. At the time (circa 1995) there were no CGI tools available
+  and everything was done with shell scripts! However, the main contribution to CGILua 3 was done
+  by Anna Hester, who consolidated the whole tool and developed a consistent distribution with
+  versions 3.1 and 3.2 (the number was an effort to follow Lua version numbers).
+  This version was widely used on a great variety of systems.

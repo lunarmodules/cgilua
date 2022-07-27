@@ -87,8 +87,6 @@ method used.
 <p>
 A launcher is responsible for the interaction of CGILua and the Web server,
 implementing SAPI for example using ISAPI on IIS or mod_lua on Apache.
-The reference implementation of CGILua launchers is
-<a href="http://www.keplerproject.org/kepler/">Kepler</a>.
 </p>
 
 <p>
@@ -142,11 +140,6 @@ luarocks install cgilua
 </pre>
 	
 <h2><a name="config"></a>Configuration</h2>
-
-<p>
-The Kepler distribution of CGILua 5.1 offers a single configuration file, called <code>config.lua</code>.
-This file can be used to alter the default CGILua behaviour and is located in the Kepler configuration directory.
-</p>
 
 <p>Some of the uses of <code>config.lua</code> customization are:</p>
 
@@ -515,7 +508,7 @@ in an indexed table in the order in which they are handled.
 <h2><a name="dispatching"></a>Dispatching</h2>
 
 <p>
-If you want to use more sophisticated URLs, the Kepler distribution includes a dispatching script
+In the <code>examples</code> folder you can find a dispatching script
 called <code>app.lua</code> that can be used to handle URLs in the format
 <code>.../app.lua/<em>app_name</em>/<em>path_info</em></code> in a standard way.
 URLs in this format are said to refer to CGILua spplications, which consists in a standard loading
@@ -572,7 +565,7 @@ and assumes three different participants.
 <p>
 The first one is the controller script, which is responsible for centralizing the user authentication control
 and deciding if the application should continue depending on a user being logged in or not. An example of such
-controller would be the <code>app.lua</code> dispatcher script distributed with Kepler. As most of the controllers
+controller would be the <code>app.lua</code> dispatcher script in <code>examples/</code>. As most of the controllers
 would do, it checks for the presence of an authenticated user and redirects to the checking script when that fails:
 </p>
 
@@ -677,8 +670,8 @@ The function
 defines the function that decides what to do with the error message. It could
 be sent to the client's browser, written to a log file or sent to an e-mail
 address (with the help of
-<a href="http://luasocket.luaforge.net/">LuaSocket</a> or 
-<a href="http://www.keplerproject.org/lualogging/">LuaLogging</a> for example).
+<a href="http://github.com/lunarmodules/luasocket/">LuaSocket</a> or 
+<a href="http://github.com/lunarmodules/lualogging/">LuaLogging</a> for example).
 </p>
 
 <p>

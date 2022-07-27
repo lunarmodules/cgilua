@@ -3,7 +3,7 @@ package = "CGILua"
 version = "5.2.1-1"
 
 source = {
-   url = "https://github.com/keplerproject/cgilua/archive/v5.2.1.tar.gz",
+   url = "https://github.com/lunarmodules/cgilua/archive/v5.2.1.tar.gz",
    dir = "cgilua-5.2.1",
    md5 = "2125c0d4b583672463f2417555590e0d",
 }
@@ -18,7 +18,7 @@ description = {
       interaction of CGILua and the Web server, for example using ISAPI on
       IIS or mod_lua on Apache. 
    ]],
-   homepage = "http://keplerproject.github.com/cgilua",
+   homepage = "http://lunarmodules.github.io/cgilua",
    license = "MIT/X11",
 }
 

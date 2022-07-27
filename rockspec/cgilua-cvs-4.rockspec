@@ -20,7 +20,7 @@ dependencies = {
 }
 
 source = {
-   url = "git://github.com/keplerproject/cgilua.git",
+   url = "git://github.com/lunarmodules/cgilua.git",
 }
 
 local CGILUA_LUAS = { "src/cgilua/authentication.lua", 

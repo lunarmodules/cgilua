@@ -59,8 +59,6 @@ One of advantages of CGILua is its abstraction of the underlying Web server.
 CGILua can be used with a variety of Web servers and, for each server, with
 different launchers. A launcher is responsible for the interaction of CGILua
 and the Web server, for example using ISAPI on IIS or mod_lua on Apache.
-The reference implementation of CGILua launchers is
-<a href="http://www.keplerproject.org/kepler/">Kepler</a>.
 </p>
 
 <p>
@@ -86,6 +84,27 @@ luarocks install cgilua
 <h2><a name="history"></a>History</h2>
 
 <dl>
+    <dt><strong>Version 6.0.2</strong> [04/Jul/2020]
+        <dd><ul>
+        <li>Fix for preventing formatting errors</li>
+        <li>Small LDoc corrections</li>
+        </ul></dd>
+
+    <dt><strong>Version 6.0.1</strong> [17/May/2019]
+        <dd><ul>
+        <li>Bug correction on redirections</li>
+        <li>Version variables definition</li>
+        <li>Other minor corrections</li>
+        </ul></dd>
+
+    <dt><strong>Version 6.0.0</strong> [05/Nov/2018]
+        <dd><ul>
+        <li>Adapted CGILua SAPI launcher to explore all WSAPI features</li>
+        <li>SAPI layer removed</li>
+        <li>Several fixes</li>
+        <li>Lua 5.3 compatibility</li>
+        </ul></dd>
+
     <dt><strong>Version 5.2</strong> [22/Apr/2015]</dt>
 	<dd><ul>
         <li>Code adapted to work with Lua 5.1 and Lua 5.2</li>
@@ -169,7 +188,7 @@ luarocks install cgilua
     </ul>
     </dd>
 
-    <dt><strong><a href="http://keplerproject.org/cgilua/5.0">Version 5.0.1</a></strong> [20/Sep/2006]</dt>
+    <dt><strong>Version 5.0.1</strong> [20/Sep/2006]</dt>
     <dd>
     <ul>
         <li>Uses Compat-5.1 Release 5.</li>
@@ -186,9 +205,8 @@ luarocks install cgilua
     <dd>
     <ul>
         <li>CGILua distribution includes now only the Lua files, the launchers
-        have been moved to <a href="http://www.keplerproject.org/kepler/">Kepler</a>.</li>
-        <li>The <a href="http://www.keplerproject.org/venv/manual.html#reference">Stable</a>
-        library is now distributed with <a href="http://www.keplerproject.org/venv/">VEnv</a>.</li>
+        have been moved to Kepler.</li>
+        <li>The Stable library is now distributed with VEnv.</li>
         <li>Fixed a file upload bug in the CGI and Xavante launchers.</li>
         <li><code>cgilua.lp.include()</code> now accepts an environment to run
         the preprocessed file in it.</li>
@@ -208,8 +226,7 @@ luarocks install cgilua
         <li>New ISAPI and Servlet Launchers.</li>
         <li>New Error Handling features.</li>
         <li>New persistent data feature (Stable).</li>
-        <li>Uses the <a href="http://www.keplerproject.org/compat/">package model</a>
-        for Lua 5.1.</li>
+        <li>Uses the package model for Lua 5.1.</li>
         <li>Simpler User <a href="libraries.html#session">Session</a> API.</li>
         <li>Small bug corrections</li>
     </ul>
@@ -248,24 +265,32 @@ luarocks install cgilua
 <h2><a name="credits"></a>Credits</h2>
 
 <dl>
+    <dt><strong>CGILua 6.0</strong></dt>
+    <dd>
+    CGILua 6.0 is maintained by Tomás Guisasola, including contributions from the
+    community, including several commits by Peter Melnichenko and João Dutra Bastos. João worked
+    sponsored by the Google Summer of Code program. His project was "Adapt CGILua SAPI launcher
+    to explore all WSAPI features".
+    </dd>
+
     <dt><strong>CGILua 5.2</strong></dt>
     <dd>
     CGILua 5.2 is being maintained by Tom&aacute;s Guisasola
     with contributions from F&aacute;bio Mascarenhas, Carla Ourofino
-    and others from the Kepler community.
+    and others from the community.
     </dd>
     
     <dt><strong>CGILua 5.1</strong></dt>
     <dd>
     CGILua 5.1 is being maintained by Andr&eacute; Carregal and
     Tom&aacute;s Guisasola with contributions from F&aacute;bio Mascarenhas
-    and others from the Kepler <a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.
+    and others from the Kepler mailing list.
     </dd>
     
     <dt><strong>CGILua 5.0</strong></dt>
     <dd>CGILua 5.0 was completely redesigned by Roberto Ierusalimschy,
     Andr&eacute; Carregal and Tom&aacute;s Guisasola as part of the
-    <a href="http://www.keplerproject.org">Kepler Project</a>.
+    Kepler Project.
     The implementation is compatible with Lua 5.0 and was coded by
     Tom&aacute;s Guisasola with invaluable contributions by Ana
     L&uacute;cia de Moura, F&aacute;bio Mascarenhas and Danilo Tuler.
@@ -296,24 +321,12 @@ luarocks install cgilua
 <h2><a name="contact"></a>Contact us</h2>
 
 <p>
-For more information please
-<a href="mailto:info-NO-SPAM-THANKS@keplerproject.org">contact us</a>.
-Comments are welcome!
-</p>
-
-<p>
-You can also reach other CGILua developers and users on the Kepler
-Project <a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.
+To report bugs, visit the <a href="https://github.com/lunarmodules/cgilua">GitHub project</a>.
 </p>
 
 </div> <!-- id="content" -->
 
 </div> <!-- id="main" -->
-
-<div id="about">
-	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
-	<p><small>$Id: index.html,v 1.68 2009/03/09 23:37:18 carregal Exp $</small></p>
-</div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
 

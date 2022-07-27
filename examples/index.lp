@@ -4,7 +4,7 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Welcome to Kepler!</title>
+    <title>Welcome to CGILua!</title>
     <link rel="stylesheet" href="css/doc.css" type="text/css"/>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -14,47 +14,46 @@
 <div id="container">
 
 <div id="product">
-	<div id="product_logo"><a href="http://www.keplerproject.org">
-		<img src="img/keplerproject.gif" alt="Kepler Project logo" /></a>
     </div>
-	<div id="product_name"><big><strong></strong></big></div>
+	<div id="product_name"><big><strong>CGILua</strong></big></div>
 	<div id="product_description">Welcome page</div>
 </div> <!-- id="product" -->
 
 <div id="main">
 
 <div id="navigation">
+
 <% 
-local mods = {}
-for file in lfs.dir("doc") do
-    local attr = lfs.attributes ("doc/"..file)
-    if attr.mode == "directory" and file ~= "." and file ~= ".." then
-        table.insert(mods, file)
+local files = {}
+for file in lfs.dir("docs") do
+    local attr = lfs.attributes ("docs/"..file)
+    if file:match("html$") then
+        table.insert(files, file)
     end
 end
-table.sort(mods)
+table.sort(files)
 %>
 
-<h1>Kepler</h1>
-	<ul>
-        <li><strong>Documentation</strong>
-            <ul>
-                <%
-                for _,file in ipairs(mods) do
-                %>
-                <li><strong><a href="doc/<%= file %>/index.html"><%= file %></a></strong></li>
-                <%
-                end
-                if not next(mods) then
-                %>
-                <li><strong>(None)</strong></li>
-                <%
-                end
-                %>
-            </ul>
-        </li>
-        <li><a href="test.lp">Tests</a></li>
-	</ul>
+<h1>CGILua</h1>
+
+<ul>
+<li><a href="docs/index.html">Documentation</a></li>
+<ul>
+    <%
+    for _,file in ipairs(files) do
+    %>
+    <li><strong><a href="docs/<%= file %>"><%= file %></a></strong></li>
+    <%
+    end
+    if not next(mods) then
+    %>
+    <li><strong>(None)</strong></li>
+    <%
+    end
+    %>
+</ul>
+<li><a href="test.lp">Tests</a></li>
+</ul>
 </div> <!-- id="navigation" -->
 
 <div id="content">
@@ -78,31 +77,9 @@ It serves both as a documentation index and as a simple example of a dynamic Lua
 From here you can also run some <a href="test.lp">tests</a>.
 </p>
 
-<h2>Contact us</h2>
-
-<p>
-For more information on Kepler modules please
-<a href="mailto:info-NO-SPAM-THANKS@keplerproject.org">contact us</a>.
-Comments are welcome!
-</p>
-
-<p>
-You can also reach other Kepler developers and users on the Kepler
-Project <a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.
-</p>
-
-<p>
-Copyright 2004-2007 - <a href="http://www.keplerproject.org">Kepler Project</a>
-</p>
-
 </div> <!-- id="content" -->
 
 </div> <!-- id="main" -->
-
-<div id="about">
-	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0</a></p>
-	<p><small>$Id: index.lp,v 1.1 2008/06/30 14:29:59 carregal Exp $</small></p>
-</div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
 </body>

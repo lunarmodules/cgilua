@@ -10,7 +10,7 @@
     <%
     require"cgilua.cookies"
     if cgilua.POST.user then
-        cgilua.cookies.sethtml("cookie_kepler", cgilua.POST.user)
+        cgilua.cookies.sethtml("cookie_cgilua", cgilua.POST.user)
     end
     %>
 </head>
@@ -20,9 +20,6 @@
 <div id="container">
 
 <div id="product">
-	<div id="product_logo"><a href="http://www.keplerproject.org">
-		<img src="img/keplerproject.gif" alt="Kepler Project logo" /></a>
-    </div>
 	<div id="product_name"><big><strong></strong></big></div>
 	<div id="product_description">CGILua simple tests</div>
 </div> <!-- id="product" -->
@@ -30,37 +27,38 @@
 <div id="main">
 
 <div id="navigation">
+
 <% 
-local mods = {}
-for file in lfs.dir("doc") do
-    local attr = lfs.attributes ("doc/"..file)
-    if attr.mode == "directory" and file ~= "." and file ~= ".." then
-        table.insert(mods, file)
+local files = {}
+for file in lfs.dir("docs") do
+    local attr = lfs.attributes ("docs/"..file)
+    if file:match("html$") then
+        table.insert(files, file)
     end
 end
-table.sort(mods)
+table.sort(files)
 %>
 
-<h1>Kepler</h1>
-	<ul>
-        <li><a href="index.lp">Documentation</a>
-            <ul>
-                <%
-                for _,file in ipairs(mods) do
-                %>
-                <li><strong><a href="doc/<%= file %>/index.html"><%= file %></a></strong></li>
-                <%
-                end
-                if not next(mods) then
-                %>
-                <li><strong>(None)</strong></li>
-                <%
-                end
-                %>
-            </ul>
-        </li>
-        <li><strong>Tests</strong></li>
-	</ul>
+<h1>CGILua</h1>
+
+<ul>
+<li><a href="docs/index.html">Documentation</a></li>
+<ul>
+    <%
+    for _,file in ipairs(files) do
+    %>
+    <li><strong><a href="docs/<%= file %>"><%= file %></a></strong></li>
+    <%
+    end
+    if not next(mods) then
+    %>
+    <li><strong>(None)</strong></li>
+    <%
+    end
+    %>
+</ul>
+<li><a href="test.lp">Tests</a></li>
+</ul>
 </div> <!-- id="navigation" -->
 
 <div id="content">
@@ -95,7 +93,7 @@ Here you should see the values posted before the ones shown above
 </p>
 
 <p>
-cookie_kepler = <%= cgilua.cookies.get("cookie_kepler") or "(not set)" %>
+cookie_cgilua = <%= cgilua.cookies.get("cookie_cgilua") or "(not set)" %>
 </p>
 
 <h2>File Upload</h2>

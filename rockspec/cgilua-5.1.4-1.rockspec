@@ -3,7 +3,7 @@ package = "CGILua"
 version = "5.1.4-1"
 
 source = {
-   url = "http://github.com/downloads/keplerproject/cgilua/cgilua-5.1.4.tar.gz"
+   url = "http://github.com/downloads/lunarmodules/cgilua/cgilua-5.1.4.tar.gz"
 }
 
 description = {

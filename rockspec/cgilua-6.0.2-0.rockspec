@@ -2,8 +2,8 @@ package = "CGILua"
 version = "6.0.2-0"
 
 source = {
-    url = "git+ssh://git@github.com:keplerproject/cgilua.git",
-	tag = "6.0.2",
+    url = "git+ssh://git@github.com:lunarmodules/cgilua.git",
+    tag = "6.0.2",
 }
 
 description = {
@@ -16,7 +16,7 @@ description = {
         interaction of CGILua and the Web server, for example using ISAPI on
         IIS or mod_lua on Apache. 
     ]],
-    homepage = "http://keplerproject.github.com/cgilua",
+    homepage = "http://lunarmodules.github.io/cgilua",
     license = "MIT/X11",
 }
 

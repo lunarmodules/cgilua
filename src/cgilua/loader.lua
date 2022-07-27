@@ -61,7 +61,7 @@ function M.run()
 			 elseif lfs.attributes(document_root.."/index.lp") then
 		  cgilua.script_vpath = "/index.lp"
 			 else
-		  error("Kepler is correctly configured, but you didn't provide a script!")
+		  error("CGILua is correctly configured, but you didn't provide a script!")
 			 end						  
 		 end
 		 -- checks if PATH_INFO refers to a valid file and ajusts the settings accordingly
