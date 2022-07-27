@@ -1,4 +1,9 @@
-# CGILua 6
+<div align="center">
+    <img src="./docs/cgi-128.gif" width="128" />
+    <h1>CGILua 6</h1>
+</div>
+
+<br/>
 
 http://lunarmodules.github.io/cgilua/
 
