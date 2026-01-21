@@ -640,9 +640,14 @@ local function build_library_objects(enviroment, response)
 	-- Call all defined open-functions in the order they were created.
 	----------------------------------------------------------------------
 	L.open = function ()
-		for i = #L._open_functions, 1, -1 do
-			L._open_functions[i]()
+		for i = 1, #L._open_functions do
+			local url = L._open_functions[i]()
+			if url then
+				M.redirect(url)
+				return false -- Interrupts execution of script file
+			end
 		end
+		return true
 	end
 
 	----------------------------------------------------------------------
@@ -729,11 +734,13 @@ function cgilua.main (enviroment, response)
 	M.pcall (function () lfs.chdir (M.script_pdir) end)
 
 	-- Opening functions
-	M.pcall (L.open)
+	local ok = M.pcall (L.open)
+	if ok then
+		-- Executes the script
+		-- "return" is not used anywhere
+		M.pcall (function () return M.handle (M.script_file) end)
+	end
 
-	-- Executes the script
-	-- "return" is not used anywhere
-	M.pcall (function () return M.handle (M.script_file) end)
     
 	-- Closing functions
 	M.pcall (L.close)
