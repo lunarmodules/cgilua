@@ -22,7 +22,8 @@ local M = {
 	data = nil, -- will be created when a session is created
 	already_enabled = false,
 	base_dir = "/tmp", -- no '/' at the end
-	id_pattern = "^"..strrep ("[0-9A-F]", 32)..strrep ("%d", 12).."$",
+	--id_pattern = "^"..strrep ("[0-9A-F]", 32)..strrep ("%d", 12).."$",
+	id_pattern = "^"..strrep ("[0-9A-F]", 32),
 	timeout = 10 * 60, -- 10 min
 	token_name = "cgilua_session_identification",
 	token_options = { -- lower-case options
@@ -37,12 +38,14 @@ local M = {
 -- @return String with a new identifier.
 ------------------------------------------------------------------------------
 function M.new_id ()
-	local remote_ip =
+	local remote_ip = ''
+--[=[
 		(cgilua.servervariable"REMOTE_ADDR"..".")
 		:gsub ("(%d+)%.", function (num)
 			local n = #num
 			return strrep ("0", 3-n)..num
 		end)
+--]=]
 	-- Random number
 	local fh = assert (ioopen ("/dev/urandom", "rb"))
 	local binstr = fh:read(16)
@@ -104,7 +107,7 @@ end
 ------------------------------------------------------------------------------
 function M.new ()
 	if M.id then
-		M.destroy () -- erases M.id and cookie
+		M.destroy () -- erases M.id and session data
 	end
 	local id
 	-- Make sure there is no other session with the same identifier
@@ -155,16 +158,18 @@ end
 -- Removes expired sessions.
 ------------------------------------------------------------------------------
 function M.cleanup ()
-	local rem = {}
+	local rem = {} -- array of files to be deleted
 	local now = ostime ()
 	for file in lfs_dir (M.base_dir) do
 		local attr = lfs_attributes(M.base_dir.."/"..file)
 		if attr and attr.mode == 'file' then
 			if attr.modification + M.timeout < now then
+				-- Delay removal to avoid problems during directory traversal
 				tinsert (rem, file)
 			end
 		end
 	end
+	-- Delete data from expired sessions
 	for _, file in ipairs (rem) do
 		osremove (M.base_dir.."/"..file)
 	end
