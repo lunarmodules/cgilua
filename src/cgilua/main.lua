@@ -691,17 +691,15 @@ function cgilua.main (environment, response)
 	assert(response.headers, "invalid parameter: response need to have a atribute headers")
 	assert(response.status, "invalid parameter: response need to have a atribute status")
 
-	-- environment variables
-	_G.CGILUA_APPS = _G.CGILUA_APPS or environment.DOCUMENT_ROOT .. "/cgilua"
-	_G.CGILUA_CONF = _G.CGILUA_CONF or environment.DOCUMENT_ROOT .. "/cgilua"
-	_G.CGILUA_TMP = _G.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
+	-- enviroment variables
+	_G.CGILUA_CONF = environment.CGILUA_CONF or environment.DOCUMENT_ROOT .. "/cgilua"
+	_G.CGILUA_TMP = environment.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
 	_G.CGILUA_ISDIRECT = true
 
 	-- build library objects
-    local M = build_library_objects (environment, response);
-    package.loaded.cgilua = M;
-
-    -- Main function
+  local M = build_library_objects (environment, response);
+  package.loaded.cgilua = M;
+	-- Main function
 	L.buildhandlers()
 	-- Default handler values
 	M.addscripthandler ("lua", M.doscript)
