@@ -30,12 +30,12 @@ local cgilua = {
 }
 
 -- local functions and variables
-local L = { 
+local L = {
 
 }
 
 
-local function build_library_objects(enviroment, response)
+local function build_library_objects(environment, response)
 	local M = {
 		_COPYRIGHT = cgilua._COPYRIGHT,
 		_DESCRIPTION = cgilua._DESCRIPTION,
@@ -50,10 +50,10 @@ local function build_library_objects(enviroment, response)
 	]]
 
 	---------------------------------------------------------------------------
-	-- gets an enviroment variable
+	-- gets an environment variable
 	---------------------------------------------------------------------------
 	M.servervariable = function (name)
-		return enviroment[name] 
+		return environment[name]
 	end;
 
 	---------------------------------------------------------------------------
@@ -64,7 +64,7 @@ local function build_library_objects(enviroment, response)
 			response:content_type(header)
 		end,
 		errorlog = function (msg, errlevel)
-			enviroment.error:write (msg)
+			environment.error:write (msg)
 		end,
 		header = function (header, value)
 			if response.headers[header] then
@@ -516,7 +516,7 @@ local function build_library_objects(enviroment, response)
 		if type(msg) ~= "string" and type(msg) ~= "number" then
 			msg = format ("bad argument #1 to 'error' (string expected, got %s)", type(msg))
 		end
-	  
+
 		-- Logging error
 		M.Response.errorlog (msg)
 		M.Response.errorlog (" ")
@@ -548,7 +548,7 @@ local function build_library_objects(enviroment, response)
 		M.POST = {}
 		if  requestmethod == "POST" then
 			M.post.parsedata {
-				read = function (n) return enviroment.input:read(n) end;
+				read = function (n) return environment.input:read(n) end;
 				discardinput = ap and ap.discard_request_body,
 				content_type = M.servervariable"CONTENT_TYPE",
 				content_length = M.servervariable"CONTENT_LENGTH",
@@ -589,7 +589,7 @@ local function build_library_objects(enviroment, response)
 
 	----------------------------------------------------------------------
 	-- Stores all script handlers and the file extensions used to identify
-	-- them. Loads the default 
+	-- them. Loads the default
 	----------------------------------------------------------------------
 	L._script_handlers = { }
 
@@ -656,7 +656,7 @@ local function build_library_objects(enviroment, response)
 	L.reset = function  ()
 		L.script_path = false
 		M.script_vpath, M.pdir, M.use_executable_name, M.urlpath, M.script_vdir, M.script_pdir,
-		M.script_file, M.authentication, M.app_name = 
+		M.script_file, M.authentication, M.app_name =
 			nil, nil, nil, nil, nil, nil, nil, nil, nil
 		L.maxfilesize = L.default_maxfilesize
 		L.maxinput = L.default_maxinput
@@ -685,10 +685,10 @@ end
 
 ---------------------------------------------------------------------------
 -- Request processing.
--- env: enviroment variables
+-- env: environment variables
 -- response: the response object
 ---------------------------------------------------------------------------
-function cgilua.main (enviroment, response)
+function cgilua.main (environment, response)
 	--validade response parameter
 	assert(type(response) == "table", "invalid parameter: response")
 	assert(response.content_type, "invalid parameter: response need to have a method content_type()")
@@ -696,14 +696,14 @@ function cgilua.main (enviroment, response)
 	assert(response.headers, "invalid parameter: response need to have a atribute headers")
 	assert(response.status, "invalid parameter: response need to have a atribute status")
 
-	-- enviroment variables
-	_G.CGILUA_APPS = _G.CGILUA_APPS or enviroment.DOCUMENT_ROOT .. "/cgilua"
-	_G.CGILUA_CONF = _G.CGILUA_CONF or enviroment.DOCUMENT_ROOT .. "/cgilua"
+	-- environment variables
+	_G.CGILUA_APPS = _G.CGILUA_APPS or environment.DOCUMENT_ROOT .. "/cgilua"
+	_G.CGILUA_CONF = _G.CGILUA_CONF or environment.DOCUMENT_ROOT .. "/cgilua"
 	_G.CGILUA_TMP = _G.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
 	_G.CGILUA_ISDIRECT = true
 
 	-- build library objects
-    local M = build_library_objects (enviroment, response);
+    local M = build_library_objects (environment, response);
     package.loaded.cgilua = M;
 
     -- Main function
@@ -720,7 +720,7 @@ function cgilua.main (enviroment, response)
 	if M.loader then
 		M.loader.init()
 	end
-    
+
 	-- Build QUERY/POST tables
 	if not M.pcall (L.getparams) then return nil end
 
@@ -741,7 +741,6 @@ function cgilua.main (enviroment, response)
 		M.pcall (function () return M.handle (M.script_file) end)
 	end
 
-    
 	-- Closing functions
 	M.pcall (L.close)
 	-- Changing to original directory
