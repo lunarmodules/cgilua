@@ -683,7 +683,7 @@ end
 -- env: enviroment variables
 -- response: the response object
 ---------------------------------------------------------------------------
-function cgilua.main (enviroment, response)
+function cgilua.main (environment, response)
 	--validade response parameter
 	assert(type(response) == "table", "invalid parameter: response")
 	assert(response.content_type, "invalid parameter: response need to have a method content_type()")
@@ -692,16 +692,15 @@ function cgilua.main (enviroment, response)
 	assert(response.status, "invalid parameter: response need to have a atribute status")
 
 	-- enviroment variables
-	_G.CGILUA_APPS = _G.CGILUA_APPS or enviroment.DOCUMENT_ROOT .. "/cgilua"
-	_G.CGILUA_CONF = _G.CGILUA_CONF or enviroment.DOCUMENT_ROOT .. "/cgilua"
-	_G.CGILUA_TMP = _G.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
+	_G.CGILUA_CONF = environment.CGILUA_CONF or environment.DOCUMENT_ROOT .. "/cgilua"
+	_G.CGILUA_TMP = environment.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
 	_G.CGILUA_ISDIRECT = true
 
 	-- build library objects
-    local M = build_library_objects (enviroment, response);
-    package.loaded.cgilua = M;
+  local M = build_library_objects (environment, response);
+  package.loaded.cgilua = M;
 
-    -- Main function
+	-- Main function
 	L.buildhandlers()
 	-- Default handler values
 	M.addscripthandler ("lua", M.doscript)
