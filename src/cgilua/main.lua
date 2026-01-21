@@ -705,6 +705,7 @@ function cgilua.main (environment, response)
 	L.buildhandlers()
 	-- Default handler values
 	M.addscripthandler ("lua", M.doscript)
+	M.addscripthandler ("cgilua", M.doscript)
 	M.addscripthandler ("lp", M.handlelp)
 	-- Looks for an optional loader module
 	M.pcall (function () M.loader = require"cgilua.loader" end)
