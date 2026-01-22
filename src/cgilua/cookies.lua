@@ -61,17 +61,17 @@ local function build (name, value, options)
 			or (options.samesite and options.samesite:lower() == "none") then
 
 			-- Enforces HTTPS transport when required.
-			a[#a+1] = "Secure"
+			a[#a+1] = "; Secure"
 		end
 
 		-- Prevent access from client-side JavaScript.
 		if options.httponly then
-			a[#a+1] = "HttpOnly"
+			a[#a+1] = "; HttpOnly"
 		end
 
 		-- Mark cookie as partitioned (requires Secure).
 		if options.partitioned then
-			a[#a+1] = "Partitioned"
+			a[#a+1] = "; Partitioned"
 		end
 
 		-- SameSite controls cross-site cookie sending.
