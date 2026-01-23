@@ -697,7 +697,6 @@ function cgilua.main (environment, response)
 	assert(response.status, "invalid parameter: response need to have a atribute status")
 
 	-- environment variables
-	_G.CGILUA_APPS = environment.CGILUA_APPS or environment.DOCUMENT_ROOT .. "/cgilua"
 	_G.CGILUA_CONF = environment.CGILUA_CONF or environment.DOCUMENT_ROOT .. "/cgilua"
 	_G.CGILUA_TMP = environment.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
 	_G.CGILUA_ISDIRECT = true
