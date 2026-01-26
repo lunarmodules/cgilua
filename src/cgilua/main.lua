@@ -20,7 +20,7 @@ local os_tmpname = os.tmpname
 local getenv = os.getenv
 local remove = os.remove
 lp.setoutfunc ("cgilua.put")
-lp.setcompatmode (true)
+--lp.setcompatmode (true) -- CGILua 3.2 compatibility
 
 -- Module return in first require
 local cgilua = {
@@ -218,29 +218,6 @@ local function build_library_objects(environment, response)
 		lp.include (filename, env)
 	end
 
-	----------------------------------------------------------------------------
-	-- Builds a handler that sends a header and the contents of the given file.
-	-- Sends the contents of the file to the output without processing it.
-	-- @param type String with the type of the header.
-	-- @param subtype String with the subtype of the header.
-	-- @return Function (which receives a filename as argument) that produces
-	--      the header and copies the content of the given file.
-	----------------------------------------------------------------------------
-	M.buildplainhandler = function (type, subtype)
-		return function (filename)
-			local fh, err = _open (filename, "rb")
-			local contents = ""
-			if fh then
-				contents = fh:read("*a")
-				fh:close()
-			else
-				error(err)
-			end
-			M.header("Content-Lenght", #contents)
-			M.contentheader (type, subtype)
-			M.put (contents)
-		end
-	end
 
 	----------------------------------------------------------------------------
 	-- Builds a handler that sends a header and the processed file.
@@ -562,16 +539,6 @@ local function build_library_objects(environment, response)
 		urlcode.parsequery (M.servervariable"QUERY_STRING", M.QUERY)
 	end
 
-	----------------------------------------------------------------------------
-	-- Builds the default handler table from cgilua.mime
-	----------------------------------------------------------------------------
-	L.buildhandlers = function()
-		local mime = require "cgilua.mime"
-		for ext, mediatype in pairs(mime) do
-			local t, st = match(mediatype, "([^/]*)/([^/]*)")
-			M.addscripthandler(ext, M.buildplainhandler(t, st))
-		end
-	end
 
 	----------------------------------------------------------------------
 	--
@@ -609,7 +576,7 @@ local function build_library_objects(environment, response)
 		else
 			error(err)
 		end
-		M.header("Content-Lenght", #contents)
+		M.header("Content-Length", #contents)
 		M.put ("\n")
 		M.put (contents)
 	end
