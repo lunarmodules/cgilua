@@ -32,7 +32,14 @@ local function optional (what, name)
 	end
 end
 
-local function build (name, value, options)
+------------------------------------------------------------------------------
+-- Build the statement that defines a cookie with its attributes.
+-- @param name String with cookie name.
+-- @param value String with cookie value.
+-- @param options Table (optional) with cookie's attributes (in lower case).
+-- @return String that defines a cookie.
+------------------------------------------------------------------------------
+function M.build (name, value, options)
 	if not name or not value then
 		error("cookie needs a name and a value")
 	end
@@ -92,20 +99,7 @@ end
 -- @param options Table with the options (optional).
 ------------------------------------------------------------------------------
 function M.set (name, value, options)
-	header("Set-Cookie", build(name, value, options))
-end
-
-
-------------------------------------------------------------------------------
--- Sets a value to a cookie, with the given options.
--- Generates an HTML META tag, thus it can be used in Lua Pages.
--- @param name String with the name of the cookie.
--- @param value String with the value of the cookie.
--- @param options Table with the options (optional).
-------------------------------------------------------------------------------
-function M.sethtml (name, value, options)
-	write(format('<meta http-equiv="Set-Cookie" content="%s">',
-		build(name, value, options)))
+	header("Set-Cookie", M.build(name, value, options))
 end
 
 
