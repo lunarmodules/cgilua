@@ -53,8 +53,8 @@ end
 --
 local function breakheaders (hdrdata)
 	local headers = {}
-	for name, value in gmatch(hdrdata, '([^%c%s:]+):%s+([^\n]+)') do
-		name = strlower(name)
+	for n, value in gmatch(hdrdata, '([^%c%s:]+):%s+([^\n]+)') do
+		local name = strlower(n)
 		headers[name] = value
 	end
 	return headers
