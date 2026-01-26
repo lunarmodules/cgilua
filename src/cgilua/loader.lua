@@ -48,7 +48,7 @@ function M.run()
 	 end
 	 if cgilua.use_executable_name then
 		 -- looks for a Lua script with the same name as the executable
-		 local _, name = cgilua.splitpath(servervariable"SCRIPT_NAME")
+		 local _, name = cgilua.splitonlast(servervariable"SCRIPT_NAME")
 		 name = string.gsub(name, "%.[^%.]-$","")
 		if name and lfs.attributes(document_root.."/"..name..".lua") then
 			cgilua.script_path = document_root.."/"..name..".lua"
@@ -81,14 +81,14 @@ function M.run()
 	
 	-- define other cgilua vars so mkurlpath can work correctly
 	if cgilua.script_vpath then
-		cgilua.script_vdir = cgilua.splitpath (cgilua.script_vpath)
+		cgilua.script_vdir = cgilua.splitonlast (cgilua.script_vpath)
 		cgilua.urlpath = cgilua.urlpath or servervariable"SCRIPT_NAME"
 	else
-		cgilua.script_vdir = cgilua.splitpath (servervariable"SCRIPT_NAME")
+		cgilua.script_vdir = cgilua.splitonlast (servervariable"SCRIPT_NAME")
 		cgilua.urlpath = cgilua.urlpath or ""
 	end
 
-	cgilua.script_pdir, cgilua.script_file = cgilua.splitpath (cgilua.script_path)
+	cgilua.script_pdir, cgilua.script_file = cgilua.splitonlast (cgilua.script_path)
 end
 
 return M
