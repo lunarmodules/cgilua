@@ -1,9 +1,10 @@
 package = "CGILua"
-version = "7.0.0-0"
+version = "scm-7"
 
 source = {
     url = "git+ssh://git@github.com:lunarmodules/cgilua.git",
-    tag = "7.0.0",
+    --tag = "7.0.0",
+	branch = "v7",
 }
 
 description = {
@@ -22,7 +23,7 @@ description = {
 
 dependencies = {
     "lua >= 5.2",
-    "luafilesystem >= 1.6.0",
+    "luafilesystem >= 1.8.0",
 	"wsapi >= 1.7",
 }
 
@@ -30,12 +31,12 @@ build = {
     type = "builtin",
     modules = {
         ["cgilua.main"] = "src/cgilua/main.lua",
-        ["cgilua.authentication"] = "src/cgilua/authentication.lua", 
+        --["cgilua.authentication"] = "src/cgilua/authentication.lua", 
         ["cgilua.cookies"] = "src/cgilua/cookies.lua", 
         ["cgilua.dispatcher"] = "src/cgilua/dispatcher.lua", 
         ["cgilua.loader"] = "src/cgilua/loader.lua", 
         ["cgilua.lp"] = "src/cgilua/lp.lua", 
-        ["cgilua.mime"] = "src/cgilua/mime.lua", 
+        --["cgilua.mime"] = "src/cgilua/mime.lua", 
         ["cgilua.post"] = "src/cgilua/post.lua", 
         ["cgilua.readuntil"] = "src/cgilua/readuntil.lua", 
         ["cgilua.serialize"] = "src/cgilua/serialize.lua", 
