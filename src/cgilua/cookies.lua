@@ -125,8 +125,8 @@ end
 ------------------------------------------------------------------------------
 function M.delete (name, options)
 	M.set(name, "xxx", {
-		path = options.path,
-		domain = options.domain,
+		path = options and options.path,
+		domain = options and options.domain,
 		max_age = "0",
 	})
 end
