@@ -672,8 +672,6 @@ function cgilua.main (environment, response)
     local M = build_library_objects (environment, response);
     package.loaded.cgilua = M;
 
-    -- Main function
-	L.buildhandlers()
 	-- Default handler values
 	M.addscripthandler ("lua", M.doscript)
 	M.addscripthandler ("cgilua", M.doscript)
@@ -698,20 +696,19 @@ function cgilua.main (environment, response)
 
 	-- Changing curent directory to the script's "physical" dir
 	local curr_dir = lfs.currentdir ()
-	M.pcall (function () lfs.chdir (M.script_pdir) end)
+	M.pcall (lfs.chdir, M.script_pdir)
 
 	-- Opening functions
 	local ok = M.pcall (L.open)
 	if ok then
 		-- Executes the script
-		-- "return" is not used anywhere
-		M.pcall (function () return M.handle (M.script_file) end)
+		M.pcall (M.handle, M.script_file)
 	end
 
 	-- Closing functions
 	M.pcall (L.close)
 	-- Changing to original directory
-	M.pcall (function () lfs.chdir (curr_dir) end)
+	M.pcall (lfs.chdir, curr_dir)
 
 	-- Cleanup
 	L.reset ()
