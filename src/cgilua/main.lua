@@ -664,8 +664,10 @@ function cgilua.main (environment, response)
 	assert(response.status, "invalid parameter: response need to have a atribute status")
 
 	-- environment variables
-	_G.CGILUA_CONF = environment.CGILUA_CONF or environment.DOCUMENT_ROOT .. "/cgilua"
-	_G.CGILUA_TMP = environment.CGILUA_TMP or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
+	_G.CGILUA_CONF = (environment.CGILUA_CONF ~= '' and environment.CGILUA_CONF)
+		or environment.DOCUMENT_ROOT .. "/cgilua"
+	_G.CGILUA_TMP = (environment.CGILUA_TMP ~= '' and environment.CGILUA_TMP)
+		or os.getenv("TMP") or os.getenv("TEMP") or "/tmp"
 	_G.CGILUA_ISDIRECT = true
 
 	-- build library objects
@@ -696,19 +698,19 @@ function cgilua.main (environment, response)
 
 	-- Changing curent directory to the script's "physical" dir
 	local curr_dir = lfs.currentdir ()
-	M.pcall (lfs.chdir, M.script_pdir)
+	M.pcall (function () lfs.chdir (M.script_pdir) end)
 
 	-- Opening functions
 	local ok = M.pcall (L.open)
 	if ok then
 		-- Executes the script
-		M.pcall (M.handle, M.script_file)
+		M.pcall (function () M.handle (M.script_file) end)
 	end
 
 	-- Closing functions
 	M.pcall (L.close)
 	-- Changing to original directory
-	M.pcall (lfs.chdir, curr_dir)
+	M.pcall (function () lfs.chdir (curr_dir) end)
 
 	-- Cleanup
 	L.reset ()
