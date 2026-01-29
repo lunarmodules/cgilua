@@ -142,17 +142,15 @@ end
 
 ------------------------------------------------------------------------------
 -- Saves data to a file.
--- @param id Session identification.
--- @param data Table with session data to be saved.
 ------------------------------------------------------------------------------
-function M.save (id, data)
+function M.save ()
 	if M.id and type(M.data) == "table" then
 		if not M.check_id (M.id) then
 			return nil, INVALID_SESSION_ID
 		end
 		local fh = assert (ioopen (M.filename (M.id), "w+"))
 		fh:write "return "
-		serialize (data, function (s) fh:write(s) end)
+		serialize (M.data, function (s) fh:write(s) end)
 		fh:close()
 	end
 end
