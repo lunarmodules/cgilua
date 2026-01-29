@@ -27,8 +27,6 @@ local M = {}
 local function optional (what, name)
 	if name ~= nil and name ~= "" then
 		return format("; %s=%s", what, name)
-	else
-		return ""
 	end
 end
 
