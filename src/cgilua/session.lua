@@ -212,19 +212,19 @@ function M.force_open (id)
 end
 
 ------------------------------------------------------------------------------
--- Prepare session environment:
--- 1. clean up older sessions
--- 2. if there is a session-id, try to open the session;
--- 3. set the close-function that will persist the session-data.
+-- Cleanup and tries to open a session indicated by the cookie.
 --
--- This code might be executed AFTER the overall configuration, so it is
--- registered as an open function.
+-- If there is a valid cookie and a corresponding file, opens the session
+-- by setting the session id and loading the session data from the file.
+--
+-- This code might be executed AFTER the overall configuration, to take into
+-- account any change in the default parameters (like the `base_dir`).
 --
 -- Note that this function DOES NOT automatically opens a session if there
 -- is no session-id.  In other words, one have to create a new session in
 -- this case (supposedly checking login identification and password before).
 ------------------------------------------------------------------------------
-cgilua.addopenfunction (function ()
+function M.try_open ()
 	M.cleanup ()
 
 	local id = cookies.get (M.token_name)
@@ -233,8 +233,7 @@ cgilua.addopenfunction (function ()
 		M.id = id
 		M.data = M.load ()
 	end
-	cgilua.addclosefunction (M.save)
-end)
+end
 
 ------------------------------------------------------------------------------
 return M
