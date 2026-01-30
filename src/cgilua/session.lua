@@ -217,19 +217,24 @@ end
 -- 2. if there is a session-id, try to open the session;
 -- 3. set the close-function that will persist the session-data.
 --
+-- This code might be executed AFTER the overall configuration, so it is
+-- registered as an open function.
+--
 -- Note that this function DOES NOT automatically opens a session if there
 -- is no session-id.  In other words, one have to create a new session in
 -- this case (supposedly checking login identification and password before).
 ------------------------------------------------------------------------------
-M.cleanup ()
+cgilua.addopenfunction (function ()
+	M.cleanup ()
 
-local id = M.cookies.get (M.token_name)
-if id and M.check_id (id) and M.find_file (id) then
-	-- try to load session data persisted from last request!
-	M.id = id
-	M.data = M.load ()
-end
-cgilua.addclosefunction (M.save)
+	local id = cookies.get (M.token_name)
+	if id and M.check_id (id) and M.find_file (id) then
+		-- try to load session data persisted from last request!
+		M.id = id
+		M.data = M.load ()
+	end
+	cgilua.addclosefunction (M.save)
+end)
 
 ------------------------------------------------------------------------------
 return M
