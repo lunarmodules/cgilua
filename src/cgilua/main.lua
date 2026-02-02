@@ -481,7 +481,7 @@ local function build_library_objects(environment, response)
 	M.enablesession = function ()
 		M.session = require"cgilua.session"
 		M.addopenfunction (M.session.try_open)
-		M.addclosefunctino (M.session.save)
+		M.addclosefunction (M.session.save)
 	end
 
 
