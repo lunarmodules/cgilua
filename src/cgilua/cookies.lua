@@ -74,13 +74,13 @@ function M.build (name, value, options)
 			a[#a+1] = "; HttpOnly"
 		end
 
-		-- Mark cookie as partitioned (requires Secure).
+		-- Mark cookie as partitioned (implies Secure).
 		if options.partitioned then
 			a[#a+1] = "; Partitioned"
 		end
 
 		-- SameSite controls cross-site cookie sending.
-		-- Note: SameSite=None requires Secure (enforced above).
+		-- Note: SameSite=None implies Secure (enforced above).
 		a[#a+1] = optional("SameSite", options.samesite)
 
 		cookie = cookie..tconcat (a)
