@@ -24,9 +24,9 @@ lp.setoutfunc ("cgilua.put")
 
 -- Module return in first require
 local cgilua = {
-	_COPYRIGHT = "Copyright (C) 2003-2009 Kepler Project; Copyright (C) 2010-2022 The CGILua Authors.",
+	_COPYRIGHT = "Copyright (C) 2003-2009 Kepler Project; Copyright (C) 2010-2026 The CGILua Authors.",
 	_DESCRIPTION = "CGILua is a tool for creating dynamic Web pages and manipulating input data from forms",
-	_VERSION = "CGILua 6.0",
+	_VERSION = "CGILua 7.0",
 }
 
 -- local functions and variables
