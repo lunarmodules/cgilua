@@ -20,7 +20,6 @@ local M = {
 	_VERSION = "2.0",
 
 	data = nil, -- will be created when a session is created
-	already_enabled = false,
 	base_dir = "/tmp", -- no '/' at the end
 	--id_pattern = "^"..strrep ("[0-9A-F]", 32)..strrep ("%d", 12).."$",
 	id_pattern = "^"..strrep ("[0-9A-F]", 32),
@@ -29,7 +28,7 @@ local M = {
 	token_options = { -- lower-case options
 		path = "/", -- site-wide coverage
 		samesite = "Lax", -- "None" and "Strict" are the other valid values
-		httponly = true, -- forbids JavaScript access to cookie
+		httponly = true, -- forbids JavaScript access to cookies
 	},
 }
 
@@ -41,7 +40,7 @@ function M.cleanup ()
 	local now = ostime ()
 	for file in lfs_dir (M.base_dir) do
 		local attr = lfs_attributes(M.base_dir.."/"..file)
-		if attr and attr.mode == 'file' then
+		if attr and attr.mode == "file" then
 			if attr.modification + M.timeout < now then
 				-- Delay removal to avoid problems during directory traversal
 				tinsert (rem, file)
@@ -60,13 +59,6 @@ end
 ------------------------------------------------------------------------------
 function M.new_id ()
 	local remote_ip = ''
---[=[
-		(cgilua.servervariable"REMOTE_ADDR"..".")
-		:gsub ("(%d+)%.", function (num)
-			local n = #num
-			return strrep ("0", 3-n)..num
-		end)
---]=]
 	-- Random number
 	local fh = assert (ioopen ("/dev/urandom", "rb"))
 	local binstr = fh:read(16)
@@ -112,8 +104,8 @@ function M.find_file (id)
 end
 
 ------------------------------------------------------------------------------
--- Deletes a session.
--- @param id Session identifier.
+-- Deletes a session file.
+-- @param id Session identifier (default = already opened session identifier).
 ------------------------------------------------------------------------------
 function M.delete (id)
 	id = id or M.id
@@ -124,7 +116,7 @@ function M.delete (id)
 end
 
 ------------------------------------------------------------------------------
--- Loads data from a session.
+-- Loads data from a session file.
 -- @return Table with session data or nil in case of error.
 -- @return In case of error, also returns the error message.
 ------------------------------------------------------------------------------
@@ -160,8 +152,25 @@ end
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
+-- Destroys the session, erasing its data and identifier.
+------------------------------------------------------------------------------
+function M.destroy ()
+	M.data = nil
+	M.delete (M.id)
+	M.id = nil
+end
+
+------------------------------------------------------------------------------
+-- Destroy the session and delete the cookie.
+------------------------------------------------------------------------------
+function M.logout ()
+	M.destroy ()
+	cookies.delete (M.token_name, M.token_options)
+end
+
+------------------------------------------------------------------------------
 -- Creates a new session and returns its identifier.
--- @return Session identification.
+-- @return Session identifier.
 ------------------------------------------------------------------------------
 function M.new ()
 	if M.id then
@@ -177,23 +186,6 @@ function M.new ()
 	M.save ()
 	cookies.set (M.token_name, id, M.token_options)
 	return id
-end
-
-------------------------------------------------------------------------------
--- Destroys the session, erasing its data.
-------------------------------------------------------------------------------
-function M.destroy ()
-	M.data = nil
-	M.delete (M.id)
-	M.id = nil
-end
-
-------------------------------------------------------------------------------
--- Destroy the session and delete the cookie.
-------------------------------------------------------------------------------
-function M.logout ()
-	M.destroy ()
-	cookies.delete (M.token_name, M.token_options)
 end
 
 ------------------------------------------------------------------------------
