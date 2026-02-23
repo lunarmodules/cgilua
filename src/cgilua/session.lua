@@ -193,14 +193,20 @@ end
 ------------------------------------------------------------------------------
 function M.force_open (id)
 	if not id or not M.check_id (id) then
-		return false
+		return false, INVALID_SESSION_ID
 	end
 
 	-- try to load session data persisted from last request!
 	M.id = id
-	M.data = M.load (id)
-	cookies.set (M.token_name, id, M.token_options)
-	return true
+	local err
+	M.data, err = M.load ()
+	if M.data then
+		cookies.set (M.token_name, id, M.token_options)
+		return true
+	else
+		M.id = nil
+		return false, err
+	end
 end
 
 ------------------------------------------------------------------------------
@@ -223,7 +229,15 @@ function M.try_open ()
 	if id and M.check_id (id) and M.find_file (id) then
 		-- try to load session data persisted from last request!
 		M.id = id
-		M.data = M.load ()
+		local err
+		M.data, err = M.load ()
+		if M.data then
+			return true
+		else
+			M.id = nil
+			cookies.delete (M.token_name, M.token_options)
+			return false, err
+		end
 	end
 end
 
