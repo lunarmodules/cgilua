@@ -15,6 +15,7 @@ local osremove, ostime = os.remove, os.time
 local lfs_attributes, lfs_dir = lfs.attributes, lfs.dir
 
 local INVALID_SESSION_ID = "Invalid session identification"
+local SESSION_EXPIRED = "Session expired"
 
 local M = {
 	_VERSION = "2.0",
@@ -226,17 +227,23 @@ function M.try_open ()
 	M.cleanup ()
 
 	local id = cookies.get (M.token_name)
-	if id and M.check_id (id) and M.find_file (id) then
-		-- try to load session data persisted from last request!
-		M.id = id
-		local err
-		M.data, err = M.load ()
-		if M.data then
-			return true
+	if id and M.check_id (id) then
+		if M.find_file (id) then
+			-- try to load session data persisted from last request!
+			M.id = id
+			local err
+			M.data, err = M.load ()
+			if M.data then
+				return true
+			else
+				M.id = nil
+				cookies.delete (M.token_name, M.token_options)
+				return false, err
+			end
 		else
 			M.id = nil
 			cookies.delete (M.token_name, M.token_options)
-			return false, err
+			return false, SESSION_EXPIRED
 		end
 	end
 end
